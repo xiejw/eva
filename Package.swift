@@ -12,11 +12,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
     ],
     targets: [
-        .target(
-            name: "Eva",
-            dependencies: []),
-        .testTarget(
-            name: "EvaTests",
-            dependencies: ["Eva"]),
+        .target(name: "Eva", dependencies: []),
+        .testTarget(name: "EvaTests", dependencies: ["Eva"]),
     ]
 )
