@@ -1,5 +1,14 @@
 # Eva: My Swift Core Library
 
+## Test in Linux
+
+Update the following files:
+
+    Tests/LinuxMain.swift
+    Tests/EvaTests/XCTestManifests.swift
+
+Defines the static `Array` allTests in Test file.
+
 ## Install Swift on Debian (stretch).
 
 _Step 1_: Download Swift 4.2.1 for Ubuntu 16.04 from https://swift.org/download/#releases.
