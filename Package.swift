@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Eva",
     products: [
-      .executable(name: "Eva", targets: ["Eva"]),
+      .executable(name: "Eva", targets: ["Eva", "Lib"]),
       // .library(name: "Eva", targets: ["Eva"]),
     ],
     dependencies: [
@@ -13,6 +13,8 @@ let package = Package(
     ],
     targets: [
         .target(name: "Eva", dependencies: []),
+        .target(name: "Lib", dependencies: []),
         .testTarget(name: "EvaTests", dependencies: ["Eva"]),
+        .testTarget(name: "LibTests", dependencies: ["Eva", "Lib"]),
     ]
 )
