@@ -5,6 +5,8 @@ enum Field {
 }
 
 extension Field {
+
+  /// A pattern matching of the field.
   static func ~=(_ lhs: Field, _ rhs: Int) -> Bool {
     switch lhs {
     case .any:
