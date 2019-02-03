@@ -1,17 +1,24 @@
 # Eva: My Swift Core Library
 
-## Test in Linux
+## Add Test in Linux
 
-Update the following files:
+_Step 1_: Consider to update the following files if necessary.
 
     Tests/LinuxMain.swift
     Tests/EvaTests/XCTestManifests.swift
 
-Defines the static `Array` allTests in Test file.
+_Step 2_: Update (or define) the static `Array`, called `allTests` in Test file.
+For example:
+
+    static var allTests = [
+      ("testAny", testAny),
+      ("testSingleValue", testSingleValue),
+    ]
 
 ## Install Swift on Debian (stretch).
 
-_Step 1_: Download Swift for Ubuntu 16.04 from https://swift.org/download/#releases.
+_Step 1_: Download Swift for Ubuntu 16.04 from
+https://swift.org/download/#releases.
 
 _Step 2_: Install runtime dependency of Swift[c]:
 
