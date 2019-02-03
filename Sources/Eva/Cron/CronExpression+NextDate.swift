@@ -1,10 +1,18 @@
 import Foundation
 
+/// Algorithm to find next date matching the CronExpression.
+///
+/// Step 1: Go to next minute and reset the second field.
+/// Step 2 (Entry:) : Search minute until match.
+/// Step 3: Search hour until match. If hour changed, reset lower components
+///         (minute in this case) and jump to `Entry`.
+/// Step 4: Search day until match. If day changed, reset lower components
+///         (hour and minute in this case) and jump to `Entry`.
+/// Step 5-6: Search month and year. Same rule as step 3 and 4.
 extension CronExpression {
 
-  /// Returns the next date matching cron expression.
+  /// Returns the next date matching `CronExpression`.
   public func nextDate(from: Date = Date()) -> Date? {
-
     // Add one minute to start the searching.
     guard var candidate = calendar.date(
       byAdding: .minute,
@@ -17,23 +25,26 @@ extension CronExpression {
     // Reset second.
     candidate = rewind(candidate, upTo: .minute)
 
-    var changed: Bool
-    while true {
-      (candidate, changed) = searchNextMatching(for: .minute, from: candidate)
-      if changed {
-        continue
-      }
-
-      (candidate, changed) = searchNextMatching(for: .hour, from: candidate)
-      if changed {
-        continue
+    mainLoop: while true {
+      for component in Array<Calendar.Component>(
+        [.minute, .hour, .day, .month, .year]
+      ) {
+        let (newCandidate, changed) = searchNextMatching(
+          for: component, from: candidate
+        )
+        if changed {
+          candidate = newCandidate
+          continue mainLoop
+        }
       }
       break
     }
     return candidate
   }
 
-
+  /// Searches the next matching value. This algorithrm only scans values on
+  /// single component. if the component is not same as the initial value, all
+  /// lower components will be rewound.
   private func searchNextMatching(
     for component: Calendar.Component, from startPoint: Date
   ) -> (newCandidate: Date, changed: Bool)
@@ -103,6 +114,7 @@ extension CronExpression {
     return newDate
   }
 
+  /// Helper method to get the corresponding field according to component.
   private func field(for component: Calendar.Component) -> Field {
     switch component {
     case .year: return self.year
