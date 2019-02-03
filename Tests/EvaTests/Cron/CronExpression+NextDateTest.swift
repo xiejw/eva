@@ -17,6 +17,15 @@ final class CronExpressionNextDateTests: XCTestCase {
 
 /// Tests single field.
 extension CronExpressionNextDateTests {
+  func testYearInPast() {
+    let exp = CronExpression(year: .singleValue(2018))
+    let nextDate = exp.nextDate(from: generateTestDate())
+    XCTAssertNil(nextDate)
+  }
+}
+
+/// Tests single field.
+extension CronExpressionNextDateTests {
 
   func testSearchNextYear() {
     let exp = CronExpression(year: .singleValue(2020))
@@ -168,6 +177,9 @@ extension CronExpressionNextDateTests {
 
 extension CronExpressionNextDateTests {
   static var allTests = [
+      ("testYearInPast", testYearInPast),
+      ///
+      ("testSearchNextYear", testSearchNextYear),
       ("testSearchNextMonthInSameYear", testSearchNextMonthInSameYear),
       ("testSearchNextMonthInNextYear", testSearchNextMonthInNextYear),
       ("testSearchNextDayInSameMonth", testSearchNextDayInSameMonth),

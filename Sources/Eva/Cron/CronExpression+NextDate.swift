@@ -1,5 +1,9 @@
 import Foundation
 
+enum InvalidExpression: Error {
+  case reachMaxNumYearsToSearch
+}
+
 /// Algorithm to find next date matching the CronExpression.
 ///
 /// Step 1: Go to next minute and reset the second field.
@@ -12,7 +16,7 @@ import Foundation
 extension CronExpression {
 
   /// Returns the next date matching `CronExpression`.
-  public func nextDate(from: Date = Date()) -> Date? {
+  public func nextDate(from: Date) -> Date? {
     // Add one minute to start the searching.
     guard var candidate = calendar.date(
       byAdding: .minute,
@@ -29,12 +33,22 @@ extension CronExpression {
       for component in Array<Calendar.Component>(
         [.minute, .hour, .day, .month, .year]
       ) {
-        let (newCandidate, changed) = searchNextMatching(
-          for: component, from: candidate
-        )
-        if changed {
-          candidate = newCandidate
-          continue mainLoop
+        do {
+          let (newCandidate, changed) = try searchNextMatching(
+            for: component, from: candidate
+          )
+          if changed {
+            candidate = newCandidate
+            continue mainLoop
+          }
+        } catch InvalidExpression.reachMaxNumYearsToSearch {
+          // TODO: Use better stderr logging.
+          print("Reach maximum number of years to search.")
+          return nil
+        } catch {
+          // TODO: Use better stderr logging.
+          print("Unknown error.")
+          return nil
         }
       }
       break
@@ -46,8 +60,9 @@ extension CronExpression {
   /// single component. if the component is not same as the initial value, all
   /// lower components will be rewound.
   private func searchNextMatching(
-    for component: Calendar.Component, from startPoint: Date
-  ) -> (newCandidate: Date, changed: Bool)
+    for component: Calendar.Component,
+    from startPoint: Date
+  ) throws -> (newCandidate: Date, changed: Bool)
   {
 
     let testField = field(for: component)
@@ -70,9 +85,30 @@ extension CronExpression {
       }
       candidate = newCandidate
       let newValue = calendar.component(component, from: candidate)
+
+      try validateOnChange(
+        component: component,
+        initialValue: initialValue,
+        newValue: newValue
+      )
+
       if testField ~= newValue {
         return (candidate, true)
       }
+    }
+  }
+
+  private func validateOnChange(
+    component: Calendar.Component,
+    initialValue: Int,
+    newValue: Int
+  ) throws
+  {
+    guard component == .year else {
+      return
+    }
+    guard newValue - initialValue < maxNumYearsToConsider else {
+      throw InvalidExpression.reachMaxNumYearsToSearch
     }
   }
 

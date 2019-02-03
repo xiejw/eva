@@ -7,6 +7,7 @@ public struct CronExpression {
   let day: Field
   let month: Field
   let year: Field
+  let maxNumYearsToConsider: Int
 
   let calendar = Calendar.current
 
@@ -15,13 +16,15 @@ public struct CronExpression {
     hour: Field = .any,
     day: Field = .any,
     month: Field = .any,
-    year: Field = .any
+    year: Field = .any,
+    maxNumYearsToConsider: Int = 5
   ) {
     self.minute = minute
     self.hour = hour
     self.day = day
     self.month = month
     self.year = year
+    self.maxNumYearsToConsider = maxNumYearsToConsider
   }
 }
 
