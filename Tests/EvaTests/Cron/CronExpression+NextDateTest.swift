@@ -13,7 +13,13 @@ final class CronExpressionNextDateTests: XCTestCase {
     dateComponents.hour = 1
     dateComponents.minute = 34
     dateComponents.second = 3
-    return calendar.date(from: dateComponents)!
+    let date = calendar.date(from: dateComponents)!
+
+    XCTAssertEqual(
+      CronExpression.DayOfWeek.monday.rawValue,
+      calendar.component(.weekday, from: date)
+    )
+    return date
   }
 }
 
@@ -23,6 +29,28 @@ extension CronExpressionNextDateTests {
     let exp = CronExpression(year: .singleValue(2018))
     let nextDate = exp.nextDate(from: generateTestDate())
     XCTAssertNil(nextDate)
+  }
+}
+
+/// Tests dayOfWeek.
+extension CronExpressionNextDateTests {
+
+  func testDayOfWeekInFollowingWeek() {
+    let exp = CronExpression(
+      dayOfWeek: .singleValue(CronExpression.DayOfWeek.saturday.rawValue)
+    )
+    let nextDate = exp.nextDate(from: generateTestDate())
+
+    var dateComponents = DateComponents()
+    dateComponents.year = 2019
+    dateComponents.month = 2
+    dateComponents.day = 16
+    dateComponents.timeZone = TimeZone.current
+    dateComponents.hour = 0
+    dateComponents.minute = 0
+    dateComponents.second = 0
+    let expected = calendar.date(from: dateComponents)!
+    XCTAssertEqual(expected, nextDate)
   }
 }
 
@@ -179,16 +207,19 @@ extension CronExpressionNextDateTests {
 
 extension CronExpressionNextDateTests {
   static var allTests = [
-      ("testYearInPast", testYearInPast),
-      ///
-      ("testSearchNextYear", testSearchNextYear),
-      ("testSearchNextMonthInSameYear", testSearchNextMonthInSameYear),
-      ("testSearchNextMonthInNextYear", testSearchNextMonthInNextYear),
-      ("testSearchNextDayInSameMonth", testSearchNextDayInSameMonth),
-      ("testSearchNextDayInNextMonth", testSearchNextDayInNextMonth),
-      ("testSearchNextHourInSameDay", testSearchNextHourInSameDay),
-      ("testSearchNextHourInNextDay", testSearchNextHourInNextDay),
-      ("testSearchNextMinuteInSameHour", testSearchNextMinuteInSameHour),
-      ("testSearchNextMinuteInNextHour", testSearchNextMinuteInNextHour),
+    //
+    ("testYearInPast", testYearInPast),
+    //
+    ("testDayOfWeekInFollowingWeek", testDayOfWeekInFollowingWeek),
+    //
+    ("testSearchNextYear", testSearchNextYear),
+    ("testSearchNextMonthInSameYear", testSearchNextMonthInSameYear),
+    ("testSearchNextMonthInNextYear", testSearchNextMonthInNextYear),
+    ("testSearchNextDayInSameMonth", testSearchNextDayInSameMonth),
+    ("testSearchNextDayInNextMonth", testSearchNextDayInNextMonth),
+    ("testSearchNextHourInSameDay", testSearchNextHourInSameDay),
+    ("testSearchNextHourInNextDay", testSearchNextHourInNextDay),
+    ("testSearchNextMinuteInSameHour", testSearchNextMinuteInSameHour),
+    ("testSearchNextMinuteInNextHour", testSearchNextMinuteInNextHour),
   ]
 }

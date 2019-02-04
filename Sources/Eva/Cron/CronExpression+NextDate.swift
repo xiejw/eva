@@ -31,7 +31,7 @@ extension CronExpression {
 
     mainLoop: while true {
       for component in Array<Calendar.Component>(
-        [.minute, .hour, .day, .month, .year]
+        [.minute, .hour, .day, .weekday, .month, .year]
       ) {
         do {
           let (newCandidate, changed) = try searchNextMatching(
@@ -76,8 +76,9 @@ extension CronExpression {
     candidate = rewind(candidate, upTo: component)
 
     while true {
+      let incrementalComponent = component != .weekday ? component : .day
       guard let newCandidate = calendar.date(
-        byAdding: component,
+        byAdding: incrementalComponent,
         value: 1,
         to: candidate
       ) else {
@@ -133,7 +134,7 @@ extension CronExpression {
     case .month:
       components.day = 1
       fallthrough
-    case .day:
+    case .weekday, .day:
       components.hour = 0
       fallthrough
     case .hour:
@@ -155,6 +156,7 @@ extension CronExpression {
     switch component {
     case .year: return self.year
     case .month: return self.month
+    case .weekday: return self.dayOfWeek
     case .day: return self.day
     case .hour: return self.hour
     case .minute: return self.minute
