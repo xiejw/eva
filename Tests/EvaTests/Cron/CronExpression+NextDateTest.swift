@@ -2,6 +2,8 @@ import XCTest
 @testable import Eva
 
 final class CronExpressionNextDateTests: XCTestCase {
+  let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+
   func generateTestDate() -> Date {
     var dateComponents = DateComponents()
     dateComponents.year = 2019
@@ -11,7 +13,7 @@ final class CronExpressionNextDateTests: XCTestCase {
     dateComponents.hour = 1
     dateComponents.minute = 34
     dateComponents.second = 3
-    return Calendar.current.date(from: dateComponents)!
+    return calendar.date(from: dateComponents)!
   }
 }
 
@@ -39,7 +41,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -55,7 +57,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -71,7 +73,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -88,7 +90,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -104,7 +106,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -121,7 +123,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 3
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -137,7 +139,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 0
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -154,7 +156,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 1
     dateComponents.minute = 40
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 
@@ -170,7 +172,7 @@ extension CronExpressionNextDateTests {
     dateComponents.hour = 2
     dateComponents.minute = 0
     dateComponents.second = 0
-    let expected = Calendar.current.date(from: dateComponents)!
+    let expected = calendar.date(from: dateComponents)!
     XCTAssertEqual(expected, nextDate)
   }
 }

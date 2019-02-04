@@ -6,16 +6,19 @@ public struct CronExpression {
   let hour: Field
   let day: Field
   let month: Field
+  let dayOfWeek: Field
   let year: Field
   let maxNumYearsToConsider: Int
 
-  let calendar = Calendar.current
+  // Fixed calendar to be gregorian due to day of week calculation.
+  let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
 
   init(
     minute: Field = .any,
     hour: Field = .any,
     day: Field = .any,
     month: Field = .any,
+    dayOfWeek: Field = .any,
     year: Field = .any,
     maxNumYearsToConsider: Int = 5
   ) {
@@ -23,6 +26,7 @@ public struct CronExpression {
     self.hour = hour
     self.day = day
     self.month = month
+    self.dayOfWeek = dayOfWeek
     self.year = year
     self.maxNumYearsToConsider = maxNumYearsToConsider
   }

@@ -2,6 +2,8 @@ import XCTest
 @testable import Eva
 
 final class CronExpressionTests: XCTestCase {
+  let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+
   func generateTestDate() -> Date {
     var dateComponents = DateComponents()
     dateComponents.year = 1980
@@ -11,7 +13,11 @@ final class CronExpressionTests: XCTestCase {
     dateComponents.hour = 1
     dateComponents.minute = 34
     dateComponents.second = 56
-    return Calendar.current.date(from: dateComponents)!
+    let date = calendar.date(from: dateComponents)!
+
+    let fridayWeekdayUnit = 6 // 1 is Sunday.
+    XCTAssertEqual(fridayWeekdayUnit, calendar.component(.weekday, from: date))
+    return date
   }
 
   func testMinute() {
