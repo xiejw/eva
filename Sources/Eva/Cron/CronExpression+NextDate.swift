@@ -28,6 +28,7 @@ extension CronExpression {
 
     // Reset second.
     candidate = rewind(candidate, upTo: .minute)
+    let startPoint = candidate
 
     mainLoop: while true {
       for component in Array<Calendar.Component>(
@@ -35,8 +36,8 @@ extension CronExpression {
       ) {
         do {
           let (newCandidate, changed) = try searchNextMatching(
-            for: component, from: candidate
-          )
+            for: component, from: candidate, startPoint: startPoint)
+
           if changed {
             candidate = newCandidate
             continue mainLoop
@@ -61,21 +62,23 @@ extension CronExpression {
   /// lower components will be rewound.
   private func searchNextMatching(
     for component: Calendar.Component,
-    from startPoint: Date
+    from currentCandidate: Date,
+    startPoint: Date
   ) throws -> (newCandidate: Date, changed: Bool)
   {
 
     let testField = field(for: component)
 
-    let initialValue = calendar.component(component, from: startPoint)
+    let initialValue = calendar.component(component, from: currentCandidate)
     if testField ~= initialValue {
-      return (startPoint, false)
+      return (currentCandidate, false)
     }
 
-    var candidate = startPoint
+    var candidate = currentCandidate
     candidate = rewind(candidate, upTo: component)
 
     while true {
+      // For .weekday (dayOfWeek), we increase .day component.
       let incrementalComponent = component != .weekday ? component : .day
       guard let newCandidate = calendar.date(
         byAdding: incrementalComponent,
@@ -84,14 +87,15 @@ extension CronExpression {
       ) else {
         fatalError("Cannot search forward anymore: \(candidate).")
       }
-      candidate = newCandidate
-      let newValue = calendar.component(component, from: candidate)
 
       try validateOnChange(
-        component: component,
-        initialValue: initialValue,
-        newValue: newValue
-      )
+        changedComponent: component,
+        initialValue: startPoint,
+        beforeChangeValue: candidate,
+        afterChangeValue: newCandidate)
+
+      let newValue = calendar.component(component, from: newCandidate)
+      candidate = newCandidate
 
       if testField ~= newValue {
         return (candidate, true)
@@ -99,16 +103,26 @@ extension CronExpression {
     }
   }
 
+  /// Validates whether the `newValue` is acceptable (the year component should
+  /// not change too much.)
   private func validateOnChange(
-    component: Calendar.Component,
-    initialValue: Int,
-    newValue: Int
+    changedComponent component: Calendar.Component,
+    initialValue: Date,
+    beforeChangeValue _: Date,
+    afterChangeValue newValue: Date
   ) throws
   {
-    guard component == .year else {
+    // This algorithm does a fast check about whether the number of years have
+    // been increased more than maxNumYearsToConsider. We ignore minute and hour
+    // as they do not consider to year change. We consider day, month,
+    // dayOfWeek, and year as some combinations, say (day, month, dayOfWeek),
+    // lead to year value change.
+    guard component != .minute && component != .hour else {
       return
     }
-    guard newValue - initialValue < maxNumYearsToConsider else {
+    let initialYearValue = calendar.component(.year, from: initialValue)
+    let newYearValue = calendar.component(.year, from: newValue)
+    guard newYearValue - initialYearValue < maxNumYearsToConsider else {
       throw InvalidExpression.reachMaxNumYearsToSearch
     }
   }
