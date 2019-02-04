@@ -13,6 +13,16 @@ public struct CronExpression {
   // Fixed calendar to be gregorian due to day of week calculation.
   let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
 
+  enum DayOfWeek: Int {
+    case sunday = 1
+    case monday = 2
+    case tuesday = 3
+    case wednesday = 4
+    case thusday = 5
+    case friday = 6
+    case saturday = 7
+  }
+
   init(
     minute: Field = .any,
     hour: Field = .any,
@@ -49,6 +59,11 @@ extension CronExpression {
 
     let day = pattern.calendar.component(.day, from: date)
     guard pattern.day ~= day else {
+      return false
+    }
+
+    let dayOfWeek = pattern.calendar.component(.weekday, from: date)
+    guard pattern.dayOfWeek ~= dayOfWeek else {
       return false
     }
 

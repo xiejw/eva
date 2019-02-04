@@ -15,8 +15,10 @@ final class CronExpressionTests: XCTestCase {
     dateComponents.second = 56
     let date = calendar.date(from: dateComponents)!
 
-    let fridayWeekdayUnit = 6 // 1 is Sunday.
-    XCTAssertEqual(fridayWeekdayUnit, calendar.component(.weekday, from: date))
+    XCTAssertEqual(
+      CronExpression.DayOfWeek.friday.rawValue,
+      calendar.component(.weekday, from: date)
+    )
     return date
   }
 
@@ -41,6 +43,19 @@ final class CronExpressionTests: XCTestCase {
     XCTAssertFalse(CronExpression(day: .singleValue(12)) ~= date)
   }
 
+  func testDayOfWeek() {
+    let date = generateTestDate()
+    XCTAssertTrue(
+      CronExpression(dayOfWeek: .singleValue(
+        CronExpression.DayOfWeek.friday.rawValue)
+      ) ~= date)
+    XCTAssertTrue(CronExpression() ~= date)
+    XCTAssertFalse(
+      CronExpression(dayOfWeek: .singleValue(
+        CronExpression.DayOfWeek.sunday.rawValue)
+      ) ~= date)
+  }
+
   func testMonth() {
     let date = generateTestDate()
     XCTAssertTrue(CronExpression(month: .singleValue(7)) ~= date)
@@ -59,6 +74,7 @@ final class CronExpressionTests: XCTestCase {
       ("testMinute", testMinute),
       ("testHour", testHour),
       ("testDay", testDay),
+      ("testDayOfWeek", testDayOfWeek),
       ("testMonth", testMonth),
       ("testYear", testYear),
   ]
