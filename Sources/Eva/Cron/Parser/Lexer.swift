@@ -1,34 +1,14 @@
 /// Generates tokens for cron expression.
 class Lexer {
 
-  typealias Character = Int
+  typealias Character = LexerBuffer.Character
 
   private let expression: String
-  private let exprBuffer: [Character]
-  private var currentIndex = 0
+  private var buffer: LexerBuffer
 
   init(expression: String) {
     self.expression = expression
-    self.exprBuffer = Array(expression.utf8).map { Character($0) }
-  }
-
-  func nextCharacter() -> Character? {
-    guard currentIndex < exprBuffer.count else {
-      return nil
-    }
-    let char = exprBuffer[currentIndex]
-    currentIndex += 1
-    return char
-  }
-
-  func rollback() {
-    precondition(currentIndex > 0)
-    currentIndex -= 1
+    self.buffer =  LexerBuffer(expression: expression)
   }
 }
 
-extension Lexer {
-  enum ASCII: Int {
-    case a = 97
-  }
-}
