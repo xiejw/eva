@@ -9,6 +9,12 @@ extension LexerBuffer.Character {
     }
   }
 
+  var isDigit: Bool {
+    get {
+      return (ASCII.digit0.rawValue...ASCII.digit9.rawValue) ~= self
+    }
+  }
+
   var isLetter: Bool {
     get {
       return isLowerCaseLetter || isUpperCaseLetter
