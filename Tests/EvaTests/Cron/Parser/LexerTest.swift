@@ -55,9 +55,28 @@ final class LexerTests: XCTestCase {
     }
   }
 
+  func testAsteriskToken() {
+    let lexer = Lexer(expression: "  *")
+    var token: Token
+    let expectedTokens: [Token] = [
+      .whiteSpaces(length: 2),
+      .asterisk,
+      .eof
+    ]
+
+    for expectedToken in expectedTokens {
+      token = try! lexer.nextToken()
+      guard expectedToken == token else {
+        XCTFail("token type error. Got: \(token), expected: \(expectedToken).")
+        return
+      }
+    }
+  }
+
   static var allTests = [
       ("testInvalidCharacter", testInvalidCharacter),
       ("testIdentifierToken", testIdentifierToken),
       ("testNumberToken", testNumberToken),
+      ("testAsteriskToken", testAsteriskToken),
   ]
 }

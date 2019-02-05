@@ -11,4 +11,7 @@ enum Token: Equatable {
 
   /// White spaces cannot be ignored in Cron expresion.
   case whiteSpaces(length: Int)
+
+  /// Asterisk. Single character.
+  case asterisk
 }

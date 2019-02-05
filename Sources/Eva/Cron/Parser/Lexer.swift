@@ -39,6 +39,8 @@ class Lexer {
         return nextTokenForNumber()
       }
 
+      if character.isAsterisk { return .asterisk }
+
       throw LexerError.unexpectedCharacter(character: character)
     }
 
