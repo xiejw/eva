@@ -34,6 +34,11 @@ class Lexer {
         return nextTokenForIdentifider()
       }
 
+      if character.isDigit {
+        buffer.rollback()
+        return nextTokenForNumber()
+      }
+
       throw LexerError.unexpectedCharacter(character: character)
     }
 
@@ -74,6 +79,21 @@ fileprivate extension Lexer {
       fatalError("Failed to convert \(chars) to string.")
     }
     return .identifier(identifier: identifier)
+  }
+
+  func nextTokenForNumber() -> Token {
+    var value: UInt = 0
+    while true {
+      guard let character = buffer.nextCharacter() else {
+        break
+      }
+      guard character.isDigit else {
+        break
+      }
+      value = 10 * value + UInt(character - LexerBuffer.ASCII.digit0.rawValue)
+    }
+    buffer.rollback()
+    return .number(value: value)
   }
 }
 

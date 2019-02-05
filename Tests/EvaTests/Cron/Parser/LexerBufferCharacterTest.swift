@@ -60,6 +60,7 @@ final class LexerBufferCharacterTests: XCTestCase {
   static var allTests = [
       ("testIsLowerCaseLetter", testIsLowerCaseLetter),
       ("testIsUpperCaseLetter", testIsUpperCaseLetter),
+      ("testIsDigit", testIsDigit),
       ("testIsSpace", testIsSpace),
   ]
 }
