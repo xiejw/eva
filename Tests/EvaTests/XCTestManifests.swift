@@ -11,7 +11,6 @@ public func allTests() -> [XCTestCaseEntry] {
     testCase(FieldTests.allTests),
     testCase(CronExpressionTests.allTests),
     testCase(CronExpressionNextDateTests.allTests),
-    testCase(FieldTests.allTests),
   ]
 }
 #endif
