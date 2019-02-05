@@ -2,6 +2,7 @@
 extension LexerBuffer {
   enum ASCII: Character {
     case space = 32
+    case asterisk = 42
 
     case digit0 = 48
     case digit9 = 57

@@ -32,4 +32,10 @@ extension LexerBuffer.Character {
       return (ASCII.A.rawValue...ASCII.Z.rawValue) ~= self
     }
   }
+
+  var isAsterisk: Bool {
+    get {
+      return ASCII.asterisk.rawValue == self
+    }
+  }
 }

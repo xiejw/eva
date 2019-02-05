@@ -3,6 +3,23 @@ import XCTest
 
 final class LexerBufferCharacterTests: XCTestCase {
 
+  func assertType(
+    for c: LexerBuffer.Character,
+    isLetter: Bool = false,
+    isLowerCaseLetter: Bool = false,
+    isUpperCaseLetter: Bool = false,
+    isSpace: Bool = false,
+    isDigit: Bool = false,
+    isAsterisk: Bool = false
+  ) {
+    XCTAssertEqual(isLetter, c.isLetter)
+    XCTAssertEqual(isLowerCaseLetter, c.isLowerCaseLetter)
+    XCTAssertEqual(isUpperCaseLetter, c.isUpperCaseLetter)
+    XCTAssertEqual(isSpace, c.isSpace)
+    XCTAssertEqual(isDigit, c.isDigit)
+    XCTAssertEqual(isAsterisk, c.isAsterisk)
+  }
+
   func testIsLowerCaseLetter() {
     let letters = "abcdefghijklmnopqrstuvwxyz"
     XCTAssertEqual(26, letters.count)
@@ -10,11 +27,7 @@ final class LexerBufferCharacterTests: XCTestCase {
     var buffer = LexerBuffer(expression: letters)
     for _ in 0..<letters.count {
       let c = buffer.nextCharacter()!
-      XCTAssertTrue(c.isLetter)
-      XCTAssertTrue(c.isLowerCaseLetter)
-      XCTAssertFalse(c.isUpperCaseLetter)
-      XCTAssertFalse(c.isSpace)
-      XCTAssertFalse(c.isDigit)
+      assertType(for: c, isLetter: true, isLowerCaseLetter: true)
     }
   }
 
@@ -25,11 +38,7 @@ final class LexerBufferCharacterTests: XCTestCase {
     var buffer = LexerBuffer(expression: letters)
     for _ in 0..<letters.count {
       let c = buffer.nextCharacter()!
-      XCTAssertTrue(c.isLetter)
-      XCTAssertFalse(c.isLowerCaseLetter)
-      XCTAssertTrue(c.isUpperCaseLetter)
-      XCTAssertFalse(c.isSpace)
-      XCTAssertFalse(c.isDigit)
+      assertType(for: c, isLetter: true, isUpperCaseLetter: true)
     }
   }
 
@@ -38,23 +47,26 @@ final class LexerBufferCharacterTests: XCTestCase {
     XCTAssertEqual(10, digits.count)
 
     var buffer = LexerBuffer(expression: digits)
-    let c = buffer.nextCharacter()!
-    XCTAssertTrue(c.isDigit)
-    XCTAssertFalse(c.isSpace)
-    XCTAssertFalse(c.isLetter)
-    XCTAssertFalse(c.isLowerCaseLetter)
-    XCTAssertFalse(c.isUpperCaseLetter)
+    for _ in 0..<digits.count {
+      let c = buffer.nextCharacter()!
+      assertType(for: c, isDigit: true)
+    }
   }
 
   func testIsSpace() {
     let space = " "
+    XCTAssertEqual(1, space.count)
     var buffer = LexerBuffer(expression: space)
     let c = buffer.nextCharacter()!
-    XCTAssertTrue(c.isSpace)
-    XCTAssertFalse(c.isLetter)
-    XCTAssertFalse(c.isLowerCaseLetter)
-    XCTAssertFalse(c.isUpperCaseLetter)
-    XCTAssertFalse(c.isDigit)
+    assertType(for: c, isSpace: true)
+  }
+
+  func testIsAsterisk() {
+    let expression = "*"
+    XCTAssertEqual(1, expression.count)
+    var buffer = LexerBuffer(expression: expression)
+    let c = buffer.nextCharacter()!
+    assertType(for: c, isAsterisk: true)
   }
 
   static var allTests = [
@@ -62,5 +74,6 @@ final class LexerBufferCharacterTests: XCTestCase {
       ("testIsUpperCaseLetter", testIsUpperCaseLetter),
       ("testIsDigit", testIsDigit),
       ("testIsSpace", testIsSpace),
+      ("testIsAsterisk", testIsAsterisk),
   ]
 }
