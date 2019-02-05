@@ -2,24 +2,40 @@ import XCTest
 @testable import Eva
 
 final class LexerTests: XCTestCase {
-  func testIdentifiderLexeme() {
-    let lexer = Lexer(expression: " abc def")
-    var token = lexer.nextToken()
-    guard case .identifier(let identifier1) = token else {
-      XCTFail("token type error.")
-      return
-    }
-    XCTAssertEqual("abc", identifier1)
 
-    token = lexer.nextToken()
-    guard case .identifier(let identifier2) = token else {
-      XCTFail("token \(token) type error.")
-      return
+  func testInvalidCharacter() {
+    let lexer = Lexer(expression: "#")
+    do {
+      _ = try lexer.nextToken()
+      XCTFail("Should fail.")
+    } catch LexerError.unexpectedCharacter(35) {
+      // Expected. 35 is ASCII value for '#'.
+    } catch {
+      XCTFail("Unexpected error: \(error).")
     }
-    XCTAssertEqual("def", identifier2)
+  }
+
+  func testIdentifierToken() {
+    let lexer = Lexer(expression: "  abc def")
+    var token: Token
+    let expectedTokens: [Token] = [
+      .whiteSpaces(length: 2),
+      .identifier(identifier: "abc"),
+      .whiteSpaces(length: 1),
+      .identifier(identifier: "def"),
+      .eof
+    ]
+
+    for expectedToken in expectedTokens {
+      token = try! lexer.nextToken()
+      guard expectedToken == token else {
+        XCTFail("token type error. Got: \(token), expected: \(expectedToken).")
+        return
+      }
+    }
   }
 
   static var allTests = [
-      ("testIdentifiderLexeme", testIdentifiderLexeme),
+      ("testIdentifierToken", testIdentifierToken),
   ]
 }

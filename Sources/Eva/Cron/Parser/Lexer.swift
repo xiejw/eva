@@ -1,5 +1,9 @@
 import Foundation
 
+enum LexerError: Error {
+  case unexpectedCharacter(character: LexerBuffer.Character)
+}
+
 /// Generates tokens for cron expression.
 class Lexer {
 
@@ -14,20 +18,23 @@ class Lexer {
   }
 
   // TODO: Adds good error message.
-  func nextToken() -> Token {
+  func nextToken() throws -> Token {
     while true {
       guard let character = buffer.nextCharacter() else {
         return .eof
       }
 
-      // if character.isSpace {
-      //   continue
-      // }
+      if character.isSpace {
+        buffer.rollback()
+        return nextTokenForWhiteSpaces()
+      }
 
       if character.isLetter {
         buffer.rollback()
-        return consumeCharactersForIdentifier()
+        return nextTokenForIdentifider()
       }
+
+      throw LexerError.unexpectedCharacter(character: character)
     }
 
   }
@@ -36,7 +43,22 @@ class Lexer {
 // Helper methods to generate tokens for Lexer.
 fileprivate extension Lexer {
 
-  func consumeCharactersForIdentifier() -> Token {
+  func nextTokenForWhiteSpaces() -> Token {
+    var length = 0
+    while true {
+      guard let character = buffer.nextCharacter() else {
+        break
+      }
+      guard character.isSpace else {
+        break
+      }
+      length += 1
+    }
+    buffer.rollback()
+    return .whiteSpaces(length: length)
+  }
+
+  func nextTokenForIdentifider() -> Token {
     var chars: [Character] = []
     while true {
       guard let character = buffer.nextCharacter() else {

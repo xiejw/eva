@@ -3,6 +3,12 @@ extension LexerBuffer.Character {
 
   typealias ASCII = LexerBuffer.ASCII
 
+  var isSpace: Bool {
+    get {
+      return ASCII.space.rawValue == self
+    }
+  }
+
   var isLetter: Bool {
     get {
       return isLowerCaseLetter || isUpperCaseLetter
