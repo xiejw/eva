@@ -1,5 +1,5 @@
 struct LexerBuffer {
-  typealias Character = Int
+  typealias Character = UInt8
 
   private let exprBuffer: [Character]
   private var currentIndex = 0
