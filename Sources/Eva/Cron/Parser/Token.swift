@@ -1,9 +1,9 @@
-struct Token {
+struct Token: Equatable {
   let category: TokenCategory
   let location: TokenLocation
 }
 
-struct TokenLocation {
+struct TokenLocation: Equatable {
   let startIndex: Int
   let length: Int
 }
