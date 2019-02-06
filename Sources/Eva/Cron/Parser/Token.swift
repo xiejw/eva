@@ -1,4 +1,14 @@
-enum Token: Equatable {
+struct Token {
+  let category: TokenCategory
+  let location: TokenLocation
+}
+
+struct TokenLocation {
+  let startIndex: Int
+  let length: Int
+}
+
+enum TokenCategory: Equatable {
 
   /// End of file (file means expression in this context).
   case eof

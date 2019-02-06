@@ -1,28 +1,34 @@
-struct LexerBuffer {
-  typealias Character = UInt8
+enum  Character {
+  case eof(index: Int)
+  case character(value: UInt8, index: Int)
+}
 
-  private let exprBuffer: [Character]
-  private var currentIndex = 0
+struct LexerBuffer {
+  typealias CodeUnit = UInt8
+
+  private let exprBuffer: [CodeUnit]
+  private var index = 0
 
   init(expression: String) {
-    self.exprBuffer = Array(expression.utf8).map { Character($0) }
+    self.exprBuffer = Array(expression.utf8).map { CodeUnit($0) }
   }
 
   /// Returns the next character, or `nil` if eof.
   ///
   /// Eof should not be fetched twice consecutively,
-  mutating func nextCharacter() -> Character? {
-    guard currentIndex <= exprBuffer.count else {
+  mutating func nextCharacter() -> Character {
+    let currentIndex = index
+    guard index <= exprBuffer.count else {
       fatalError("Eof is reached twice consecutively, which is not allowed.")
     }
-    guard currentIndex < exprBuffer.count else {
+    guard index < exprBuffer.count else {
       // Increase index also so the rollback can work.
-      currentIndex += 1
-      return nil
+      index += 1
+      return .eof(index: currentIndex)
     }
-    let char = exprBuffer[currentIndex]
-    currentIndex += 1
-    return char
+    let char = exprBuffer[index]
+    index += 1
+    return .character(value: char, index: currentIndex)
   }
 
 
@@ -34,7 +40,7 @@ struct LexerBuffer {
   ///     rollback()
   ///     nextCharacter() => nil
   mutating func rollback() {
-    precondition(currentIndex > 0)
-    currentIndex -= 1
+    precondition(index > 0)
+    index -= 1
   }
 }

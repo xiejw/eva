@@ -1,6 +1,6 @@
 /// Defines the ASCII table.
 extension LexerBuffer {
-  enum ASCII: Character {
+  enum ASCII: CodeUnit {
     case space = 32
     case asterisk = 42
 

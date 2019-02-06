@@ -1,5 +1,5 @@
-/// Adds indicator for LexerBuffer.Character.
-extension LexerBuffer.Character {
+/// Adds indicator for LexerBuffer.CodeUnit.
+extension LexerBuffer.CodeUnit {
 
   typealias ASCII = LexerBuffer.ASCII
 

@@ -1,13 +1,13 @@
 import Foundation
 
 enum LexerError: Error {
-  case unexpectedCharacter(character: LexerBuffer.Character)
+  case unexpectedCharacter(character: Character)
 }
 
 /// Generates tokens for cron expression.
 class Lexer {
 
-  typealias Character = LexerBuffer.Character
+  typealias CodeUnit = LexerBuffer.CodeUnit
 
   private let expression: String
   private var buffer: LexerBuffer
@@ -17,85 +17,92 @@ class Lexer {
     self.buffer =  LexerBuffer(expression: expression)
   }
 
-  // TODO: Adds good error message.
   func nextToken() throws -> Token {
-    while true {
-      guard let character = buffer.nextCharacter() else {
-        return .eof
+    let character = buffer.nextCharacter()
+    switch character {
+    case .eof(let index):
+      let location = TokenLocation(startIndex: index, length: 1)
+      return Token(category: .eof, location: location)
+    case let .character(value, index):
+      if value.isAsterisk {
+        let location = TokenLocation(startIndex: index, length: 1)
+        return Token(category: .asterisk, location: location)
       }
-
-      if character.isSpace {
+      if value.isSpace {
         buffer.rollback()
-        return nextTokenForWhiteSpaces()
+        return nextTokenForWhiteSpaces(startAt: index)
       }
-
-      if character.isLetter {
+      if value.isLetter {
         buffer.rollback()
-        return nextTokenForIdentifider()
+        return nextTokenForIdentifider(startAt: index)
       }
-
-      if character.isDigit {
+      if value.isDigit {
         buffer.rollback()
-        return nextTokenForNumber()
+        return nextTokenForNumber(startAt: index)
       }
-
-      if character.isAsterisk { return .asterisk }
-
       throw LexerError.unexpectedCharacter(character: character)
     }
-
   }
 }
 
 // Helper methods to generate tokens for Lexer.
 fileprivate extension Lexer {
 
-  func nextTokenForWhiteSpaces() -> Token {
+  func nextTokenForWhiteSpaces(startAt startIndex: Int) -> Token {
     var length = 0
     while true {
-      guard let character = buffer.nextCharacter() else {
+      let character = buffer.nextCharacter()
+      guard case let .character(value, _) = character else {
         break
       }
-      guard character.isSpace else {
+      guard value.isSpace else {
         break
       }
       length += 1
     }
     buffer.rollback()
-    return .whiteSpaces(length: length)
+    let location = TokenLocation(startIndex: startIndex, length: length)
+    return Token(category: .whiteSpaces(length: length), location: location)
   }
 
-  func nextTokenForIdentifider() -> Token {
-    var chars: [Character] = []
+  func nextTokenForIdentifider(startAt startIndex: Int) -> Token {
+    var chars: [CodeUnit] = []
     while true {
-      guard let character = buffer.nextCharacter() else {
+      let character = buffer.nextCharacter()
+      guard case let .character(value, _) = character else {
         break
       }
-      guard character.isLetter else {
+      guard value.isLetter else {
         break
       }
-      chars.append(character)
+      chars.append(value)
     }
     buffer.rollback()
     guard let identifier = String(bytes: chars, encoding: .utf8) else {
       fatalError("Failed to convert \(chars) to string.")
     }
-    return .identifier(identifier: identifier)
+    let location = TokenLocation(startIndex: startIndex, length: chars.count)
+    return Token(category: .identifier(identifier: identifier), location: location)
   }
 
-  func nextTokenForNumber() -> Token {
-    var value: UInt = 0
+  func nextTokenForNumber(startAt startIndex: Int) -> Token {
+    var length = 0
+    var numericalValue: UInt = 0
     while true {
-      guard let character = buffer.nextCharacter() else {
+      let character = buffer.nextCharacter()
+      guard case let .character(value, _) = character else {
         break
       }
-      guard character.isDigit else {
+      guard value.isDigit else {
         break
       }
-      value = 10 * value + UInt(character - LexerBuffer.ASCII.digit0.rawValue)
+      numericalValue *= 10
+      numericalValue += UInt(value - LexerBuffer.ASCII.digit0.rawValue)
+      length += 1
     }
     buffer.rollback()
-    return .number(value: value)
+    let location = TokenLocation(startIndex: startIndex, length: length)
+    return Token(category: .number(value: numericalValue), location: location)
   }
 }
 

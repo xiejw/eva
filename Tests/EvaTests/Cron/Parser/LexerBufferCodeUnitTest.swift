@@ -4,7 +4,7 @@ import XCTest
 final class LexerBufferCharacterTests: XCTestCase {
 
   func assertType(
-    for c: LexerBuffer.Character,
+    for c: LexerBuffer.CodeUnit,
     isLetter: Bool = false,
     isLowerCaseLetter: Bool = false,
     isUpperCaseLetter: Bool = false,
@@ -25,9 +25,13 @@ final class LexerBufferCharacterTests: XCTestCase {
     XCTAssertEqual(26, letters.count)
 
     var buffer = LexerBuffer(expression: letters)
-    for _ in 0..<letters.count {
-      let c = buffer.nextCharacter()!
-      assertType(for: c, isLetter: true, isLowerCaseLetter: true)
+    for i in 0..<letters.count {
+      guard case let .character(value, index) = buffer.nextCharacter() else {
+        XCTFail("Unexpected char.")
+        continue
+      }
+      XCTAssertEqual(i, index)
+      assertType(for: value, isLetter: true, isLowerCaseLetter: true)
     }
   }
 
@@ -36,9 +40,13 @@ final class LexerBufferCharacterTests: XCTestCase {
     XCTAssertEqual(26, letters.count)
 
     var buffer = LexerBuffer(expression: letters)
-    for _ in 0..<letters.count {
-      let c = buffer.nextCharacter()!
-      assertType(for: c, isLetter: true, isUpperCaseLetter: true)
+    for i in 0..<letters.count {
+      guard case let .character(value, index) = buffer.nextCharacter() else {
+        XCTFail("Unexpected char.")
+        continue
+      }
+      XCTAssertEqual(i, index)
+      assertType(for: value, isLetter: true, isUpperCaseLetter: true)
     }
   }
 
@@ -47,9 +55,13 @@ final class LexerBufferCharacterTests: XCTestCase {
     XCTAssertEqual(10, digits.count)
 
     var buffer = LexerBuffer(expression: digits)
-    for _ in 0..<digits.count {
-      let c = buffer.nextCharacter()!
-      assertType(for: c, isDigit: true)
+    for i in 0..<digits.count {
+      guard case let .character(value, index) = buffer.nextCharacter() else {
+        XCTFail("Unexpected char.")
+        continue
+      }
+      XCTAssertEqual(i, index)
+      assertType(for: value, isDigit: true)
     }
   }
 
@@ -57,16 +69,24 @@ final class LexerBufferCharacterTests: XCTestCase {
     let space = " "
     XCTAssertEqual(1, space.count)
     var buffer = LexerBuffer(expression: space)
-    let c = buffer.nextCharacter()!
-    assertType(for: c, isSpace: true)
+    guard case let .character(value, index) = buffer.nextCharacter() else {
+      XCTFail("Unexpected char.")
+      return
+    }
+    XCTAssertEqual(0, index)
+    assertType(for: value, isSpace: true)
   }
 
   func testIsAsterisk() {
     let expression = "*"
     XCTAssertEqual(1, expression.count)
     var buffer = LexerBuffer(expression: expression)
-    let c = buffer.nextCharacter()!
-    assertType(for: c, isAsterisk: true)
+    guard case let .character(value, index) = buffer.nextCharacter() else {
+      XCTFail("Unexpected char.")
+      return
+    }
+    XCTAssertEqual(0, index)
+    assertType(for: value, isAsterisk: true)
   }
 
   static var allTests = [
