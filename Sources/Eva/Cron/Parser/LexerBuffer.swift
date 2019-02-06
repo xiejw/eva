@@ -1,3 +1,4 @@
+/// The character reading from the input stream.
 enum  Character {
   case eof(index: Int)
   case character(value: UInt8, index: Int)
@@ -13,9 +14,9 @@ struct LexerBuffer {
     self.exprBuffer = Array(expression.utf8).map { CodeUnit($0) }
   }
 
-  /// Returns the next character, or `nil` if eof.
+  /// Returns the next character.
   ///
-  /// Eof should not be fetched twice consecutively,
+  /// `.eof` should not be fetched twice consecutively,
   mutating func nextCharacter() -> Character {
     let currentIndex = index
     guard index <= exprBuffer.count else {
@@ -31,16 +32,15 @@ struct LexerBuffer {
     return .character(value: char, index: currentIndex)
   }
 
-
   /// Rollbacks the buffer to previous character.
   ///
-  /// `rollback` also supports `nextCharacter()` returns `nil`, i.e.,
+  /// `rollback` also supports `nextCharacter()` returns `.eof`, i.e.,
   ///
-  ///     nextCharacter() => nil
+  ///     nextCharacter() => .eof
   ///     rollback()
-  ///     nextCharacter() => nil
+  ///     nextCharacter() => .eof
   mutating func rollback() {
-    precondition(index > 0)
+    precondition(index > 0, "Rollback should not go beyond the beginning.")
     index -= 1
   }
 }
