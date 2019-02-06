@@ -4,16 +4,21 @@ import XCTest
 final class LexerTests: XCTestCase {
 
   func testInvalidCharacter() {
-    // FIXME
-    // let lexer = Lexer(expression: "#")
-    // do {
-    //   _ = try lexer.nextToken()
-    //   XCTFail("Should fail.")
-    // } catch LexerError.unexpectedCharacter(35) {
-    //   // Expected. 35 is ASCII value for '#'.
-    // } catch {
-    //   XCTFail("Unexpected error: \(error).")
-    // }
+    let lexer = Lexer(expression: "#")
+    do {
+      _ = try lexer.nextToken()
+      XCTFail("Should fail.")
+    } catch LexerError.unexpectedCharacter(let character) {
+      let expectedCharater = Character.character(
+        value: 35,  // 35 is the code unit for '#'
+        index: 0)
+      guard expectedCharater == character else {
+        XCTFail("Unexpected character: \(character).")
+        return
+      }
+    } catch {
+      XCTFail("Unexpected error: \(error).")
+    }
   }
 
   func testIdentifierToken() {

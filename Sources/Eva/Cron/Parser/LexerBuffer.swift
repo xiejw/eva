@@ -1,5 +1,5 @@
 /// The character reading from the input stream.
-enum  Character {
+enum  Character: Equatable {
   case eof(index: Int)
   case character(value: UInt8, index: Int)
 }
