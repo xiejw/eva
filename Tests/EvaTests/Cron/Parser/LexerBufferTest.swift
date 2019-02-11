@@ -68,8 +68,8 @@ final class LexerBufferTests: XCTestCase {
   }
 
   static var allTests = [
-      ("testNextCharacter", testNextCharacter),
-      ("testRollback", testRollback),
-      ("testRollbackForEof", testRollbackForEof),
+    ("testNextCharacter", testNextCharacter),
+    ("testRollback", testRollback),
+    ("testRollbackForEof", testRollbackForEof),
   ]
 }

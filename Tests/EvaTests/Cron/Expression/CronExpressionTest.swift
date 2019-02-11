@@ -71,11 +71,11 @@ final class CronExpressionTests: XCTestCase {
   }
 
   static var allTests = [
-      ("testMinute", testMinute),
-      ("testHour", testHour),
-      ("testDay", testDay),
-      ("testDayOfWeek", testDayOfWeek),
-      ("testMonth", testMonth),
-      ("testYear", testYear),
+    ("testMinute", testMinute),
+    ("testHour", testHour),
+    ("testDay", testDay),
+    ("testDayOfWeek", testDayOfWeek),
+    ("testMonth", testMonth),
+    ("testYear", testYear),
   ]
 }
