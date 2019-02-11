@@ -14,6 +14,20 @@ class Parser {
 
   private func parseCronExpression() -> ASTCronExpression {
 
-    return ASTCronExpression()
+    if case .whiteSpaces(_) = lexer.lookAhead().category {
+      // Eat it.
+      _ = lexer.nextToken()
+    }
+
+    let expr = ASTCronExpression()
+
+    if case .whiteSpaces(_) = lexer.lookAhead().category {
+      // Eat it.
+      _ = lexer.nextToken()
+    }
+
+    let finalToken = lexer.lookAhead()
+    guard case .eof = finalToken.category {
+
   }
 }
