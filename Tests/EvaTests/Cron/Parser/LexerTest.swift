@@ -96,10 +96,38 @@ final class LexerTests: XCTestCase {
     }
   }
 
+  func testLookAhead() {
+    let lexer = Lexer(expression: "*")
+    let expectedToken1 = Token(
+        category: .asterisk,
+        location: TokenLocation(startIndex: 0, length: 1))
+    let expectedToken2 = Token(
+        category: .eof,
+        location: TokenLocation(startIndex: 1, length: 1))
+
+    guard try! lexer.lookAhead() == expectedToken1 else {
+        XCTFail("token type error.")
+        return
+    }
+    guard try! lexer.nextToken() == expectedToken1 else {
+        XCTFail("token type error.")
+        return
+    }
+    guard try! lexer.lookAhead() == expectedToken2 else {
+        XCTFail("token type error.")
+        return
+    }
+    guard try! lexer.nextToken() == expectedToken2 else {
+        XCTFail("token type error.")
+        return
+    }
+  }
+
   static var allTests = [
       ("testInvalidCharacter", testInvalidCharacter),
       ("testIdentifierToken", testIdentifierToken),
       ("testNumberToken", testNumberToken),
       ("testAsteriskToken", testAsteriskToken),
+      ("testLookAhead", testLookAhead),
   ]
 }

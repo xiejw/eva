@@ -11,13 +11,36 @@ class Lexer {
 
   private let expression: String
   private var buffer: LexerBuffer
+  private var lookAheadToken: Token?
 
   init(expression: String) {
     self.expression = expression
     self.buffer =  LexerBuffer(expression: expression)
   }
 
+  /// Returns the next `Token`.
   func nextToken() throws -> Token {
+    // If hookAhook is cached, use it.
+    if let result = lookAheadToken {
+      // Reset lookAhead
+      lookAheadToken = nil
+      return result
+    }
+    // Gets the next token for real.
+    return try readTokenFromBuffer()
+  }
+
+  /// Looks ahead of the `Token`.
+  func lookAhead() throws -> Token {
+    if let result = lookAheadToken {
+      return result
+    }
+    let token = try readTokenFromBuffer()
+    lookAheadToken = token
+    return token
+  }
+
+  private func readTokenFromBuffer() throws -> Token {
     let character = buffer.nextCharacter()
     switch character {
     case .eof(let index):
