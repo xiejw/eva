@@ -1,5 +1,6 @@
+## Swift on Debian (Stretch).
 
-## Install Swift on Debian (Stretch).
+### Install Swift on Debian (Stretch).
 
 _Step 1_: Download Swift for Ubuntu 16.04 from
 https://swift.org/download/#releases.
@@ -31,6 +32,24 @@ _Step 4_: (Optinoal) Regenerate dynamic library cache.
 
 Please see the instructions
 [here](https://github.com/xiejw/dockerfiles/blob/master/doc/swift.md#deployment).
+
+
+## Compile Swift for TensorFlow on Debian.
+
+### Compiler Only
+
+Compile Swift for TensorFlow is not easy. The following instructions should work
+most of the time.
+
+    # Make sure bazel first.
+    export CC=/usr/bin/clang
+    export CXX=/usr/bin/clang++
+    mkdir ~/swift-base
+    cd ~/swift-base
+    git clone https://github.com/apple/swift.git -b tensorflow
+    ./swift/utils/update-checkout --clone --scheme tensorflow
+    cd swift
+    ./utils/build-script --enable-tensorflow --release-debuginfo
 
 ## Add Tests in Linux
 
