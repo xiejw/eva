@@ -28,7 +28,7 @@ _Step 4_: (Optinoal) Regenerate dynamic library cache.
 
     sudo ldconfig
 
-## Deploy Swift-Compiled Binary on Debian (Stretch) Docker.
+### Deploy Swift-Compiled Binary on Debian (Stretch) Docker.
 
 Please see the instructions
 [here](https://github.com/xiejw/dockerfiles/blob/master/doc/swift.md#deployment).
@@ -50,6 +50,30 @@ most of the time.
     ./swift/utils/update-checkout --clone --scheme tensorflow
     cd swift
     ./utils/build-script --enable-tensorflow --release-debuginfo
+
+### Toolchain
+
+The major issue to compile toolchain is the `swig` version. Ubuntu still has
+`swig` 2.0, while debian has upgraded to 3.0 or above.
+
+First, remove `swig` if installed and install `libpcre3-dev` required to compile
+`swig`.
+
+    sudo apt remove swig swig3
+    sudo apt install libpcre3-dev
+
+Then, download `swig` 2.0 from
+[official site](https://sourceforge.net/projects/swig/files/swig/swig-2.0.12/)
+and compile it:
+
+    CC=/usrbin/clang CXX=/usr/bin/clang++ ./configure
+    make
+    sudo make install
+
+Finally, compile the toolchain:
+
+    cd ~/swift-base/swift
+    ./utils/build-toolchain <toolchain_name>
 
 ## Add Tests in Linux
 
