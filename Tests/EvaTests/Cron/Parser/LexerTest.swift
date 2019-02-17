@@ -8,7 +8,7 @@ final class LexerTests: XCTestCase {
     do {
       _ = try lexer.nextToken()
       XCTFail("Should fail.")
-    } catch LexerError.unexpectedCharacter(let character) {
+    } catch let LexerError.unexpectedCharacter(character) {
       let expectedCharater = Character.character(
         value: 35,  // 35 is the code unit for '#'
         index: 0)
