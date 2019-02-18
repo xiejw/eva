@@ -4,6 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
   return [
     // Parser.
+    testCase(ParserTests.allTests),
     testCase(LexerTests.allTests),
     testCase(LexerBufferTests.allTests),
     testCase(LexerBufferCharacterTests.allTests),
