@@ -12,9 +12,23 @@ make sure the following paths are included in `PATH`:
     export PATH=/Applications/Xcode.app/Contents/Developer/usr/bin:$PATH
     export PATH=/Library/Developer/Toolchains/swift-latest/usr/bin:$PAH
 
-If the `XCTest` framework cannot be found, pass this flag to `swift test`:
+If the `XCTest` framework cannot be found, like
 
-    -Xcc -F -Xcc /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xlinker -F -Xlinker /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+    cannot load underlying module for 'XCTest'
+
+there are two ways now to fix it.
+
+- Reset the xcode developer
+
+        $ xcode-select -p
+        /Library/Developer/CommandLineTools
+        $ sudo xcode-select -r
+        $ xcode-select -p
+        /Applications/Xcode.app/Contents/Developer
+
+- pass the following flag to `swift test`:
+
+        -Xcc -F -Xcc /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xlinker -F -Xlinker /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
 
 ### Docker.
 
