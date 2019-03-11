@@ -19,7 +19,7 @@ If the `XCTest` framework cannot be found, pass this flag to `swift test`:
 ### Docker.
 
 Please see more details
-[here](https://github.com/xiejw/dockerfiles/blob/master/doc/swift.md).
+[here](https://github.com/xiejw/dockerfiles/blob/master/doc/s4tf.md).
 
 ## Formatter
 
