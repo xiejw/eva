@@ -1,4 +1,4 @@
-enum Field {
+enum Field: Equatable {
     // `*` in cron expression.
     case any
     case singleValue(Int)

@@ -43,19 +43,23 @@ class Parser {
     }
 
     private func parseCronExpression() throws -> ASTCronExpression {
-        let second = try parseSecondField()
-        try parseEmptySpaces()
         let minute = try parseMinuteField()
-        let expr = ASTCronExpression(second: second, minute: minute)
+        // try parseEmptySpaces()
+        let expr = ASTCronExpression(minute: minute)
         return expr
     }
 
-    private func parseSecondField() throws -> ASTField {
-        return ASTSingleValueField(value: 0)
-    }
-
     private func parseMinuteField() throws -> ASTField {
-        return ASTSingleValueField(value: 0)
+        let token = try lexer.nextToken()
+        switch token.category {
+        case .asterisk: return ASTAnyValueField()
+        case let .number(value): return ASTSingleValueField(value: value)
+        default:
+            throw ParserError.unexpectedToken(
+                expected: "A valid expression for minute.",
+                got: token
+            )
+        }
     }
 
     private func reportError(expected: String, got token: Token) -> Never {

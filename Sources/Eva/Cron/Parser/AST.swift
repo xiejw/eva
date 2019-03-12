@@ -1,25 +1,37 @@
 protocol ASTExpression {}
 
 class ASTCronExpression: ASTExpression {
-    private var second: ASTField
     private var minute: ASTField
 
-    init(second: ASTField, minute: ASTField) {
-        self.second = second
+    init(minute: ASTField) {
         self.minute = minute
     }
 
     func codegen() -> CronExpression {
-        return CronExpression()
+        return CronExpression(
+            minute: minute.field
+        )
     }
 }
 
-class ASTField: ASTExpression {}
+protocol ASTField {
+    var field: Field { get }
+}
 
 class ASTSingleValueField: ASTField {
-    private let value: Int
+    private let value: UInt
 
-    init(value: Int) {
+    init(value: UInt) {
         self.value = value
+    }
+
+    var field: Field {
+        return .singleValue(Int(value))
+    }
+}
+
+class ASTAnyValueField: ASTField {
+    var field: Field {
+        return .any
     }
 }
