@@ -52,8 +52,10 @@ extension Parser {
         let minute = try parseMinuteField()
         try parseEmptySpaces()
         let hour = try parseHourField()
+        try parseEmptySpaces()
+        let day = try parseDayField()
 
-        let expr = ASTCronExpression(minute: minute, hour: hour)
+        let expr = ASTCronExpression(minute: minute, hour: hour, day: day)
         return expr
     }
 
@@ -63,6 +65,10 @@ extension Parser {
 
     private func parseHourField() throws -> ASTField {
         return try parseSingleValueOrAny(for: "hour")
+    }
+
+    private func parseDayField() throws -> ASTField {
+        return try parseSingleValueOrAny(for: "day")
     }
 
     private func parseSingleValueOrAny(for fieldName: String) throws -> ASTField {

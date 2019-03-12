@@ -3,16 +3,19 @@ protocol ASTExpression {}
 class ASTCronExpression: ASTExpression {
     private let minute: ASTField
     private let hour: ASTField
+    private let day: ASTField
 
-    init(minute: ASTField, hour: ASTField) {
+    init(minute: ASTField, hour: ASTField, day: ASTField) {
         self.minute = minute
         self.hour = hour
+        self.day = day
     }
 
     func codegen() -> CronExpression {
         return CronExpression(
             minute: minute.field,
-            hour: hour.field
+            hour: hour.field,
+            day: day.field
         )
     }
 }
