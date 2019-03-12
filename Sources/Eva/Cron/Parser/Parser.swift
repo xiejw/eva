@@ -23,7 +23,9 @@ class Parser {
             fatalError("Unexpectec error: \(error).")
         }
     }
+}
 
+extension Parser {
     // TopLevelExpress := Space? CronExpression Space?
     func parseTopLevelExpression() throws -> ASTCronExpression {
         if case .whiteSpaces = try lexer.lookAhead().category { try parseEmptySpaces() }
@@ -34,14 +36,18 @@ class Parser {
         guard case .eof = finalToken.category else { reportError(expected: "eof", got: finalToken) }
         return expr
     }
+}
 
+extension Parser {
     private func parseEmptySpaces() throws {
         let token = try lexer.nextToken()
         guard case .whiteSpaces = token.category else {
             throw ParserError.unexpectedToken(expected: "Spaces", got: token)
         }
     }
+}
 
+extension Parser {
     private func parseCronExpression() throws -> ASTCronExpression {
         let minute = try parseMinuteField()
         // try parseEmptySpaces()
@@ -61,7 +67,9 @@ class Parser {
             )
         }
     }
+}
 
+extension Parser {
     private func reportError(expected: String, got token: Token) -> Never {
         fatalError("Unexpected token: expected \(expected), got \(token).")
     }
