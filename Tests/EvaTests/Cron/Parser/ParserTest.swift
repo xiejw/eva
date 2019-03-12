@@ -3,11 +3,23 @@ import XCTest
 
 final class PaserTests: XCTestCase {
     func testMinute() throws {
-        let parser = Parser(expression: "1")
+        let parser = Parser(expression: "1 *")
         let cronExpression = try parser.parseTopLevelExpression().codegen()
         XCTAssertEqual(Field.singleValue(1), cronExpression.minute)
 
         XCTAssertEqual(Field.any, cronExpression.hour)
+        XCTAssertEqual(Field.any, cronExpression.day)
+        XCTAssertEqual(Field.any, cronExpression.month)
+        XCTAssertEqual(Field.any, cronExpression.year)
+        XCTAssertEqual(Field.any, cronExpression.dayOfWeek)
+    }
+
+    func testHour() throws {
+        let parser = Parser(expression: "* 2")
+        let cronExpression = try parser.parseTopLevelExpression().codegen()
+        XCTAssertEqual(Field.singleValue(2), cronExpression.hour)
+
+        XCTAssertEqual(Field.any, cronExpression.minute)
         XCTAssertEqual(Field.any, cronExpression.day)
         XCTAssertEqual(Field.any, cronExpression.month)
         XCTAssertEqual(Field.any, cronExpression.year)
@@ -39,6 +51,7 @@ extension PaserTests {
 extension PaserTests {
     static var allTests = [
         ("testMinute", testMinute),
+        ("testHour", testHour),
         ("testInvalidCharacter", testInvalidCharacter),
     ]
 }

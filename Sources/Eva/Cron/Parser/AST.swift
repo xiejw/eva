@@ -1,15 +1,18 @@
 protocol ASTExpression {}
 
 class ASTCronExpression: ASTExpression {
-    private var minute: ASTField
+    private let minute: ASTField
+    private let hour: ASTField
 
-    init(minute: ASTField) {
+    init(minute: ASTField, hour: ASTField) {
         self.minute = minute
+        self.hour = hour
     }
 
     func codegen() -> CronExpression {
         return CronExpression(
-            minute: minute.field
+            minute: minute.field,
+            hour: hour.field
         )
     }
 }

@@ -50,19 +50,29 @@ extension Parser {
 extension Parser {
     private func parseCronExpression() throws -> ASTCronExpression {
         let minute = try parseMinuteField()
-        // try parseEmptySpaces()
-        let expr = ASTCronExpression(minute: minute)
+        try parseEmptySpaces()
+        let hour = try parseHourField()
+
+        let expr = ASTCronExpression(minute: minute, hour: hour)
         return expr
     }
 
     private func parseMinuteField() throws -> ASTField {
+        return try parseSingleValueOrAny(for: "minute")
+    }
+
+    private func parseHourField() throws -> ASTField {
+        return try parseSingleValueOrAny(for: "hour")
+    }
+
+    private func parseSingleValueOrAny(for fieldName: String) throws -> ASTField {
         let token = try lexer.nextToken()
         switch token.category {
         case .asterisk: return ASTAnyValueField()
         case let .number(value): return ASTSingleValueField(value: value)
         default:
             throw ParserError.unexpectedToken(
-                expected: "A valid expression for minute.",
+                expected: "A valid expression for \(fieldName).",
                 got: token
             )
         }
