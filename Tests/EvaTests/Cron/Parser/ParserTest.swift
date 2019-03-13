@@ -3,7 +3,7 @@ import XCTest
 
 final class PaserTests: XCTestCase {
     func testMinute() throws {
-        let parser = Parser(expression: "1 * *")
+        let parser = Parser(expression: "1 * * * *")
         let cronExpression = try parser.parseTopLevelExpression().codegen()
         XCTAssertEqual(Field.singleValue(1), cronExpression.minute)
 
@@ -15,7 +15,7 @@ final class PaserTests: XCTestCase {
     }
 
     func testHour() throws {
-        let parser = Parser(expression: "* 2 *")
+        let parser = Parser(expression: "* 2 * * *")
         let cronExpression = try parser.parseTopLevelExpression().codegen()
         XCTAssertEqual(Field.singleValue(2), cronExpression.hour)
 
@@ -27,7 +27,7 @@ final class PaserTests: XCTestCase {
     }
 
     func testDay() throws {
-        let parser = Parser(expression: "* * 3")
+        let parser = Parser(expression: "* * 3 * *")
         let cronExpression = try parser.parseTopLevelExpression().codegen()
         XCTAssertEqual(Field.singleValue(3), cronExpression.day)
 
@@ -36,6 +36,33 @@ final class PaserTests: XCTestCase {
         XCTAssertEqual(Field.any, cronExpression.month)
         XCTAssertEqual(Field.any, cronExpression.year)
         XCTAssertEqual(Field.any, cronExpression.dayOfWeek)
+    }
+
+    func testMonth() throws {
+        let parser = Parser(expression: "* * * 4 *")
+        let cronExpression = try parser.parseTopLevelExpression().codegen()
+        XCTAssertEqual(Field.singleValue(4), cronExpression.month)
+
+        XCTAssertEqual(Field.any, cronExpression.minute)
+        XCTAssertEqual(Field.any, cronExpression.hour)
+        XCTAssertEqual(Field.any, cronExpression.day)
+        XCTAssertEqual(Field.any, cronExpression.year)
+        XCTAssertEqual(Field.any, cronExpression.dayOfWeek)
+    }
+
+    func testDayOfWeek() throws {
+        let parser = Parser(expression: "* * * * 0")
+        let cronExpression = try parser.parseTopLevelExpression().codegen()
+        XCTAssertEqual(
+            Field.singleValue(CronExpression.DayOfWeek.sunday.rawValue),
+            cronExpression.dayOfWeek
+        )
+
+        XCTAssertEqual(Field.any, cronExpression.minute)
+        XCTAssertEqual(Field.any, cronExpression.hour)
+        XCTAssertEqual(Field.any, cronExpression.day)
+        XCTAssertEqual(Field.any, cronExpression.month)
+        XCTAssertEqual(Field.any, cronExpression.year)
     }
 }
 
@@ -65,6 +92,8 @@ extension PaserTests {
         ("testMinute", testMinute),
         ("testHour", testHour),
         ("testDay", testDay),
+        ("testMonth", testMonth),
+        ("testDayOfWeek", testDayOfWeek),
         ("testInvalidCharacter", testInvalidCharacter),
     ]
 }

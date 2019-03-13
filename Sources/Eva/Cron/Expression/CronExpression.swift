@@ -18,7 +18,7 @@ public struct CronExpression {
         case monday = 2
         case tuesday = 3
         case wednesday = 4
-        case thusday = 5
+        case thursday = 5
         case friday = 6
         case saturday = 7
     }
