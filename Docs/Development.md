@@ -1,3 +1,21 @@
+## Formatter
+
+[SwiftFormat](https://github.com/nicklockwood/SwiftFormat) is a nice tool, which
+works on MacOS and Linux.
+
+To ensure the version is consistent across platforms, installing from github is
+the best:
+
+    git clone https://github.com/nicklockwood/SwiftFormat
+    cd SwiftFormat
+    swift build -c release
+
+Then, configure the `bashrc`:
+
+    # Swift Formatter
+    SWIFT_FORMATTER=<github_repo_clone>
+    export PATH=$PATH:${SWIFT_FORMATTER}/.build/x86_64-apple-macosx/release
+
 ## Add Tests in Linux
 
 Adding tests for Linux platform is very annoying now.
