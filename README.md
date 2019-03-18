@@ -7,4 +7,5 @@
 
 ## Other Links
 
-For development notes, see [here](Docs/Development.md).
+- For Swift for TensorFlow notes, see [here](Docs/SwiftForTensorFlow.md).
+- For development notes, see [here](Docs/Development.md).

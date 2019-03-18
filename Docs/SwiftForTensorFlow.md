@@ -20,15 +20,15 @@ there are two ways now to fix it.
 
 - Reset the xcode developer
 
-        $ xcode-select -p
-        /Library/Developer/CommandLineTools
-        $ sudo xcode-select -r
-        $ xcode-select -p
-        /Applications/Xcode.app/Contents/Developer
+      $ xcode-select -p
+      /Library/Developer/CommandLineTools
+      $ sudo xcode-select -r
+      $ xcode-select -p
+      /Applications/Xcode.app/Contents/Developer
 
 - pass the following flag to `swift test`:
 
-        -Xcc -F -Xcc /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xlinker -F -Xlinker /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+      -Xcc -F -Xcc /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xlinker -F -Xlinker /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
 
 ### Docker.
 
@@ -73,11 +73,15 @@ most of the time.
     git clone https://github.com/apple/swift.git -b tensorflow
     ./swift/utils/update-checkout --clone --scheme tensorflow
 
-    # Compile.
+    # Compile the compiler only.
     cd swift
     ./utils/build-script --enable-tensorflow --release-debuginfo
 
-### Toolchain
+    # Compile the Toolchain (see dependencies in next sub-section).
+    cd swift
+    ./utils/build-toolchain-tensorflow <toolchain_name>
+
+### Extra Dependencies to build Toolchain
 
 The major issue to compile toolchain is the `swig` version. Ubuntu still has
 `swig` 2.0, while debian has upgraded to 3.0 or above.
@@ -96,7 +100,3 @@ and compile it:
     make
     sudo make install
 
-Finally, compile the toolchain:
-
-    cd ~/swift-base/swift
-    ./utils/build-toolchain-tensorflow <toolchain_name>
