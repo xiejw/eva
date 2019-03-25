@@ -12,3 +12,8 @@ fmt:
 
 clean:
 	swift package clean
+
+time:
+	mkdir -p bin
+	clang-format -i test.cpp
+	clang++ -Wall -static -std=c++14 test.cpp -o bin/time
