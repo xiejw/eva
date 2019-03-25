@@ -2,6 +2,8 @@
 #include <iostream>
 #include <memory>
 
+#include "lib/Cron/Expression/Field.h"
+
 int main() {
   auto current_time = time(nullptr);
   auto result = std::make_unique<tm>();
