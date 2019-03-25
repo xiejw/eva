@@ -1,3 +1,7 @@
+ifeq ($(UNAME_S),Linux)
+	CXXFLAGS += -static
+endif
+
 FORMATTER := swiftformat
 
 build:
@@ -16,4 +20,4 @@ clean:
 time:
 	mkdir -p bin
 	clang-format -i test.cpp
-	clang++ -Wall -static -std=c++14 test.cpp -o bin/time
+	clang++ -Wall ${CXXFLAGS} -std=c++14 test.cpp -o bin/time
