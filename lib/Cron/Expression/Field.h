@@ -2,7 +2,7 @@
 #define LIB_CRON_EXPRESSION_FIELD
 
 #include <memory>
-static void FatalError(const char *fmt, ...) {
+static void FatalError(const char* fmt, ...) {
   // fprintf(stderr, "%s: ", progname.c_str());
   va_list args;
   va_start(args, fmt);
@@ -13,7 +13,7 @@ static void FatalError(const char *fmt, ...) {
 }
 
 class Field {
-  enum Kind {any, singleValue};
+  enum Kind { any, singleValue };
 
   using ValueType = uint;
 
@@ -47,11 +47,10 @@ class Field {
   }
 
  private:
-  Field(Kind kind, ValueType value): kind_(kind), value_(value) {};
+  Field(Kind kind, ValueType value) : kind_(kind), value_(value){};
 
   Kind kind_;
   ValueType value_;
-
 };
 
 #endif
