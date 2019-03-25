@@ -1,7 +1,7 @@
 @testable import Eva
 import XCTest
 
-final class PaserTests: XCTestCase {
+final class ParserTests: XCTestCase {
     func testMinute() throws {
         let parser = Parser(expression: "1 * * * *")
         let cronExpression = try parser.parseTopLevelExpression().codegen()
@@ -66,7 +66,7 @@ final class PaserTests: XCTestCase {
     }
 }
 
-extension PaserTests {
+extension ParserTests {
     func testInvalidCharacter() {
         let parser = Parser(expression: "#")
         do {
@@ -87,7 +87,7 @@ extension PaserTests {
     }
 }
 
-extension PaserTests {
+extension ParserTests {
     static var allTests = [
         ("testMinute", testMinute),
         ("testHour", testHour),
