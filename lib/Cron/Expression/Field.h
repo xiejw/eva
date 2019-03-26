@@ -2,6 +2,7 @@
 #define LIB_CRON_EXPRESSION_FIELD
 
 #include <memory>
+
 namespace eva {
 namespace Cron {
 
@@ -20,8 +21,8 @@ static void FatalError(const char *fmt, ...) {
 }  // anonymous namespace
 
 class Field {
+ private:
   enum Kind { any, singleValue };
-
   using ValueType = uint;
 
  public:
@@ -37,11 +38,6 @@ class Field {
     return std::unique_ptr<Field>(field);
   }
 
- public:
-  Kind kind() { return kind_; }
-
-  ValueType value() { return value_; }
-
   bool Match(ValueType value) {
     switch (kind_) {
       case any:
@@ -56,6 +52,11 @@ class Field {
  private:
   Field(Kind kind, ValueType value) : kind_(kind), value_(value){};
 
+  Kind kind() { return kind_; }
+
+  ValueType value() { return value_; }
+
+ private:
   Kind kind_;
   ValueType value_;
 };

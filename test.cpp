@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "lib/Cron/Expression/Field.h"
+#include "lib/Cron/Expression/Expression.h"
 
 int main() {
   auto current_time = time(nullptr);

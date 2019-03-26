@@ -4,6 +4,7 @@ ifeq ($(UNAME_S),Linux)
 endif
 
 CXXFLAGS+= -Wall -std=c++14
+CXXFLAGS+=-I.
 
 fmt:
 	find lib -iname *.h -o -iname *.cpp | xargs clang-format -i -style=Google
