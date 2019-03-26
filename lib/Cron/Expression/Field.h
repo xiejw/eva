@@ -2,6 +2,11 @@
 #define LIB_CRON_EXPRESSION_FIELD
 
 #include <memory>
+namespace eva {
+namespace Cron {
+
+namespace {
+
 static void FatalError(const char *fmt, ...) {
   // fprintf(stderr, "%s: ", progname.c_str());
   va_list args;
@@ -11,6 +16,8 @@ static void FatalError(const char *fmt, ...) {
   fprintf(stderr, "\n");
   exit(1);
 }
+
+}  // anonymous namespace
 
 class Field {
   enum Kind { any, singleValue };
@@ -52,5 +59,8 @@ class Field {
   Kind kind_;
   ValueType value_;
 };
+
+}  // namespace Cron
+}  // namespace eva
 
 #endif
