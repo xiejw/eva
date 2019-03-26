@@ -1,24 +1,16 @@
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	CXXFLAGS += -static
+	CXXFLAGS+= -static
 endif
 
-FORMATTER := swiftformat
-
-build:
-	swift build
-
-test: fmt
-	swift test
+CXXFLAGS+= -Wall -std=c++14
 
 fmt:
-	$(FORMATTER) Sources
-	$(FORMATTER) Tests
+	find lib -iname *.h -o -iname *.cpp | xargs clang-format -i -style=Google
 
 clean:
-	swift package clean
+	rm -rf bin
 
 time:
 	mkdir -p bin
-	clang-format -i test.cpp
-	clang++ -Wall ${CXXFLAGS} -std=c++14 test.cpp -o bin/time
+	clang++ ${CXXFLAGS} test.cpp -o bin/time

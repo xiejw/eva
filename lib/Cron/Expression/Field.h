@@ -2,7 +2,7 @@
 #define LIB_CRON_EXPRESSION_FIELD
 
 #include <memory>
-static void FatalError(const char* fmt, ...) {
+static void FatalError(const char *fmt, ...) {
   // fprintf(stderr, "%s: ", progname.c_str());
   va_list args;
   va_start(args, fmt);
@@ -21,12 +21,12 @@ class Field {
   Field() = delete;
 
   static std::unique_ptr<Field> MakeAny() {
-    auto* field = new Field(any, 0);
+    auto *field = new Field(any, 0);
     return std::unique_ptr<Field>(field);
   }
 
   static std::unique_ptr<Field> MakeSingleValue(ValueType value) {
-    auto* field = new Field(singleValue, value);
+    auto *field = new Field(singleValue, value);
     return std::unique_ptr<Field>(field);
   }
 
