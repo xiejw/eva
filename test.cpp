@@ -5,8 +5,8 @@
 #include "lib/Cron/Expression/Field.h"
 #include "lib/Cron/Expression/Expression.h"
 
-int main() {
-  auto current_time = time(nullptr);
+
+void print_time(time_t current_time) {
   auto result = std::make_unique<tm>();
 
   localtime_r(&current_time, result.get());
@@ -19,4 +19,16 @@ int main() {
   std::cout << "Hour: " << result->tm_hour << std::endl;
   std::cout << "Minute: " << result->tm_min << std::endl;
   std::cout << "Second: " << result->tm_sec << std::endl;
+
+}
+
+int main() {
+  auto current_time = time(nullptr);
+  print_time(current_time);
+
+  auto expression = eva::Cron::Expression(
+      /* minute =*/eva::Cron::Field::MakeAny(),
+      /* hour =*/eva::Cron::Field::MakeSingleValue(12));
+
+  std::cout << "Match: " << expression.Match(current_time) << std::endl;
 }

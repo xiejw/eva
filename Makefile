@@ -3,8 +3,10 @@ ifeq ($(UNAME_S),Linux)
 	CXXFLAGS+= -static
 endif
 
-CXXFLAGS+= -Wall -std=c++14
-CXXFLAGS+=-I.
+CXXFLAGS += -Wall -std=c++14
+CXXFLAGS += -I.
+
+CXXFILES += lib/Cron/Expression/Expression.cpp
 
 fmt:
 	find lib -iname *.h -o -iname *.cpp | xargs clang-format -i -style=Google
@@ -14,4 +16,4 @@ clean:
 
 time:
 	mkdir -p bin
-	clang++ ${CXXFLAGS} test.cpp -o bin/time
+	clang++ ${CXXFLAGS} test.cpp ${CXXFILES} -o bin/time
