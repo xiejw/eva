@@ -24,6 +24,7 @@ TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
 
 TEST_MAIN = tests/main.cpp
 TEST_CXXFILES += tests/lib/Support/ErrorTest.cpp
+TEST_CXXFILES += tests/lib/Expression/ExpressionTest.cpp
 
 default: fmt cron
 	$(BIN)/cron
