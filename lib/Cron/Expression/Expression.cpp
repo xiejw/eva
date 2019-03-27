@@ -13,15 +13,15 @@ using Time = time_t;
 
 enum Component { minute, hour, day, dayOfWeek, month };
 
-/// Rewinds all components in the candidate up to `upTo`. For example, if
-/// `upTo` is `.day`, then `.hour`, `.minute`, and `.second` are rewinded to
-/// zero.
+/// Rewinds all components in the candidate up to `up_to`. For example, if
+/// `up_to` is `day`, then `hour`, `minute` are rewinded to `zero`.
 void rewind(tm* candidate, Component up_to) {
   switch (up_to) {
     case month:
       candidate->tm_mday = 1;
       // fallthrough
     case dayOfWeek:
+      // fallthrough
     case day:
       candidate->tm_hour = 0;
       // fallthrough
@@ -33,45 +33,47 @@ void rewind(tm* candidate, Component up_to) {
   }
 }
 
-// Returns true if invalid.
-bool validate(tm* candidate, tm* start_time) {
-  // We only search up to 5 years.
+/// Validates the candidate. We only search up to 5 years.
+Error validate(const tm* const candidate, const tm* const start_time) {
   return candidate->tm_year - start_time->tm_year > 5;
 }
 
+/// Retrieves the component from the time.
 int value(tm* time_tm, Component component) {
   switch (component) {
-    case month:
-      return time_tm->tm_mon + 1;
-    case dayOfWeek:
-      return time_tm->tm_wday;
-    case day:
-      return time_tm->tm_mday;
-    case hour:
-      return time_tm->tm_hour;
     case minute:
       return time_tm->tm_min;
+    case hour:
+      return time_tm->tm_hour;
+    case day:
+      return time_tm->tm_mday;
+    case dayOfWeek:
+      return time_tm->tm_wday;
+    case month:
+      // Mon starts with 0.
+      return time_tm->tm_mon + 1;
     default:
       FatalError("Unexpected component: %d", component);
   }
 }
 
+/// Increases the component of time_tm by 1.
 void increase(tm* time_tm, Component component) {
   switch (component) {
-    case month:
-      time_tm->tm_mon += 1;
-      break;
-    case dayOfWeek:
-      time_tm->tm_mday += 1;
-      break;
-    case day:
-      time_tm->tm_mday += 1;
+    case minute:
+      time_tm->tm_min += 1;
       break;
     case hour:
       time_tm->tm_hour += 1;
       break;
-    case minute:
-      time_tm->tm_min += 1;
+    case day:
+      time_tm->tm_mday += 1;
+      break;
+    case dayOfWeek:
+      time_tm->tm_mday += 1;
+      break;
+    case month:
+      time_tm->tm_mon += 1;
       break;
     default:
       FatalError("Unexpected component: %d", component);
@@ -79,27 +81,27 @@ void increase(tm* time_tm, Component component) {
   mktime(time_tm);
 }
 
-// Returns false if invalid.
-bool searchNextMatching(tm* start_time, Field* field, tm* time_tm,
-                        Component component, bool* changed) {
-  auto initial_value = value(time_tm, component);
+Error searchNextMatching(const tm* const start_time, const Field* const field,
+                         const Component component, tm* candidate,
+                         bool* changed) {
+  auto initial_value = value(candidate, component);
   if (field->Match(initial_value)) {
     *changed = false;
-    return false;
+    return kOK;
   }
 
   *changed = true;
-  rewind(time_tm, component);
+  rewind(candidate, component);
 
   while (true) {
-    increase(time_tm, component);
-    if (validate(time_tm, start_time)) {
-      return true;
+    increase(candidate, component);
+    if (validate(candidate, start_time)) {
+      return kFAILURE;
     }
-    auto new_value = value(time_tm, component);
+    auto new_value = value(candidate, component);
 
     if (field->Match(new_value)) {
-      return false;
+      return kOK;
     }
   }
 }
@@ -111,69 +113,66 @@ bool Expression::Match(Time time) {
   localtime_r(&time, time_tm.get());
 
   if (!minute_->Match(time_tm->tm_min)) return false;
-
   if (!hour_->Match(time_tm->tm_hour)) return false;
-
   if (!day_->Match(time_tm->tm_mday)) return false;
-
   // tm_wday starts with 0 (Sunday).
   if (!dayOfWeek_->Match(time_tm->tm_wday)) return false;
-
   // tm_mon starts with zero.
   if (!month_->Match(time_tm->tm_mon + 1)) return false;
 
   return true;
 }
 
-bool Expression::Next(Time start_time, Time* next_time) {
-  auto time_tm = std::make_unique<tm>();
-  localtime_r(&start_time, time_tm.get());
+Error Expression::Next(Time start_time, Time* next_time) {
+  tm candidate;
+  localtime_r(&start_time, &candidate);
 
   // Make a deep copy.
-  tm start_point{*time_tm};
+  tm start_point{candidate};
 
-  time_tm->tm_min += 1;
-  time_tm->tm_sec = 0;
+  // Advance the minute once to start the search and reset the second field.
+  candidate.tm_min += 1;
+  candidate.tm_sec = 0;
 
 mainLoop:
   while (true) {
     for (auto component : {minute, hour, day, dayOfWeek, month}) {
       Field* field = nullptr;
       switch (component) {
-        case month:
-          field = month_.get();
-          break;
-        case dayOfWeek:
-          field = dayOfWeek_.get();
-          break;
-        case day:
-          field = day_.get();
+        case minute:
+          field = minute_.get();
           break;
         case hour:
           field = hour_.get();
           break;
-        case minute:
-          field = minute_.get();
+        case day:
+          field = day_.get();
+          break;
+        case dayOfWeek:
+          field = dayOfWeek_.get();
+          break;
+        case month:
+          field = month_.get();
           break;
         default:
-          // FIXME: falal error.
-          exit(1);
+          FatalError("Unexpected component: %d", component);
       }
 
       bool changed;
-      if (searchNextMatching(&start_point, field, time_tm.get(), component,
-                             &changed)) {
-        return true;
-      }
-      if (changed) {
-        goto mainLoop;
-      }
+      if (searchNextMatching(/*start_time = */ &start_point,
+                             /*field = */ field,
+                             /*component = */ component,
+                             /*candidate = */ &candidate,
+                             /*changed = */ &changed))
+        return kFAILURE;
+
+      if (changed) goto mainLoop;
     }
     break;
   }
 
-  *next_time = mktime(time_tm.get());
-  return false;
+  *next_time = mktime(&candidate);
+  return kOK;
 }
 
 }  // namespace Cron

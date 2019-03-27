@@ -3,6 +3,10 @@
 
 namespace eva {
 
+using Error = bool;
+constexpr bool kOK = false;
+constexpr bool kFAILURE = true;
+
 void FatalError(const char *fmt, ...);
 
 }  // namespace eva

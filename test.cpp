@@ -30,7 +30,6 @@ int main() {
       /* minute =*/eva::Cron::Field::MakeAny(),
       /* hour =*/eva::Cron::Field::MakeSingleValue(12));
 
-  std::cout << "Match: " << expression.Match(current_time) << std::endl;
   time_t next_time;
   expression.Next(current_time, &next_time);
   std::cout << "Next: " << std::endl;

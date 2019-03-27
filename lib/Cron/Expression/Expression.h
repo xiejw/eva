@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "lib/Cron/Expression/Field.h"
+#include "lib/Support/Error.h"
 
 namespace eva {
 namespace Cron {
@@ -21,9 +22,10 @@ class Expression {
         month_(std::move(month)),
         dayOfWeek_(std::move(dayOfWeek)) {}
 
-  bool Match(time_t time);
+  Error Next(time_t start_time, time_t *next_time);
 
-  bool Next(time_t start_time, time_t *next_time);
+ private:
+  bool Match(time_t time);
 
  private:
   std::unique_ptr<Field> minute_;

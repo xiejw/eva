@@ -27,7 +27,7 @@ class Field {
     return std::unique_ptr<Field>(field);
   }
 
-  bool Match(ValueType value) {
+  bool Match(ValueType value) const {
     switch (kind_) {
       case any:
         return true;
