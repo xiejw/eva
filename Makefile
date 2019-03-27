@@ -7,6 +7,8 @@ CXXFLAGS += -Wall -std=c++14
 CXXFLAGS += -I.
 
 CXXFILES += lib/Cron/Expression/Expression.cpp
+CXXFILES += lib/Support/Error.cpp
+
 
 default: fmt time
 	./bin/time

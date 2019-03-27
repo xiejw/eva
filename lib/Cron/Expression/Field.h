@@ -3,22 +3,11 @@
 
 #include <memory>
 
+#include "lib/Support/Error.h"
+#include "lib/Support/Types.h"
+
 namespace eva {
 namespace Cron {
-
-namespace {
-
-static void FatalError(const char *fmt, ...) {
-  // fprintf(stderr, "%s: ", progname.c_str());
-  va_list args;
-  va_start(args, fmt);
-  vfprintf(stderr, fmt, args);
-  va_end(args);
-  fprintf(stderr, "\n");
-  exit(1);
-}
-
-}  // anonymous namespace
 
 class Field {
  private:
