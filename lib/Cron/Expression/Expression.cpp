@@ -28,6 +28,9 @@ void rewind(tm* candidate, Component up_to) {
     case hour:
       candidate->tm_min = 0;
       break;
+    case minute:
+      // no-op
+      break;
     default:
       FatalError("Unexpected component: %d", up_to);
   }

@@ -7,11 +7,14 @@ BIN=./build
 
 CXXFLAGS += -Wall -std=c++14
 CXXFLAGS += -I.
+CXXFLAGS += -Idependencies/gflags/build/include/
+# LDFLAGS += -Ldependencies/gflags/build/lib/
+# LDFLAGS += -lgflags -lpthread
+LDFLAGS += dependencies/gflags/build/lib/libgflags_nothreads.a
 
 CXXFILES += tools/cron/main.cpp
 CXXFILES += lib/Cron/Expression/Expression.cpp
 CXXFILES += lib/Support/Error.cpp
-
 
 default: clean fmt cron
 	$(BIN)/cron
@@ -25,4 +28,7 @@ clean:
 	mkdir -p $(BIN)
 
 cron:
-	clang++ ${CXXFLAGS} ${CXXFILES} -o $(BIN)/$@
+	clang++ ${CXXFLAGS} ${CXXFILES} -o $(BIN)/$@ $(LDFLAGS)
+
+update:
+	./utils/update-dependencies

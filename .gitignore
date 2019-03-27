@@ -4,3 +4,6 @@
 
 # CXX output
 build
+
+# CXX dependendies
+dependencies

@@ -1,11 +1,16 @@
+#include <gflags/gflags.h>
 #include <ctime>
+
 #include <iostream>
 #include <memory>
 
 #include "lib/Cron/Expression/Expression.h"
 #include "lib/Cron/Expression/Field.h"
 
-void print_time(time_t current_time) {
+DEFINE_int32(minute, -1, "The minute field. `-1` means `*`.");
+DEFINE_int32(hour, -1, "The hour field. `-1` means `*`.");
+
+void PrintTime(const time_t& current_time) {
   auto result = std::make_unique<tm>();
 
   localtime_r(&current_time, result.get());
@@ -20,16 +25,25 @@ void print_time(time_t current_time) {
   std::cout << "Second: " << result->tm_sec << std::endl;
 }
 
-int main() {
+std::unique_ptr<eva::Cron::Field> ReadFromFlag(
+    const gflags::int32& flag_value) {
+  if (flag_value == -1) return eva::Cron::Field::MakeAny();
+
+  return eva::Cron::Field::MakeSingleValue(flag_value);
+}
+
+int main(int argc, char** argv) {
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+
   auto current_time = time(nullptr);
-  print_time(current_time);
+  PrintTime(current_time);
 
   auto expression = eva::Cron::Expression(
-      /* minute =*/eva::Cron::Field::MakeAny(),
-      /* hour =*/eva::Cron::Field::MakeSingleValue(12));
+      /* minute =*/ReadFromFlag(FLAGS_minute),
+      /* hour =*/ReadFromFlag(FLAGS_hour));
 
   time_t next_time;
   expression.Next(current_time, &next_time);
   std::cout << "Next: " << std::endl;
-  print_time(next_time);
+  PrintTime(next_time);
 }

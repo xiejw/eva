@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# vim: filetype=sh
+
+set -x
+
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++
+
+mkdir -p dependencies
+cd dependencies
+
+if [ ! -d "gflags" ]; then
+  # https://github.com/gflags/gflags/blob/master/INSTALL.md
+  git clone https://github.com/gflags/gflags.git
+  cd gflags
+  mkdir build
+  cd build
+  cmake ..
+  make
+  cd ..
+  cd ..
+else
+  echo "Skip gflags."
+fi
