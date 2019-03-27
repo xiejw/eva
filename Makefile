@@ -25,8 +25,11 @@ TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
 TEST_MAIN = tests/main.cpp
 TEST_CXXFILES += tests/lib/Support/ErrorTest.cpp
 
-default: clean fmt cron
+default: fmt cron
 	$(BIN)/cron
+
+build:
+	mkdir -p ${BIN}
 
 fmt:
 	find lib -type f | grep -E "(.h|.cpp)$$" | xargs clang-format -i -style=Google
@@ -37,13 +40,13 @@ clean:
 	rm -rf $(BIN)
 	mkdir -p $(BIN)
 
-cron:
+cron: build
 	clang++ ${CXXFLAGS} ${CXXFILES} ${MAIN} -o $(BIN)/$@ $(LDFLAGS)
 
 update:
 	./utils/update-dependencies
 
-test:
+test: build
 	clang++ ${TEST_CXXFLAGS} ${CXXFILES} ${TEST_CXXFILES} ${TEST_MAIN} \
 		-o $(BIN)/$@ $(TEST_LDFLAGS) && \
 		${BIN}/test
