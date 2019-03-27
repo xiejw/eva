@@ -28,3 +28,6 @@ Then, it can be used in the script, say a Docker, like
        # Your job.
     done
 
+## Docker
+
+See dockerfiels folder for usages or use `xiejw/cron` directly.
