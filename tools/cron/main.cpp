@@ -2,9 +2,8 @@
 #include <iostream>
 #include <memory>
 
-#include "lib/Cron/Expression/Field.h"
 #include "lib/Cron/Expression/Expression.h"
-
+#include "lib/Cron/Expression/Field.h"
 
 void print_time(time_t current_time) {
   auto result = std::make_unique<tm>();
@@ -19,7 +18,6 @@ void print_time(time_t current_time) {
   std::cout << "Hour: " << result->tm_hour << std::endl;
   std::cout << "Minute: " << result->tm_min << std::endl;
   std::cout << "Second: " << result->tm_sec << std::endl;
-
 }
 
 int main() {
