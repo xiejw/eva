@@ -5,21 +5,22 @@ endif
 
 BIN=./build
 
-CXXFLAGS += -Wall -std=c++14
-CXXFLAGS += -I.
-CXXFLAGS += -Idependencies/gflags/build/include/
-# LDFLAGS += -Ldependencies/gflags/build/lib/
-# LDFLAGS += -lgflags -lpthread
-LDFLAGS += dependencies/gflags/build/lib/libgflags_nothreads.a
+COMMON_CXXFLAGS += -Wall -std=c++14
+COMMON_CXXFLAGS += -I.
 
-TEST_CXXFLAGS += -Wall -std=c++14
-TEST_CXXFLAGS += -I.
-TEST_CXXFLAGS += -Idependencies/googletest/googletest/include/
-TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
+# Library
+CXXFLAGS += ${COMMON_CXXFLAGS}
+CXXFLAGS += -Idependencies/gflags/build/include/
+LDFLAGS += dependencies/gflags/build/lib/libgflags_nothreads.a
 
 MAIN = tools/cron/main.cpp
 CXXFILES += lib/Cron/Expression/Expression.cpp
 CXXFILES += lib/Support/Error.cpp
+
+# Tests
+TEST_CXXFLAGS += ${COMMON_CXXFLAGS}
+TEST_CXXFLAGS += -Idependencies/googletest/googletest/include/
+TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
 
 TEST_MAIN = tests/main.cpp
 TEST_CXXFILES += tests/lib/Support/ErrorTest.cpp
