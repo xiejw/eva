@@ -8,6 +8,9 @@ CXXFLAGS += -I.
 
 CXXFILES += lib/Cron/Expression/Expression.cpp
 
+default: fmt time
+	./bin/time
+
 fmt:
 	find lib -iname *.h -o -iname *.cpp | xargs clang-format -i -style=Google
 

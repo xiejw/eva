@@ -23,6 +23,8 @@ class Expression {
 
   bool Match(time_t time);
 
+  bool Next(time_t start_time, time_t *next_time);
+
  private:
   std::unique_ptr<Field> minute_;
   std::unique_ptr<Field> hour_;

@@ -13,7 +13,7 @@ void print_time(time_t current_time) {
 
   std::cout << "hello\n";
   std::cout << "Current epoch is " << current_time << std::endl;
-  std::cout << "Year: " << result->tm_year + 1970 << std::endl;
+  std::cout << "Year: " << result->tm_year + 1900 << std::endl;
   std::cout << "Month: " << result->tm_mon + 1 << std::endl;
   std::cout << "Day: " << result->tm_mday << std::endl;
   std::cout << "Hour: " << result->tm_hour << std::endl;
@@ -31,4 +31,8 @@ int main() {
       /* hour =*/eva::Cron::Field::MakeSingleValue(12));
 
   std::cout << "Match: " << expression.Match(current_time) << std::endl;
+  time_t next_time;
+  expression.Next(current_time, &next_time);
+  std::cout << "Next: " << std::endl;
+  print_time(next_time);
 }
