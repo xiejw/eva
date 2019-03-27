@@ -14,7 +14,7 @@ default: fmt time
 	./bin/time
 
 fmt:
-	find lib -iname *.h -o -iname *.cpp | xargs clang-format -i -style=Google
+	find lib -type f | grep -E "(.h|.cpp)$$" | xargs clang-format -i -style=Google
 
 clean:
 	rm -rf bin

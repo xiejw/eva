@@ -5,7 +5,6 @@
 namespace eva {
 
 void FatalError(const char *fmt, ...) {
-  // fprintf(stderr, "%s: ", progname.c_str());
   va_list args;
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);

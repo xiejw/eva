@@ -1,6 +1,8 @@
 #include <ctime>
 
 #include "lib/Cron/Expression/Expression.h"
+#include "lib/Support/Constant.h"
+#include "lib/Support/Error.h"
 
 namespace eva {
 namespace Cron {
@@ -27,11 +29,9 @@ void rewind(tm* candidate, Component up_to) {
       candidate->tm_min = 0;
       break;
     default:
-      // FIXME: falal error.
-      exit(1);
+      FatalError("Unexpected component: %d", up_to);
   }
 }
-
 
 // Returns true if invalid.
 bool validate(tm* candidate, tm* start_time) {
@@ -40,36 +40,48 @@ bool validate(tm* candidate, tm* start_time) {
 }
 
 int value(tm* time_tm, Component component) {
-      switch (component) {
-        case month: return time_tm->tm_mon + 1;
-        case dayOfWeek: return time_tm->tm_wday;
-        case day: return time_tm->tm_mday;
-        case hour:return time_tm->tm_hour;
-        case minute:return time_tm->tm_min;
-        default:
-          // FIXME: falal error.
-          exit(1);
-      }
+  switch (component) {
+    case month:
+      return time_tm->tm_mon + 1;
+    case dayOfWeek:
+      return time_tm->tm_wday;
+    case day:
+      return time_tm->tm_mday;
+    case hour:
+      return time_tm->tm_hour;
+    case minute:
+      return time_tm->tm_min;
+    default:
+      FatalError("Unexpected component: %d", component);
+  }
 }
 
-void
-increase(tm* time_tm, Component component) {
-      switch (component) {
-        case month: time_tm->tm_mon += 1; break;
-        case dayOfWeek: time_tm->tm_mday += 1; break;
-        case day:time_tm->tm_mday += 1; break;
-        case hour:time_tm->tm_hour += 1; break;
-        case minute:time_tm->tm_min += 1; break;
-        default:
-          // FIXME: falal error.
-          exit(1);
-      }
- auto new_time = mktime(time_tm);
- localtime_r(&new_time, time_tm);
+void increase(tm* time_tm, Component component) {
+  switch (component) {
+    case month:
+      time_tm->tm_mon += 1;
+      break;
+    case dayOfWeek:
+      time_tm->tm_mday += 1;
+      break;
+    case day:
+      time_tm->tm_mday += 1;
+      break;
+    case hour:
+      time_tm->tm_hour += 1;
+      break;
+    case minute:
+      time_tm->tm_min += 1;
+      break;
+    default:
+      FatalError("Unexpected component: %d", component);
+  }
+  mktime(time_tm);
 }
 
 // Returns false if invalid.
-bool searchNextMatching(tm* start_time, Field* field, tm* time_tm, Component component, bool* changed) {
+bool searchNextMatching(tm* start_time, Field* field, tm* time_tm,
+                        Component component, bool* changed) {
   auto initial_value = value(time_tm, component);
   if (field->Match(initial_value)) {
     *changed = false;
@@ -92,60 +104,65 @@ bool searchNextMatching(tm* start_time, Field* field, tm* time_tm, Component com
   }
 }
 
-
-}  // namespace anonymouse
+}  // namespace
 
 bool Expression::Match(Time time) {
   auto time_tm = std::make_unique<tm>();
   localtime_r(&time, time_tm.get());
 
-  if (!minute_->Match(time_tm->tm_min))
-    return false;
+  if (!minute_->Match(time_tm->tm_min)) return false;
 
-  if (!hour_->Match(time_tm->tm_hour))
-    return false;
+  if (!hour_->Match(time_tm->tm_hour)) return false;
 
-  if (!day_->Match(time_tm->tm_mday))
-    return false;
+  if (!day_->Match(time_tm->tm_mday)) return false;
 
   // tm_wday starts with 0 (Sunday).
-  if (!dayOfWeek_->Match(time_tm->tm_wday))
-    return false;
+  if (!dayOfWeek_->Match(time_tm->tm_wday)) return false;
 
   // tm_mon starts with zero.
-  if (!month_->Match(time_tm->tm_mon + 1))
-    return false;
+  if (!month_->Match(time_tm->tm_mon + 1)) return false;
 
   return true;
 }
 
-bool Expression::Next(Time start_time, Time *next_time) {
+bool Expression::Next(Time start_time, Time* next_time) {
   auto time_tm = std::make_unique<tm>();
   localtime_r(&start_time, time_tm.get());
 
   // Make a deep copy.
-  tm start_point {*time_tm};
+  tm start_point{*time_tm};
 
   time_tm->tm_min += 1;
   time_tm->tm_sec = 0;
 
 mainLoop:
   while (true) {
-    for (auto component: {minute, hour, day, dayOfWeek, month}) {
+    for (auto component : {minute, hour, day, dayOfWeek, month}) {
       Field* field = nullptr;
       switch (component) {
-        case month: field = month_.get(); break;
-        case dayOfWeek: field = dayOfWeek_.get(); break;
-        case day: field = day_.get(); break;
-        case hour: field = hour_.get(); break;
-        case minute: field = minute_.get(); break;
+        case month:
+          field = month_.get();
+          break;
+        case dayOfWeek:
+          field = dayOfWeek_.get();
+          break;
+        case day:
+          field = day_.get();
+          break;
+        case hour:
+          field = hour_.get();
+          break;
+        case minute:
+          field = minute_.get();
+          break;
         default:
           // FIXME: falal error.
           exit(1);
       }
 
       bool changed;
-      if (searchNextMatching(&start_point, field, time_tm.get(), component, &changed)) {
+      if (searchNextMatching(&start_point, field, time_tm.get(), component,
+                             &changed)) {
         return true;
       }
       if (changed) {
