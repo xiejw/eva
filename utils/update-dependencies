@@ -23,3 +23,17 @@ if [ ! -d "gflags" ]; then
 else
   echo "Skip gflags."
 fi
+
+if [ ! -d "googletest" ]; then
+  # https://github.com/google/googletest
+  git clone https://github.com/google/googletest
+  cd googletest
+  mkdir build
+  cd build
+  cmake ..
+  make
+  cd ..
+  cd ..
+else
+  echo "Skip googletest."
+fi

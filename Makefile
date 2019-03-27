@@ -12,9 +12,17 @@ CXXFLAGS += -Idependencies/gflags/build/include/
 # LDFLAGS += -lgflags -lpthread
 LDFLAGS += dependencies/gflags/build/lib/libgflags_nothreads.a
 
-CXXFILES += tools/cron/main.cpp
+TEST_CXXFLAGS += -Wall -std=c++14
+TEST_CXXFLAGS += -I.
+TEST_CXXFLAGS += -Idependencies/googletest/googletest/include/
+TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
+
+MAIN = tools/cron/main.cpp
 CXXFILES += lib/Cron/Expression/Expression.cpp
 CXXFILES += lib/Support/Error.cpp
+
+TEST_MAIN = tests/main.cpp
+TEST_CXXFILES += tests/lib/Support/ErrorTest.cpp
 
 default: clean fmt cron
 	$(BIN)/cron
@@ -28,7 +36,12 @@ clean:
 	mkdir -p $(BIN)
 
 cron:
-	clang++ ${CXXFLAGS} ${CXXFILES} -o $(BIN)/$@ $(LDFLAGS)
+	clang++ ${CXXFLAGS} ${CXXFILES} ${MAIN} -o $(BIN)/$@ $(LDFLAGS)
 
 update:
 	./utils/update-dependencies
+
+test:
+	clang++ ${TEST_CXXFLAGS} ${CXXFILES} ${TEST_CXXFILES} ${TEST_MAIN} \
+		-o $(BIN)/$@ $(TEST_LDFLAGS) && \
+		${BIN}/test
