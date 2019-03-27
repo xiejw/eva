@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "gtest/gtest.h"
 #include "lib/Cron/Expression/Expression.h"
 #include "lib/Cron/Expression/Field.h"
@@ -9,11 +11,27 @@ namespace {
 
 class ExpressionTest : public ::testing::Test {
  public:
+  void SetUp() override {
+    // All the epoch values here are based on America/Los_Angeles.
+    tz_value_ = getenv("TZ");
+    setenv("TZ", "America/Los_Angeles", /*overwrite = */ 1);
+  }
+
+  void TearDown() override {
+    if (tz_value_) {
+      setenv("TZ", tz_value_, /*overwrite = */ 1);
+    } else {
+      unsetenv("TZ");
+    }
+  }
   time_t NextTime(Expression& expression, time_t start_time) {
     time_t next_time;
     expression.Next(start_time, &next_time);
     return next_time;
   }
+
+ private:
+  char* tz_value_ = nullptr;
 };
 
 TEST_F(ExpressionTest, CheckMinute) {
