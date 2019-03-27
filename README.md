@@ -1,11 +1,30 @@
-# Eva: My Swift Core Library
+# My Core Library
 
-## Libraries Planned
+## Compile
 
-- CronExpression: Support cron and calcucate next date for action.
-- CommandLine: Support LLVM-like command line flags.
+    # Install the dependencies. Requires clang, cmake, make.
+    make update
+    make cron
 
-## Other Links
+    # Optional
+    make test
 
-- For Swift for TensorFlow notes, see [here](Docs/SwiftForTensorFlow.md).
-- For development notes, see [here](Docs/Development.md).
+## Usage
+
+    # Print the number of seconds until next time matching X hour Y minute, both
+    # the flags `--hour` and `--minute` are optional.
+
+    ./build/cron --hour X --minute Y
+
+Then, it can be used in the script, say a Docker, like
+
+
+    #!/bin/sh
+
+    while true; do
+       sleep `cron --hour X --minute Y`
+       echo "Current time is `date`."
+
+       # Your job.
+    done
+
