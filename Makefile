@@ -30,6 +30,7 @@ default: clean fmt cron
 fmt:
 	find lib -type f | grep -E "(.h|.cpp)$$" | xargs clang-format -i -style=Google
 	find tools -type f | grep -E "(.h|.cpp)$$" | xargs clang-format -i -style=Google
+	find tests -type f | grep -E "(.h|.cpp)$$" | xargs clang-format -i -style=Google
 
 clean:
 	rm -rf $(BIN)

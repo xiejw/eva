@@ -1,14 +1,19 @@
 #include "gtest/gtest.h"
 #include "lib/Support/Error.h"
 
+namespace eva {
+
 namespace {
 
-class FooTest : public ::testing::Test {
-};
+Error fail() { return kFAILURE; }
+Error pass() { return kOK; }
 
-// Tests that Foo does Xyz.
-TEST_F(FooTest, DoesXyz) {
-  // Exercises the Xyz feature of Foo.
+class ErrorTypeTest : public ::testing::Test {};
+
+TEST_F(ErrorTypeTest, CheckSignature) {
+  ASSERT_TRUE(fail());
+  ASSERT_FALSE(pass());
 }
 
 }  // namespace
+}  // namespace eva
