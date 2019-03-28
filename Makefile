@@ -10,8 +10,8 @@ COMMON_CXXFLAGS += -I.
 
 # Library
 CXXFLAGS += ${COMMON_CXXFLAGS}
-CXXFLAGS += -Idependencies/gflags/build/include/
-LDFLAGS += dependencies/gflags/build/lib/libgflags_nothreads.a
+CXXFLAGS += -Idependencies/gflags/buildlib/include/
+LDFLAGS += dependencies/gflags/buildlib/lib/libgflags_nothreads.a
 
 MAIN = tools/cron/main.cpp
 CXXFILES += lib/Cron/Expression/Expression.cpp
@@ -20,7 +20,7 @@ CXXFILES += lib/Support/Error.cpp
 # Tests
 TEST_CXXFLAGS += ${COMMON_CXXFLAGS}
 TEST_CXXFLAGS += -Idependencies/googletest/googletest/include/
-TEST_LDFLAGS += dependencies/googletest/build/lib/libgtest.a -lpthread
+TEST_LDFLAGS += dependencies/googletest/buildlib/lib/libgtest.a -lpthread
 
 TEST_MAIN = tests/main.cpp
 TEST_CXXFILES += tests/lib/Support/ErrorTest.cpp

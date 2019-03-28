@@ -14,8 +14,8 @@ if [ ! -d "gflags" ]; then
   # https://github.com/gflags/gflags/blob/master/INSTALL.md
   git clone https://github.com/gflags/gflags.git
   cd gflags
-  mkdir build
-  cd build
+  mkdir buildlib
+  cd buildlib
   cmake ..
   make
   cd ..
@@ -28,8 +28,8 @@ if [ ! -d "googletest" ]; then
   # https://github.com/google/googletest
   git clone https://github.com/google/googletest
   cd googletest
-  mkdir build
-  cd build
+  mkdir buildlib
+  cd buildlib
   cmake ..
   make
   cd ..
