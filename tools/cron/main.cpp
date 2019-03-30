@@ -17,6 +17,11 @@ std::unique_ptr<eva::Cron::Field> ReadFromFlag(
   return eva::Cron::Field::MakeSingleValue(flag_value);
 }
 
+// Prints the number of seconds from `now` to the next time matching
+// eva::Cron::Expression.
+//
+// See https://github.com/xiejw/eva/blob/master/docs/cron_call_graph.png for
+// call graph.
 int main(int argc, char** argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
@@ -26,10 +31,9 @@ int main(int argc, char** argv) {
       /* hour =*/ReadFromFlag(FLAGS_hour));
 
   time_t next_time;
-  if (expression.Next(current_time, &next_time)) {
-    // Error happened.
-    exit(1);
-  }
+  // Error happened.
+  if (expression.Next(current_time, &next_time)) exit(1);
+
   std::cout << (next_time - current_time);
   return 0;
 }

@@ -126,6 +126,15 @@ bool Expression::Match(Time time) {
   return true;
 }
 
+/// Algorithm to find next time matching the eva::Cron::Expression.
+///
+/// Step 1: Go to next minute and reset the second field.
+/// Step 2 (mainLoop:) : Search minute until match.
+/// Step 3: Search hour until match. If hour changed, reset lower components
+///         (minute in this case) and jump to `mainLoop`.
+/// Step 4: Search day until match. If day changed, reset lower components
+///         (hour and minute in this case) and jump to `mainLoop`.
+/// Step 5-6: Search month and year. Same rule as step 3 and 4.
 Error Expression::Next(Time start_time, Time* next_time) {
   tm candidate;
   localtime_r(&start_time, &candidate);
