@@ -1,0 +1,5 @@
+Write a mini pm with the
+- install
+- check installed
+- print --cxxflags
+- print --ldflags
