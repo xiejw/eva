@@ -46,6 +46,8 @@ TEST_OBJ_MAIN := $(patsubst %,${BIN}/%,$(TEST_MAIN:.cpp=.o))
 default: clean fmt test cron
 	$(BIN)/cron
 
+include tools/eva-config/Makefile
+
 fmt:
 	for dir in ${CXX_FOLDERS} ; do \
 	  find $$dir -type f | grep -E "(.h|.cpp)$$" | xargs ${CLANG_FORMAT} ; \
