@@ -29,7 +29,7 @@ std::string ExpandPath(const std::string& path) {
 }  // namespace
 
 int main(int argc, char** argv) {
-  std::string src{"~/hello"};
+  std::string src{"~/Workspace/eva"};
   std::cout << src << " -> " << ExpandPath(src);
   return 0;
 }
