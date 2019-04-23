@@ -3,7 +3,11 @@ ifeq ($(UNAME_S),Linux)
 	CXXFLAGS += -static
 endif
 
-BIN = ./build
+# Folders
+BIN = build
+LIB = lib
+TOOLS = tools
+TESTS = tests
 
 CXX = clang++
 EVA_CONFIG = ~/Workspace/eva/core/eva-config
@@ -12,7 +16,6 @@ CLANG_FORMAT = clang-format -i -style=Google
 # LLVM related.
 LLVM_DIR = ~/Workspace/llvm/
 LLVM_LINK = ${LLVM_DIR}/build/bin/llvm-link
-
 
 COMMON_CXXFLAGS += -Wall -std=c++14
 COMMON_CXXFLAGS += -I.
@@ -23,11 +26,11 @@ CXXFLAGS += $(shell ${EVA_CONFIG} --cxxflags gflags)
 LDFLAGS += $(shell ${EVA_CONFIG} --ldflags gflags)
 
 # CXX Folders
-CXX_FOLDERS = lib tools tests
+CXX_FOLDERS = ${LIB} ${TOOLS} ${TESTS}
 
 # Files
-MAIN = tools/cron/main.cpp
-SRCS := $(wildcard lib/*.cpp lib/*/*.cpp lib/*/*/*.cpp)
+MAIN = ${TOOLS}/cron/main.cpp
+SRCS := $(shell find ${LIB} -type f -name '*.cpp')
 
 OBJ_MAIN := $(patsubst %,${BIN}/%,$(MAIN:.cpp=.o))
 OBJ_FILES := $(patsubst %,${BIN}/%,$(SRCS:.cpp=.o))
@@ -41,13 +44,13 @@ TEST_CXXFLAGS += $(shell ${EVA_CONFIG} --cxxflags googletest)
 TEST_LDFLAGS += $(shell ${EVA_CONFIG} --ldflags googletest)
 
 TEST_MAIN = tests/main.cpp
-TEST_SRCS += $(wildcard tests/lib/*.cpp tests/lib/*/*.cpp tests/lib/*/*/*.cpp)
+TEST_SRCS += $(shell find ${TESTS}/${LIB}/ -type f -name '*.cpp')
 
 TEST_OBJ_FILES := $(patsubst %,${BIN}/%,$(TEST_SRCS:.cpp=.o))
 TEST_OBJ_MAIN := $(patsubst %,${BIN}/%,$(TEST_MAIN:.cpp=.o))
 
 default: clean fmt test cron
-	$(BIN)/cron
+
 
 fmt:
 	for dir in ${CXX_FOLDERS} ; do \
