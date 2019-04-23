@@ -1,6 +1,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -34,10 +35,10 @@ std::string ExpandPath(const std::string& path) {
 
 }  // namespace
 
-namespace {
+namespace Formula {
 
 struct Formula {
-  std::string name;
+  const char* name;
   std::string cxxflags;
   std::string ldflags;
 
@@ -68,17 +69,89 @@ class Outputs {
   }
 
  public:
-  void Print() {}
+  void RegisterCXXFlags(const char* name) {
+    for (auto& formula : formulars_) {
+      // Tries to find a match.
+      if (strcmp(formula->name, name) == 0) {
+        auto info = std::make_unique<OutputInfo>();
+        info->print_cxxflags = true;
+        info->formula = formula.get();
+        infos_.push_back(std::move(info));
+        return;
+      }
+    }
+    FatalError("Failed to find library with name %s", name);
+  };
+
+  void Print() {
+    bool first_one = true;
+    for (auto& info : infos_) {
+      if (!info->print_cxxflags) continue;
+      if (first_one)
+        first_one = false;
+      else
+        std::cout << " ";
+      std::cout << info->formula->cxxflags;
+    }
+  }
 
  private:
   std::vector<std::unique_ptr<Formula>> formulars_;
   std::vector<std::unique_ptr<OutputInfo>> infos_;
 };
 
-}  // namespace
+}  // namespace Formula
+
+namespace Parser {
+
+class Parser {
+ public:
+  Parser(int argc, char** argv) : argc_(argc), argv_(argv){};
+
+  std::unique_ptr<Formula::Outputs> Parse() {
+    auto outputs = std::make_unique<Formula::Outputs>();
+
+    // Nothing parsed.
+    if (argc_ == 1) return outputs;
+
+    int current_index = 1;
+    while (current_index < argc_) {
+      if (strcmp(argv_[current_index], "--cxxflags") == 0) {
+        ParseCXXFLags(outputs.get(), &current_index);
+        continue;
+      }
+
+      FatalError("Failed to parse the flag %s", argv_[current_index]);
+    }
+
+    return outputs;
+  }
+
+ private:
+  void ParseCXXFLags(Formula::Outputs* outputs, int* current_index) {
+    while (true) {
+      ++*current_index;
+
+      // End of the tokens. So treat as empty arguments for --cxxflags.
+      if (*current_index == argc_) return;
+
+      // End of expected tokens.
+      if (argv_[*current_index][0] == '-') return;
+
+      outputs->RegisterCXXFlags(argv_[*current_index]);
+    }
+  };
+
+ private:
+  int argc_;
+  char** argv_;
+};
+}  // namespace Parser
 
 int main(int argc, char** argv) {
   std::string src{kEvaPath};
-  std::cout << src << " -> " << ExpandPath(src);
+  std::cout << src << " -> " << ExpandPath(src) << "\n";
+  Parser::Parser parser{argc, argv};
+  parser.Parse()->Print();
   return 0;
 }
