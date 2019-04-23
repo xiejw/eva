@@ -7,10 +7,11 @@
 
 #include <wordexp.h>
 
-constexpr char const* kEvaPath = "~/Workspace/eva";
+constexpr const char* kEvaPath = "~/Workspace/eva";
 
 namespace {
 
+/// Reports the fatal error to `stderr` and exits immediately.
 void FatalError(const char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
