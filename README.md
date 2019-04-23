@@ -1,5 +1,9 @@
 # My Core Library
 
+## Bootstrap
+
+    make -f tools/eva-config/Makefile eva-config
+
 ## Compile
 
     # Install the dependencies. Requires clang, cmake, make.
