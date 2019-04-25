@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 #include <wordexp.h>
@@ -27,12 +28,25 @@ void FatalError(const char* fmt, ...) {
 /// Expands the `path` according to the shell-style.
 std::string ExpandPath(const std::string& path) {
   wordexp_t exp_result;
-  if (int error = wordexp(path.c_str(), &exp_result, 0)) {
+  if (wordexp(path.c_str(), &exp_result, 0)) {
     FatalError("Failed to expand the path: %s", path.c_str());
   }
-  std::string result{exp_result.we_wordv[0]};
+
+  // The simpliest case: one output.
+  if (exp_result.we_wordc == 1) {
+    std::string result{exp_result.we_wordv[0]};
+    wordfree(&exp_result);
+    return result;
+  }
+
+  // For multiple outputs, concat them.
+  std::stringstream result;
+  for (uint i = 0; i < exp_result.we_wordc; ++i) {
+    if (i != 0) result << " ";
+    result << exp_result.we_wordv[i];
+  }
   wordfree(&exp_result);
-  return result;
+  return result.str();
 }
 
 }  // namespace
