@@ -1,4 +1,10 @@
-# My Core Library
+# My Core C++ Library
+
+Once a while, I need a super tiny binary for Docker. So, I use C++ for that
+purpose.
+
+However, I have to pull several C++ dependencies into the codebase, which is not
+nice. Plan to rewrite in Go in future.
 
 ## Bootstrap
 
