@@ -27,13 +27,19 @@ set(GFLAGS_LIB ${COMMON_LIB}/gflags/build/lib)
 target_include_directories(eva PUBLIC ${GFLAGS_INCLUDE})
 target_link_libraries(eva -L${GFLAGS_LIB} -lgflags)
 
-# # Tests
-# set(GTEST_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/googletest/googletest/include)
-# set(GTEST_LIB ${CMAKE_CURRENT_SOURCE_DIR}/../lib/googletest/build/lib)
-# add_subdirectory (mlvm/test)
-# add_executable(tests mlvm/test/main.cpp)
-# target_link_libraries(tests test_lib)
-# 
-# # Required flags for gtest.
-# target_include_directories(tests PUBLIC ${GTEST_INCLUDE})
-# target_link_libraries(tests -L${GTEST_LIB} -lgtest -lpthread)
+# Tests
+set(GTEST_INCLUDE ${COMMON_LIB}/googletest/googletest/include)
+set(GTEST_LIB ${COMMON_LIB}/googletest/build/lib)
+
+add_subdirectory (tests/lib/Expression)
+add_subdirectory (tests/lib/Support)
+
+add_executable(test_main tests/main.cpp)
+target_link_libraries(test_main Expression)
+target_link_libraries(test_main Support)
+target_link_libraries(test_main TestExpression)
+target_link_libraries(test_main TestSupport)
+
+# Required flags for gtest.
+target_include_directories(test_main PUBLIC ${GTEST_INCLUDE})
+target_link_libraries(test_main -L${GTEST_LIB} -lgtest -lpthread)

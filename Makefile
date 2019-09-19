@@ -1,5 +1,13 @@
+BIN=./build
+
+compile:
+	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make
+
 clean:
 	rm -rf ${BIN}
+
+test: compile
+	${BIN}/test_main
 
 # Docker related.
 docker: clean cron
