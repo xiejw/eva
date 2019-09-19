@@ -18,18 +18,10 @@ target_link_libraries(eva Expression)
 target_link_libraries(eva Support)
 
 # Common Libraries
-set(COMMON_LIB ${CMAKE_CURRENT_SOURCE_DIR}/../lib)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
 
-# Gflags
-set(GFLAGS_INCLUDE ${COMMON_LIB}/gflags/build/include)
-set(GFLAGS_LIB ${COMMON_LIB}/gflags/build/lib)
-
-target_include_directories(eva PUBLIC ${GFLAGS_INCLUDE})
-target_link_libraries(eva -L${GFLAGS_LIB} -lgflags)
-
-# Tests
-set(GTEST_INCLUDE ${COMMON_LIB}/googletest/googletest/include)
-set(GTEST_LIB ${COMMON_LIB}/googletest/build/lib)
+target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
+target_link_libraries(eva ${GFLAGS_LIBS})
 
 add_subdirectory (tests/lib/Expression)
 add_subdirectory (tests/lib/Support)
@@ -40,6 +32,5 @@ target_link_libraries(test_main Support)
 target_link_libraries(test_main TestExpression)
 target_link_libraries(test_main TestSupport)
 
-# Required flags for gtest.
-target_include_directories(test_main PUBLIC ${GTEST_INCLUDE})
-target_link_libraries(test_main -L${GTEST_LIB} -lgtest -lpthread)
+target_include_directories(test_main PUBLIC ${GTEST_INCLUDES})
+target_link_libraries(test_main ${GTEST_LIBS})
