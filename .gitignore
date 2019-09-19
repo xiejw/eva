@@ -3,8 +3,5 @@
 *.swo
 
 # CXX output
-core
 build
 
-# CXX dependendies
-dependencies
