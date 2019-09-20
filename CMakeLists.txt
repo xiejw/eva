@@ -17,6 +17,7 @@ set(TARGET_LIBS ${TARGET_LIBS} Expression)
 set(TARGET_LIBS ${TARGET_LIBS} Support)
 
 add_executable(eva tools/cron/main.cpp)
+target_link_libraries(eva -static)  # Static binary.
 target_link_libraries(eva ${TARGET_LIBS})
 
 # Common Libraries

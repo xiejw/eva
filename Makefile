@@ -1,7 +1,7 @@
 BIN=./build
 
 compile:
-	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make
+	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make -j
 
 clean:
 	rm -rf ${BIN}
