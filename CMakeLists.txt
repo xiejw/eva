@@ -17,7 +17,7 @@ set(TARGET_LIBS ${TARGET_LIBS} Expression)
 set(TARGET_LIBS ${TARGET_LIBS} Support)
 
 add_executable(eva tools/cron/main.cpp)
-if(LINUX)
+if(UNIX AND NOT APPLE)
   message("Build static binary for eva")
   target_link_libraries(eva -static)  # Static binary.
 endif()
