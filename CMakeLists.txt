@@ -1,31 +1,37 @@
 cmake_minimum_required(VERSION 3.5)
 project(eva)
 
-# Set the C++14 standard
+# Set the C++14 standard and Clang for compiler.
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
+
+# Adjust some options.
 add_compile_options(-Wall)
 
 # I../includes
 include_directories(.)
 
+# Adding dependencies.
 add_subdirectory (lib/Support)
 add_subdirectory (lib/Cron/Expression)
 
 set(TARGET_LIBS ${TARGET_LIBS} Expression)
 set(TARGET_LIBS ${TARGET_LIBS} Support)
 
+# Executable
 add_executable(eva tools/cron/main.cpp)
 if(UNIX AND NOT APPLE)
   message("Build static binary for eva")
   target_link_libraries(eva -static)  # Static binary.
 endif()
+
 target_link_libraries(eva ${TARGET_LIBS})
 
 # Common Libraries
 include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
 
+# Add gflags for eva.
 target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(eva ${GFLAGS_LIBS})
 
@@ -39,5 +45,6 @@ add_executable(test_main tests/main.cpp)
 target_link_libraries(test_main ${TARGET_LIBS})
 target_link_libraries(test_main ${TEST_LIBS})
 
+# Add gtest for test.
 target_include_directories(test_main PUBLIC ${GTEST_INCLUDES})
 target_link_libraries(test_main ${GTEST_LIBS})
