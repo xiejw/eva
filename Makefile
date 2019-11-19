@@ -9,6 +9,12 @@ clean:
 test: compile
 	${BIN}/test_main
 
+fmt:
+	docker run --rm -ti \
+    --user `id -u ${USER}`:`id -g ${USER}` \
+    -v `pwd`:/source xiejw/clang-format \
+    /clang-format.sh .
+
 # Docker related.
 docker: clean cron
 	docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron build
