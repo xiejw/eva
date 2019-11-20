@@ -40,9 +40,6 @@ target_link_libraries(eva ${GFLAGS_LIBS})
 # {{{2 Tests.
 new_test_exec(test_main tests/main.cpp)
 
-add_subdirectory (tests/lib/Expression)
-add_subdirectory (tests/lib/Support)
-
 # TEST_LIBS is modified in all CMakeLists under tests folder.
 target_link_libraries(test_main ${TARGET_LIBS})
 target_link_libraries(test_main ${TEST_LIBS})
