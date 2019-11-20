@@ -4,6 +4,8 @@ add_library(Expression
   Field.h
 )
 
+set(SRC_LIBS ${SRC_LIBS} Expression PARENT_SCOPE)
+
 add_library(TestExpression OBJECT
   ExpressionTest.cpp
 )

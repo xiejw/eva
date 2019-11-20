@@ -23,15 +23,12 @@ include_directories(.)
 add_subdirectory (lib/Support)
 add_subdirectory (lib/Cron/Expression)
 
-set(TARGET_LIBS ${TARGET_LIBS} Expression)
-set(TARGET_LIBS ${TARGET_LIBS} Support)
-
 # {{{2 Executables.
 new_executable(eva tools/cron/main.cpp)
  
 # {{{3 Link Libraries.
 
-target_link_libraries(eva ${TARGET_LIBS})
+target_link_libraries(eva ${SRC_LIBS})
 
 # Add gflags for eva.
 target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
@@ -41,6 +38,6 @@ target_link_libraries(eva ${GFLAGS_LIBS})
 new_test_exec(test_main tests/main.cpp)
 
 # TEST_LIBS is modified in all CMakeLists under tests folder.
-target_link_libraries(test_main ${TARGET_LIBS})
+target_link_libraries(test_main ${SRC_LIBS})
 target_link_libraries(test_main ${TEST_LIBS})
 
