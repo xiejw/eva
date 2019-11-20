@@ -24,7 +24,7 @@ add_subdirectory (lib/Support)
 add_subdirectory (lib/Cron/Expression)
 
 # {{{2 Executables.
-new_executable(eva tools/cron/main.cpp)
+new_executable(eva cmd/cron/main.cpp)
  
 # {{{3 Link Libraries.
 
