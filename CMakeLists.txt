@@ -27,14 +27,6 @@ set(TARGET_LIBS ${TARGET_LIBS} Expression)
 set(TARGET_LIBS ${TARGET_LIBS} Support)
 
 # {{{2 Executables.
-function(new_executable NAME CPP_FILE)
-  add_executable(${NAME} ${CPP_FILE})
-  if(UNIX AND NOT APPLE)
-    message("Build static binary for ${NAME}")
-    target_link_libraries(${NAME} -static)  # Static binary.
-  endif()
-endfunction()
- 
 new_executable(eva tools/cron/main.cpp)
  
 # {{{3 Link Libraries.
@@ -46,15 +38,12 @@ target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(eva ${GFLAGS_LIBS})
 
 # {{{2 Tests.
-add_subdirectory (tests/lib/Expression)
-set(TEST_LIBS ${TEST_LIBS} TestExpression)
-add_subdirectory (tests/lib/Support)
-set(TEST_LIBS ${TEST_LIBS} TestSupport)
+new_test_exec(test_main tests/main.cpp)
 
-add_executable(test_main tests/main.cpp)
+add_subdirectory (tests/lib/Expression)
+add_subdirectory (tests/lib/Support)
+
+# TEST_LIBS is modified in all CMakeLists under tests folder.
 target_link_libraries(test_main ${TARGET_LIBS})
 target_link_libraries(test_main ${TEST_LIBS})
 
-# Add gtest for test.
-target_include_directories(test_main PUBLIC ${GTEST_INCLUDES})
-target_link_libraries(test_main ${GTEST_LIBS})
