@@ -3,18 +3,10 @@
 Once a while, I need a super tiny binary for Docker. So, I use C++ for that
 purpose.
 
-However, I have to pull several C++ dependencies into the codebase, which is not
-nice. Plan to rewrite in Go in future.
-
-## Bootstrap
-
-    make -f tools/eva-config/Makefile eva-config
-
 ## Compile
 
-    # Install the dependencies. Requires clang, cmake, make.
-    make update
-    make cron
+    # Requires clang, cmake, make.
+    make
 
     # Optional
     make test
