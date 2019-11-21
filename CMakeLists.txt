@@ -35,7 +35,7 @@ target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(eva ${GFLAGS_LIBS})
 
 # {{{2 Tests.
-new_test_exec(test_main tests/main.cpp)
+new_test_exec(test_main cmd/tests/main.cpp)
 
 # TEST_LIBS is modified in all CMakeLists under tests folder.
 target_link_libraries(test_main ${SRC_LIBS})
