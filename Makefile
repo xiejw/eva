@@ -1,10 +1,11 @@
-BIN=./build
+BIN=./.build
+DOCKER=./.docker
 
 compile:
 	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make -j
 
 clean:
-	rm -rf ${BIN}
+	rm -rf ${BIN} ${DOCKER}
 
 test: compile
 	${BIN}/test_main
@@ -16,8 +17,10 @@ fmt:
     /clang-format.sh .
 
 # Docker related.
-docker: clean cron
-	docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron build
+docker: clean compile
+	mkdir -p ${DOCKER} && \
+		cp ${BIN}/cron ${DOCKER} && \
+		docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron ${DOCKER}
 
 push_docker:
 	docker push xiejw/cron

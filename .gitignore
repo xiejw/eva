@@ -3,5 +3,5 @@
 *.swo
 
 # CXX output
-build
+.build
 

@@ -1,5 +1,5 @@
 # vim: filetype=dockerfile
-FROM xiejw/ubuntu
+FROM xiejw/baseimage
 
 COPY cron /
 
