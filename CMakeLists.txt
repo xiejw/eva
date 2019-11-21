@@ -24,15 +24,15 @@ add_subdirectory (lib/Support)
 add_subdirectory (lib/Cron/Expression)
 
 # {{{2 Executables.
-new_executable(eva cmd/cron/main.cpp)
+new_executable(cron cmd/cron/main.cpp)
  
 # {{{3 Link Libraries.
 
-target_link_libraries(eva ${SRC_LIBS})
+target_link_libraries(cron ${SRC_LIBS})
 
-# Add gflags for eva.
-target_include_directories(eva PUBLIC ${GFLAGS_INCLUDES})
-target_link_libraries(eva ${GFLAGS_LIBS})
+# Add gflags for cron.
+target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
+target_link_libraries(cron ${GFLAGS_LIBS})
 
 # {{{2 Tests.
 new_test_exec(test_main cmd/tests/main.cpp)
