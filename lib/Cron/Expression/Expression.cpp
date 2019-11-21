@@ -9,8 +9,6 @@ namespace Cron {
 
 namespace {
 
-using Time = time_t;
-
 enum Component { minute, hour, day, dayOfWeek, month };
 
 /// Rewinds all components in the candidate up to `up_to`. For example, if
@@ -53,14 +51,18 @@ int value(tm* time_tm, Component component) {
     case dayOfWeek:
       return time_tm->tm_wday;
     case month:
-      // Mon starts with 0.
+      // Month starts with 0 in `tm`.
       return time_tm->tm_mon + 1;
     default:
       FatalError("Unexpected component: %d", component);
   }
 }
 
-/// Increases the component of time_tm by 1.
+// Increases the component of `time_tm` by 1. Adjusted all other components
+// accordingly.
+//
+// For example: if the minute reaches 60, minute will be reset as 0 and hour
+// will be increaesed.
 void increase(tm* time_tm, Component component) {
   switch (component) {
     case minute:
@@ -84,6 +86,9 @@ void increase(tm* time_tm, Component component) {
   mktime(time_tm);
 }
 
+// Focusing only on the component inside the `candidate`, searching the next
+// value, by keeping increasing it, until matching the `field` of the
+// expression.
 Error searchNextMatching(const tm* const start_time, const Field* const field,
                          const Component component, tm* candidate,
                          bool* changed) {

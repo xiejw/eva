@@ -11,6 +11,8 @@ namespace Cron {
 
 class Expression {
  public:
+  using Time = time_t;
+
   // Construcotr. Defaults to `* * * * *`.
   Expression(std::unique_ptr<Field> minute = Field::MakeAny(),
              std::unique_ptr<Field> hour = Field::MakeAny(),
@@ -23,11 +25,13 @@ class Expression {
         month_(std::move(month)),
         dayOfWeek_(std::move(dayOfWeek)) {}
 
-  // Finds next matching time, filled in `next_time`.
-  Error Next(time_t start_time, time_t *next_time);
+  // Finds next matching time, filled in `next_time`, starting from
+  // `start_time`.
+  Error Next(Time start_time, Time *next_time);
 
  private:
-  bool Match(time_t time);
+  // Tests whether `time` matches the expression.
+  bool Match(Time time);
 
  private:
   std::unique_ptr<Field> minute_;
