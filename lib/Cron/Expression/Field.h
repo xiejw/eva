@@ -9,24 +9,29 @@
 namespace eva {
 namespace Cron {
 
+// Representing a field in cron expression.
 class Field {
  private:
   enum Kind { any, singleValue };
   using ValueType = uint;
 
  public:
+  // Use factory methods instead.
   Field() = delete;
 
+  // Match `*`.
   static std::unique_ptr<Field> MakeAny() {
     auto *field = new Field(any, 0);
     return std::unique_ptr<Field>(field);
   }
 
+  // Match a single value.
   static std::unique_ptr<Field> MakeSingleValue(ValueType value) {
     auto *field = new Field(singleValue, value);
     return std::unique_ptr<Field>(field);
   }
 
+  // Tests whether `value` matches this field.
   bool Match(ValueType value) const {
     switch (kind_) {
       case any:
