@@ -5,3 +5,5 @@
 # CXX output
 .build
 
+# Docker context
+.docker

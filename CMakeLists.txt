@@ -20,8 +20,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
 include_directories(.)
 
 # {{{2 Dependencies.
-add_subdirectory (lib/Support)
+# 
+# Putting supporting dependencies in bottom.
 add_subdirectory (lib/Cron/Expression)
+add_subdirectory (lib/Support)
 
 # {{{2 Executables.
 new_executable(cron cmd/cron/main.cpp)
