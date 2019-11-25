@@ -26,16 +26,18 @@ add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/Support)
 
 # {{{2 Executables.
+# {{{3 Cron
 new_executable(cron cmd/cron/main.cpp)
 
-# {{{3 Link Libraries.
+target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
 
 target_link_libraries(cron ${CRON_LIBS})
 target_link_libraries(cron ${SUPPORT_LIBS})
-
-# Add gflags for cron.
-target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(cron ${GFLAGS_LIBS})
+
+# {{{3 Scanner
+new_executable(scanner cmd/scanner/main.cpp)
+target_link_libraries(scanner ${SUPPORT_LIBS})
 
 # {{{2 Tests.
 new_test_exec(test_cron cmd/tests/main.cpp)

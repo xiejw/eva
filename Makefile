@@ -7,6 +7,12 @@ compile:
 clean:
 	rm -rf ${BIN} ${DOCKER}
 
+cron: compile
+	${BIN}/cron
+
+scanner: compile
+	${BIN}/scanner
+
 test: compile
 	${BIN}/test_cron
 
