@@ -21,7 +21,10 @@ void ListFiles(const char* dirpath) {
     if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
       continue;  // Skip . and ..
 
-    printf("%s\n", dp->d_name);
+    printf("%s", dp->d_name);
+    if (dp->d_type == DT_DIR) printf("@D");
+
+    printf("\n");
   }
 
   if (errno != 0) eva::FatalError("readdir");
