@@ -23,6 +23,7 @@ include_directories(.)
 #
 # Putting supporting dependencies in bottom.
 add_subdirectory (lib/Cron/Expression)
+add_subdirectory (lib/FileSystem)
 add_subdirectory (lib/Support)
 
 # {{{2 Executables.
@@ -37,6 +38,7 @@ target_link_libraries(cron ${GFLAGS_LIBS})
 
 # {{{3 Scanner
 new_executable(scanner cmd/scanner/main.cpp)
+target_link_libraries(scanner ${FILESYSTEM_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
 
 # {{{2 Tests.
