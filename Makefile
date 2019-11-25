@@ -4,13 +4,16 @@ DOCKER=./.docker
 compile:
 	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make -j
 
+compile_only:
+	cd ${BIN} && make -j --no-print-directory
+
 clean:
 	rm -rf ${BIN} ${DOCKER}
 
-cron: compile
+cron: compile_only
 	${BIN}/cron
 
-scanner: compile
+scanner: compile_only
 	${BIN}/scanner
 
 test: compile
