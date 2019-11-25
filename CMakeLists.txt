@@ -20,26 +20,28 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
 include_directories(.)
 
 # {{{2 Dependencies.
-# 
+#
 # Putting supporting dependencies in bottom.
 add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/Support)
 
 # {{{2 Executables.
 new_executable(cron cmd/cron/main.cpp)
- 
+
 # {{{3 Link Libraries.
 
-target_link_libraries(cron ${SRC_LIBS})
+target_link_libraries(cron ${CRON_LIBS})
+target_link_libraries(cron ${SUPPORT_LIBS})
 
 # Add gflags for cron.
 target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(cron ${GFLAGS_LIBS})
 
 # {{{2 Tests.
-new_test_exec(test_main cmd/tests/main.cpp)
+new_test_exec(test_cron cmd/tests/main.cpp)
 
 # TEST_LIBS is modified in all CMakeLists under tests folder.
-target_link_libraries(test_main ${SRC_LIBS})
-target_link_libraries(test_main ${TEST_LIBS})
+target_link_libraries(test_cron ${CRON_LIBS})
+target_link_libraries(test_cron ${SUPPORT_LIBS})
+target_link_libraries(test_cron ${CRON_TEST_LIBS})
 

@@ -8,7 +8,7 @@ clean:
 	rm -rf ${BIN} ${DOCKER}
 
 test: compile
-	${BIN}/test_main
+	${BIN}/test_cron
 
 fmt:
 	docker run --rm -ti \

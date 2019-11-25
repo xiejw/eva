@@ -3,7 +3,7 @@ add_library(Support
   Error.h
 )
 
-set(SRC_LIBS ${SRC_LIBS} Support PARENT_SCOPE)
+set(SUPPORT_LIBS ${SUPPORT_LIBS} Support PARENT_SCOPE)
 
 add_library(TestSupport OBJECT
   ErrorTest.cpp
