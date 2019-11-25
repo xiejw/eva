@@ -1,5 +1,5 @@
-#ifndef LIB_SUPPORT_TYPES
-#define LIB_SUPPORT_TYPES
+#ifndef EVA_LIB_SUPPORT_TYPES
+#define EVA_LIB_SUPPORT_TYPES
 
 #ifdef __APPLE__
 // Required for unit on macOS.

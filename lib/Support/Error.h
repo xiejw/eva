@@ -1,5 +1,5 @@
-#ifndef LIB_SUPPORT_ERROR
-#define LIB_SUPPORT_ERROR
+#ifndef EVA_LIB_SUPPORT_ERROR
+#define EVA_LIB_SUPPORT_ERROR
 
 namespace eva {
 
