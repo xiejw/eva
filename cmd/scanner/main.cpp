@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <iostream>
+#include <cstring>
 
 #include "lib/Support/Error.h"
 
