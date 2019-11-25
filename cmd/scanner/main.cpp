@@ -1,10 +1,23 @@
 #include <dirent.h>
-#include <iostream>
 #include <cstring>
+#include <iostream>
+#include <string>
 
 #include "lib/Support/Error.h"
 
 namespace {
+
+struct Stat {
+  std::string f_path;
+  bool is_folder;
+};
+
+void PrintFileStat(const Stat& stat) {
+  std::cout << stat.f_path;
+  if (stat.is_folder) std::cout << "@D";
+  std::cout << "\n";
+}
+
 void ListFiles(const char* dirpath) {
   DIR* dirp;
   dirp = opendir(dirpath);
@@ -22,10 +35,9 @@ void ListFiles(const char* dirpath) {
     if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
       continue;  // Skip . and ..
 
-    printf("%s", dp->d_name);
-    if (dp->d_type == DT_DIR) printf("@D");
-
-    printf("\n");
+    // d_type is not POSIX.
+    PrintFileStat(
+        Stat{/* f_path =*/dp->d_name, /* is_folder =*/dp->d_type == DT_DIR});
   }
 
   if (errno != 0) eva::FatalError("readdir");
