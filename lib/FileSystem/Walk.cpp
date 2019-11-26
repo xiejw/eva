@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include "lib/FileSystem/Utility.h"
 #include "lib/FileSystem/Walk.h"
 #include "lib/Support/Error.h"
 
@@ -12,17 +13,6 @@ namespace eva {
 namespace fs {
 
 namespace {
-
-std::string PathJoin(const char* dir, const char* f_name) {
-  if (dir == nullptr || strcmp(dir, "") == 0) return f_name;
-
-  std::string r{dir};
-  if (f_name != nullptr && strcmp(f_name, "") != 0) {
-    r += "/";
-    r += f_name;
-  }
-  return r;
-}
 
 void ListFiles(const char*, const char*);
 
@@ -70,7 +60,7 @@ void ListFiles(const char* root_path, const char* relative_d) {
       }
 
       WalkStat st{/*full_path=*/full_path,
-                  /*d_path*/ (relative_d == nullptr) ? "" : relative_d,
+                  /*d_path*/ relative_d,
                   /*f_path=*/f_path,
                   /* is_folder =*/dp->d_type == DT_DIR,
                   /*size=*/sb.st_size};
@@ -84,7 +74,7 @@ void ListFiles(const char* root_path, const char* relative_d) {
 }
 }  // namespace
 
-void WalkTree(const char* root_path) { ListFiles(root_path, nullptr); }
+void WalkTree(const char* root_path) { ListFiles(root_path, ""); }
 
 }  // namespace fs
 }  // namespace eva

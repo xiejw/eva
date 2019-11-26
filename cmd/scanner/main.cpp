@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "lib/FileSystem/Walk.h"
+#include "lib/FileSystem/FileSystem.h"
 
 int main(int argc, char** argv) {
   std::cout << "Hello\n";
