@@ -74,7 +74,9 @@ void ListFiles(const char* root_path, const char* relative_d) {
 }
 }  // namespace
 
-void WalkTree(const char* root_path) { ListFiles(root_path, ""); }
+void WalkTree(const char* root_path, void (*callback)(const WalkStat& stat)) {
+  ListFiles(root_path, "");
+}
 
 }  // namespace fs
 }  // namespace eva

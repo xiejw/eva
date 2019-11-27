@@ -1,5 +1,7 @@
 #include "lib/FileSystem/Utility.h"
 
+#include <cstring>
+
 namespace eva {
 namespace fs {
 

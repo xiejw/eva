@@ -4,6 +4,6 @@
 
 int main(int argc, char** argv) {
   std::cout << "Hello\n";
-  eva::fs::WalkTree(".");
+  eva::fs::WalkTree(".", nullptr);
   return 0;
 }

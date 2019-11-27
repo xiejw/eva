@@ -21,7 +21,7 @@ struct WalkStat {
   long long size;
 };
 
-void WalkTree(const char* root_path);
+void WalkTree(const char* root_path, void (*callback)(const WalkStat& stat));
 
 }  // namespace fs
 }  // namespace eva
