@@ -21,7 +21,7 @@ void ListFiles(const char*, const char*, WalkCallback callback);
 void PrintFileStat(const char* root_path, const WalkStat& stat,
                    WalkCallback callback) {
   // Common fiter
-  if (stat.is_folder && stat.f_path.find(".", 0) == 0) return;
+  if (stat.f_path.find(".", 0) == 0) return;
 
   callback(stat);
 
