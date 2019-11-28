@@ -48,4 +48,5 @@ new_test_exec(test_cron cmd/tests/main.cpp)
 target_link_libraries(test_cron ${CRON_LIBS})
 target_link_libraries(test_cron ${SUPPORT_LIBS})
 target_link_libraries(test_cron ${CRON_TEST_LIBS})
+target_link_libraries(test_cron ${TEST_LIBS})
 

@@ -4,7 +4,7 @@
 #include "lib/Support/Error.h"
 
 namespace eva {
-namespace Cron {
+namespace cron {
 
 namespace {
 
@@ -191,5 +191,5 @@ mainLoop:
   return kOK;
 }
 
-}  // namespace Cron
+}  // namespace cron
 }  // namespace eva

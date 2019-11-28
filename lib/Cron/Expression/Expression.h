@@ -7,7 +7,7 @@
 #include "lib/Support/Error.h"
 
 namespace eva {
-namespace Cron {
+namespace cron {
 
 class Expression {
  public:
@@ -41,7 +41,7 @@ class Expression {
   std::unique_ptr<Field> dayOfWeek_;
 };
 
-}  // namespace Cron
+}  // namespace cron
 }  // namespace eva
 
 #endif

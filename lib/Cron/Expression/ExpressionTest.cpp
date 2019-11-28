@@ -5,7 +5,7 @@
 #include "lib/Cron/Expression/Field.h"
 
 namespace eva {
-namespace Cron {
+namespace cron {
 
 namespace {
 
@@ -74,5 +74,5 @@ TEST_F(ExpressionTest, EndToEnd) {
 }
 
 }  // namespace
-}  // namespace Cron
+}  // namespace cron
 }  // namespace eva

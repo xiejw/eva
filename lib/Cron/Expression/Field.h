@@ -7,7 +7,7 @@
 #include "lib/Support/Types.h"
 
 namespace eva {
-namespace Cron {
+namespace cron {
 
 // Representing a field in cron expression.
 class Field {
@@ -55,7 +55,7 @@ class Field {
   ValueType value_;
 };
 
-}  // namespace Cron
+}  // namespace cron
 }  // namespace eva
 
 #endif
