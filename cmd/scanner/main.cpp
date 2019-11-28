@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "lib/Crypto/Sha256.h"
 #include "lib/FileSystem/FileSystem.h"
 
 void callback(const eva::fs::WalkStat& stat) {
@@ -11,5 +12,9 @@ void callback(const eva::fs::WalkStat& stat) {
 
 int main(int argc, char** argv) {
   eva::fs::WalkTree(".", callback);
+  std::string input = "grape";
+  std::string output1 = sha256(input);
+
+  std::cout << "sha256('" << input << "'):" << output1 << std::endl;
   return 0;
 }
