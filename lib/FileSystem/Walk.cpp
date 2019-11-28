@@ -1,6 +1,8 @@
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -38,31 +40,43 @@ void ListFiles(const char* root_path, const char* relative_d,
     return;
   }
 
-  struct dirent* dp;
-  for (;;) {
-    errno = 0;  // To distinguish error from end-of-directory
-    dp = readdir(dirp);
-    if (dp == nullptr) break;
+  {
+    std::vector<std::unique_ptr<WalkStat>> files{};
+    struct dirent* dp;
+    for (;;) {
+      errno = 0;  // To distinguish error from end-of-directory
+      dp = readdir(dirp);
+      if (dp == nullptr) break;
 
-    if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
-      continue;  // Skip . and ..
+      if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
+        continue;  // Skip . and ..
 
-    {
-      struct stat sb;
-      auto f_path = dp->d_name;
-      auto full_path = PathJoin(d_path.c_str(), f_path);
-      if (stat(full_path.c_str(), &sb) == -1) {
-        printf("error stat %s: %d\n", full_path.c_str(), errno);
-        continue;
+      {
+        struct stat sb;
+        auto f_path = dp->d_name;
+        auto full_path = PathJoin(d_path.c_str(), f_path);
+        if (stat(full_path.c_str(), &sb) == -1) {
+          printf("error stat %s: %d\n", full_path.c_str(), errno);
+          continue;
+        }
+
+        auto* st = new WalkStat{/*full_path=*/full_path,
+                                /*d_path*/ relative_d,
+                                /*f_path=*/f_path,
+                                /*path=*/PathJoin(relative_d, f_path),
+                                /* is_folder =*/dp->d_type == DT_DIR,
+                                /*size=*/sb.st_size};
+        files.push_back(std::unique_ptr<WalkStat>{st});
       }
+    }
 
-      WalkStat st{/*full_path=*/full_path,
-                  /*d_path*/ relative_d,
-                  /*f_path=*/f_path,
-                  /*path=*/PathJoin(relative_d, f_path),
-                  /* is_folder =*/dp->d_type == DT_DIR,
-                  /*size=*/sb.st_size};
-      PrintFileStat(root_path, st, callback);
+    std::sort(
+        files.begin(), files.end(),
+        [](const std::unique_ptr<WalkStat>& a,
+           const std::unique_ptr<WalkStat>& b) { return a->path < b->path; });
+
+    for (auto& stat : files) {
+      PrintFileStat(root_path, *stat, callback);
     }
   }
 
