@@ -11,17 +11,22 @@ struct WalkStat {
   // processs.
   std::string full_path;
 
-  // Relative path to root.
+  // Relative dir path to root.
   std::string d_path;
 
   // The file (dir) name.
   std::string f_path;
 
+  // Bascially `d_path/f_path`.
+  std::string path;
+
   bool is_folder;
   long long size;
 };
 
-void WalkTree(const char* root_path, void (*callback)(const WalkStat& stat));
+using WalkCallback = std::function<void(const WalkStat& stat)>;
+
+void WalkTree(const char* root_path, WalkCallback callback);
 
 }  // namespace fs
 }  // namespace eva

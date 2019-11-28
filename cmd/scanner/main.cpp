@@ -2,8 +2,14 @@
 
 #include "lib/FileSystem/FileSystem.h"
 
+void callback(const eva::fs::WalkStat& stat) {
+  if (stat.is_folder)
+    std::cout << "@\t" << stat.path.c_str() << "\n";
+  else
+    std::cout << stat.size << "\t" << stat.path.c_str() << "\n";
+}
+
 int main(int argc, char** argv) {
-  std::cout << "Hello\n";
-  eva::fs::WalkTree(".", nullptr);
+  eva::fs::WalkTree(".", callback);
   return 0;
 }

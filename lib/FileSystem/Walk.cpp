@@ -14,25 +14,22 @@ namespace fs {
 
 namespace {
 
-void ListFiles(const char*, const char*);
+void ListFiles(const char*, const char*, WalkCallback callback);
 
-void PrintFileStat(const char* root_path, const WalkStat& stat) {
+void PrintFileStat(const char* root_path, const WalkStat& stat,
+                   WalkCallback callback) {
   // Common fiter
   if (stat.is_folder && stat.f_path.find(".", 0) == 0) return;
 
-  auto relative_path = PathJoin(stat.d_path.c_str(), stat.f_path.c_str());
-  if (stat.is_folder)
-    std::cout << "@\t" << relative_path.c_str();
-  else
-    std::cout << stat.size << "\t" << relative_path.c_str();
-  std::cout << "\n";
+  callback(stat);
 
   if (stat.is_folder) {
-    ListFiles(root_path, relative_path.c_str());
+    ListFiles(root_path, stat.path.c_str(), callback);
   }
 }
 
-void ListFiles(const char* root_path, const char* relative_d) {
+void ListFiles(const char* root_path, const char* relative_d,
+               WalkCallback callback) {
   auto d_path = PathJoin(root_path, relative_d);
   DIR* dirp;
   dirp = opendir(d_path.c_str());
@@ -62,9 +59,10 @@ void ListFiles(const char* root_path, const char* relative_d) {
       WalkStat st{/*full_path=*/full_path,
                   /*d_path*/ relative_d,
                   /*f_path=*/f_path,
+                  /*path=*/PathJoin(relative_d, f_path),
                   /* is_folder =*/dp->d_type == DT_DIR,
                   /*size=*/sb.st_size};
-      PrintFileStat(root_path, st);
+      PrintFileStat(root_path, st, callback);
     }
   }
 
@@ -74,8 +72,8 @@ void ListFiles(const char* root_path, const char* relative_d) {
 }
 }  // namespace
 
-void WalkTree(const char* root_path, void (*callback)(const WalkStat& stat)) {
-  ListFiles(root_path, "");
+void WalkTree(const char* root_path, WalkCallback callback) {
+  ListFiles(root_path, "", callback);
 }
 
 }  // namespace fs
