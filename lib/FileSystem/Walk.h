@@ -1,6 +1,7 @@
 #ifndef EVA_LIB_FILESYSTEM_WALK
 #define EVA_LIB_FILESYSTEM_WALK
 
+#include <functional>
 #include <string>
 
 namespace eva {
