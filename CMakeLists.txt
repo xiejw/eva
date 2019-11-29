@@ -48,7 +48,9 @@ new_test_exec(test cmd/tests/main.cpp)
 
 # We combine all tests in one binary for convenience.
 target_link_libraries(test ${CRON_LIBS})
-target_link_libraries(test ${SUPPORT_LIBS})
 target_link_libraries(test ${CRON_TEST_LIBS})
+target_link_libraries(test ${CRYPTO_LIBS})
+target_link_libraries(test ${TEST_CRYPTO_LIBS})
+target_link_libraries(test ${SUPPORT_LIBS})
 target_link_libraries(test ${TEST_LIBS})
 
