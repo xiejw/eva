@@ -3,6 +3,9 @@
 
 #include <string>
 
+namespace eva {
+namespace crypto {
+
 class SHA256 {
  protected:
   typedef unsigned char uint8;
@@ -49,4 +52,8 @@ std::string sha256(std::string input);
     *(x) = ((uint32) * ((str) + 3)) | ((uint32) * ((str) + 2) << 8) |       \
            ((uint32) * ((str) + 1) << 16) | ((uint32) * ((str) + 0) << 24); \
   }
+
+}  // namespace crypto
+}  // namespace eva
+
 #endif

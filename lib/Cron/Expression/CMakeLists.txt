@@ -11,4 +11,4 @@ add_library(TestExpression OBJECT
 )
 
 target_include_directories(TestExpression PUBLIC ${GTEST_INCLUDES})
-set(CRON_TEST_LIBS ${CRON_TEST_LIBS} TestExpression PARENT_SCOPE)
+set(TEST_CRON_LIBS ${TEST_CRON_LIBS} TestExpression PARENT_SCOPE)

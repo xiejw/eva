@@ -5,6 +5,7 @@
 #include "gtest/gtest.h"
 
 namespace eva {
+namespace crypto {
 namespace {
 
 class Sha256Test : public ::testing::Test {};
@@ -22,4 +23,5 @@ TEST_F(Sha256Test, CheckGrape) {
 }
 
 }  // namespace
+}  // namespace crypto
 }  // namespace eva

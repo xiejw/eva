@@ -10,4 +10,4 @@ add_library(TestSupport OBJECT
 )
 
 target_include_directories(TestSupport PUBLIC ${GTEST_INCLUDES})
-set(TEST_LIBS ${TEST_LIBS} TestSupport PARENT_SCOPE)
+set(TEST_SUPPORT_LIBS ${TEST_SUPPORT_LIBS} TestSupport PARENT_SCOPE)

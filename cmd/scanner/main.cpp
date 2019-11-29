@@ -3,6 +3,8 @@
 #include "lib/Crypto/Sha256.h"
 #include "lib/FileSystem/FileSystem.h"
 
+using eva::crypto::sha256;
+
 void callback(const eva::fs::WalkStat& stat) {
   if (stat.is_folder)
     std::cout << "@\t" << stat.path.c_str() << "\n";

@@ -3,6 +3,9 @@
 #include <cstring>
 #include <fstream>
 
+namespace eva {
+namespace crypto {
+
 const unsigned int SHA256::sha256_k[64] =  // UL = uint32
     {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
      0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -121,3 +124,6 @@ std::string sha256(std::string input) {
     sprintf(buf + i * 2, "%02x", digest[i]);
   return std::string(buf);
 }
+
+}  // namespace crypto
+}  // namespace eva
