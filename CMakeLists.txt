@@ -44,11 +44,11 @@ target_link_libraries(scanner ${CRYPTO_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
 
 # {{{2 Tests.
-new_test_exec(test_cron cmd/tests/main.cpp)
+new_test_exec(test cmd/tests/main.cpp)
 
-# TEST_LIBS is modified in all CMakeLists under tests folder.
-target_link_libraries(test_cron ${CRON_LIBS})
-target_link_libraries(test_cron ${SUPPORT_LIBS})
-target_link_libraries(test_cron ${CRON_TEST_LIBS})
-target_link_libraries(test_cron ${TEST_LIBS})
+# We combine all tests in one binary for convenience.
+target_link_libraries(test ${CRON_LIBS})
+target_link_libraries(test ${SUPPORT_LIBS})
+target_link_libraries(test ${CRON_TEST_LIBS})
+target_link_libraries(test ${TEST_LIBS})
 

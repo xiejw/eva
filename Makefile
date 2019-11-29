@@ -17,7 +17,7 @@ scanner: compile_only
 	${BIN}/scanner
 
 test: compile
-	${BIN}/test_cron
+	${BIN}/test
 
 fmt:
 	docker run --rm -ti \
