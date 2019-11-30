@@ -3,7 +3,8 @@
 *.swo
 
 # CXX output
-.build
+.debug
+.release
 
 # Docker context
 .docker

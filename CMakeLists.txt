@@ -48,15 +48,19 @@ target_link_libraries(scanner ${CRYPTO_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
 
 # {{{2 Tests.
-new_test_exec(test cmd/tests/main.cpp)
+if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
+  message("Generate test for debug mode")
+  new_test_exec(test cmd/tests/main.cpp)
 
-# We combine all tests in one binary for convenience.
-target_link_libraries(test ${CRON_LIBS})
-target_link_libraries(test ${TEST_CRON_LIBS})
+  # We combine all tests in one binary for convenience.
+  target_link_libraries(test ${CRON_LIBS})
+  target_link_libraries(test ${TEST_CRON_LIBS})
 
-target_link_libraries(test ${CRYPTO_LIBS})
-target_link_libraries(test ${TEST_CRYPTO_LIBS})
+  target_link_libraries(test ${CRYPTO_LIBS})
+  target_link_libraries(test ${TEST_CRYPTO_LIBS})
 
-target_link_libraries(test ${SUPPORT_LIBS})
-target_link_libraries(test ${TEST_SUPPORT_LIBS})
-
+  target_link_libraries(test ${SUPPORT_LIBS})
+  target_link_libraries(test ${TEST_SUPPORT_LIBS})
+else()
+  message("Skip test for release mode")
+endif ()

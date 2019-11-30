@@ -1,26 +1,30 @@
-BIN=./.build
+DEBUG=./.debug
+RELEASE=./.release
 DOCKER=./.docker
 
 compile:
-	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake .. && make -j
+	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake .. && make -j
 
 compile_only:
-	cd ${BIN} && make -j --no-print-directory
+	cd ${DEBUG} && make -j --no-print-directory
 
-release: clean
-	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=release .. && make -j
+release:
+	mkdir -p ${RELEASE} && \
+		cd ${RELEASE} && \
+		CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=RELEASE .. && \
+		make -j
 
 clean:
-	rm -rf ${BIN} ${DOCKER}
+	rm -rf ${DEBUG} ${RELEASE} ${DOCKER}
 
 cron: compile_only
-	${BIN}/cron
+	${DEBUG}/cron
 
 scanner: compile_only
-	${BIN}/scanner
+	${DEBUG}/scanner
 
 test: compile
-	${BIN}/test
+	${DEBUG}/test
 
 fmt:
 	docker run --rm -ti \
@@ -29,9 +33,9 @@ fmt:
     /clang-format.sh .
 
 # Docker related.
-docker: clean compile
+docker: clean release
 	mkdir -p ${DOCKER} && \
-		cp ${BIN}/cron ${DOCKER} && \
+		cp ${RELEASE}/cron ${DOCKER} && \
 		docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron ${DOCKER}
 
 push_docker:
