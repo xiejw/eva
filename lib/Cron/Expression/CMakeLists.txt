@@ -1,14 +1,14 @@
-add_library(Expression
+add_library(CronExpression
   Expression.cpp
   Expression.h
   Field.h
 )
 
-set(CRON_LIBS ${CRON_LIBS} Expression PARENT_SCOPE)
+set(CRON_LIBS ${CRON_LIBS} CronExpression PARENT_SCOPE)
 
-add_library(TestExpression OBJECT
+add_library(TestCronExpression OBJECT
   ExpressionTest.cpp
 )
 
-target_include_directories(TestExpression PUBLIC ${GTEST_INCLUDES})
-set(TEST_CRON_LIBS ${TEST_CRON_LIBS} TestExpression PARENT_SCOPE)
+target_include_directories(TestCronExpression PUBLIC ${GTEST_INCLUDES})
+set(TEST_CRON_LIBS ${TEST_CRON_LIBS} TestCronExpression PARENT_SCOPE)
