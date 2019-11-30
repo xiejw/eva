@@ -15,14 +15,16 @@ class SHA256 {
   // Resets the internal states. Not necessary for newly created instance.
   void Reset();
 
-  // Appends `message` (length `len`) into the content for checksum calculation.
+  // Appends `message` (length `len`) into the content for digest calculation.
   //
-  // Can be invoked repeatedly before any finalization method, e.g., `finalize`
-  // or `Checksum`.
+  // Can be invoked repeatedly before any finalization method, e.g., `Digest`.
   void Update(const unsigned char *message, unsigned int len);
 
-  // Fianlizes the checksum calculation
-  std::string Checksum();
+  // Finalizes the digest calculation.
+  std::string Digest();
+
+  // Wrapper method to return digest for `message`.
+  static std::string Digest(std::string message);
 
  protected:
   typedef unsigned char uint8;
@@ -52,9 +54,8 @@ class SHA256 {
   unsigned int m_len_;
 
   uint32 m_h[8];
+  bool finalized_;
 };
-
-std::string Sha256(std::string input);
 
 }  // namespace crypto
 }  // namespace eva

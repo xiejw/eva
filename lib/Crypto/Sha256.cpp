@@ -4,6 +4,8 @@
 #include <cstring>
 #include <fstream>
 
+#include "lib/Support/Error.h"
+
 namespace eva {
 namespace crypto {
 
@@ -98,9 +100,12 @@ void SHA256::Reset() {
   m_h[7] = 0x5be0cd19;
   m_len_ = 0;
   m_total_len_ = 0;
+  finalized_ = false;
 }
 
 void SHA256::Update(const unsigned char *message, unsigned int len) {
+  if (finalized_) FatalError("SHA256 has been finalized. Call `Reset()`.");
+
   unsigned int current_len, chunk_remaining_len;
 
   chunk_remaining_len = SHA224_256_BLOCK_SIZE - m_len_;
@@ -133,6 +138,8 @@ void SHA256::Update(const unsigned char *message, unsigned int len) {
 }
 
 void SHA256::Finalize(unsigned char *digest) {
+  finalized_ = true;
+
   // Algorithrm: // Pre-processing (Padding)
   // - begin with the original message of length L bits
   // - append a single '1' bit
@@ -170,7 +177,7 @@ void SHA256::Finalize(unsigned char *digest) {
   }
 }
 
-std::string SHA256::Checksum() {
+std::string SHA256::Digest() {
   // Prepares the buffer for digest and zeros it.
   unsigned char digest[SHA256::DIGEST_SIZE];
   memset(digest, 0, SHA256::DIGEST_SIZE);
@@ -186,11 +193,11 @@ std::string SHA256::Checksum() {
   return std::string(buf);
 }
 
-std::string Sha256(std::string input) {
+std::string SHA256::Digest(std::string message) {
   // Generates the checksum.
   SHA256 hash{};
-  hash.Update((unsigned char *)input.c_str(), input.length());
-  return hash.Checksum();
+  hash.Update((unsigned char *)message.c_str(), message.length());
+  return hash.Digest();
 }
 
 }  // namespace crypto
