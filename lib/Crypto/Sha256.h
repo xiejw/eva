@@ -10,18 +10,19 @@ class SHA256 {
  public:
   static const unsigned int DIGEST_SIZE = (256 / 8);
 
-  SHA256() { reset(); };
+  SHA256() { Reset(); };
 
   // Resets the internal states. Not necessary for newly created instance.
-  void reset();
+  void Reset();
 
-  // Appends `message` (length `len`) into the content for hash calculation.
-  // Can be invoked repeatedly before `finalize`.
-  void update(const unsigned char *message, unsigned int len);
+  // Appends `message` (length `len`) into the content for checksum calculation.
+  //
+  // Can be invoked repeatedly before any finalization method, e.g., `finalize`
+  // or `Checksum`.
+  void Update(const unsigned char *message, unsigned int len);
 
-  // Finalize the hash value calculation and store the value in `digest`.
-  // `digest` must be at least `DIGEST_SIZE`.
-  void finalize(unsigned char *digest);
+  // Fianlizes the checksum calculation
+  std::string Checksum();
 
  protected:
   typedef unsigned char uint8;
@@ -34,9 +35,13 @@ class SHA256 {
   static const unsigned int SHA224_256_BLOCK_SIZE = (512 / 8);  // 32
 
  protected:
+  // Finalizes the checksum calculation and store the value in `digest`.
+  // `digest` must be at least `DIGEST_SIZE`.
+  void Finalize(unsigned char *digest);
+
   // Performs the transformation on `message` for `num_chunks` chunks. See
   // https://en.wikipedia.org/wiki/SHA-2#Pseudocode
-  void transform(const unsigned char *message, unsigned int num_chunks);
+  void Transform(const unsigned char *message, unsigned int num_chunks);
 
  protected:
   // Total of bytes processed.
@@ -49,7 +54,7 @@ class SHA256 {
   uint32 m_h[8];
 };
 
-std::string sha256(std::string input);
+std::string Sha256(std::string input);
 
 }  // namespace crypto
 }  // namespace eva

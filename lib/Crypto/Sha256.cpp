@@ -48,7 +48,7 @@ const unsigned int SHA256::sha256_k[64] = {
     0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-void SHA256::transform(const unsigned char *message, unsigned int num_chunks) {
+void SHA256::Transform(const unsigned char *message, unsigned int num_chunks) {
   uint32 w[64];
   uint32 wv[8];
   uint32 t1, t2;
@@ -85,7 +85,7 @@ void SHA256::transform(const unsigned char *message, unsigned int num_chunks) {
   }
 }
 
-void SHA256::reset() {
+void SHA256::Reset() {
   // First 32 bits of the fractional parts of the square roots of the first 8
   // primes 2..19.
   m_h[0] = 0x6a09e667;
@@ -100,7 +100,7 @@ void SHA256::reset() {
   m_total_len_ = 0;
 }
 
-void SHA256::update(const unsigned char *message, unsigned int len) {
+void SHA256::Update(const unsigned char *message, unsigned int len) {
   unsigned int current_len, chunk_remaining_len;
 
   chunk_remaining_len = SHA224_256_BLOCK_SIZE - m_len_;
@@ -114,14 +114,14 @@ void SHA256::update(const unsigned char *message, unsigned int len) {
   }
 
   // Handles the m_block_, which has been just filled.
-  transform(m_block_, 1);
+  Transform(m_block_, 1);
 
   // Handles all (rest) full chunks in message (after current_len, until the
   // final full 512-bit chunk.
   unsigned int remaining_len_in_msg = len - current_len;
   unsigned int num_chunks = remaining_len_in_msg / SHA224_256_BLOCK_SIZE;
   const unsigned char *shifted_message = message + current_len;
-  transform(shifted_message, num_chunks);
+  Transform(shifted_message, num_chunks);
 
   // Now hanele the final, unfulfilled, chunk. Copy the content to m_block_,
   // and bookmark the m_len_ and m_tot_len_.
@@ -132,7 +132,7 @@ void SHA256::update(const unsigned char *message, unsigned int len) {
   m_total_len_ += (num_chunks + 1) << 6;
 }
 
-void SHA256::finalize(unsigned char *digest) {
+void SHA256::Finalize(unsigned char *digest) {
   // Algorithrm: // Pre-processing (Padding)
   // - begin with the original message of length L bits
   // - append a single '1' bit
@@ -162,7 +162,7 @@ void SHA256::finalize(unsigned char *digest) {
   SHA2_UNPACK32(total_bits, m_block_ + pm_len - 4);
 
   // Process the final `num_chunks` chunks.
-  transform(m_block_, num_chunks);
+  Transform(m_block_, num_chunks);
 
   // Unpack the value into `digest`.
   for (int i = 0; i < 8; i++) {
@@ -170,15 +170,13 @@ void SHA256::finalize(unsigned char *digest) {
   }
 }
 
-std::string sha256(std::string input) {
+std::string SHA256::Checksum() {
   // Prepares the buffer for digest and zeros it.
   unsigned char digest[SHA256::DIGEST_SIZE];
   memset(digest, 0, SHA256::DIGEST_SIZE);
 
-  // Generates the hash value.
-  SHA256 ctx = SHA256();
-  ctx.update((unsigned char *)input.c_str(), input.length());
-  ctx.finalize(digest);
+  // Finalize the checksum calculation.
+  Finalize(digest);
 
   // Format the hash value.
   char buf[2 * SHA256::DIGEST_SIZE + 1];
@@ -186,6 +184,13 @@ std::string sha256(std::string input) {
   for (int i = 0; i < SHA256::DIGEST_SIZE; i++)
     sprintf(buf + i * 2, "%02x", digest[i]);
   return std::string(buf);
+}
+
+std::string Sha256(std::string input) {
+  // Generates the checksum.
+  SHA256 hash{};
+  hash.Update((unsigned char *)input.c_str(), input.length());
+  return hash.Checksum();
 }
 
 }  // namespace crypto
