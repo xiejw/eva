@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "lib/Crypto/Sha256.h"
+#include "lib/Crypto/Crypto.h"
 #include "lib/FileSystem/FileSystem.h"
 
 using eva::crypto::sha256;

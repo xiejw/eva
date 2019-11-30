@@ -7,6 +7,9 @@ compile:
 compile_only:
 	cd ${BIN} && make -j --no-print-directory
 
+release: clean
+	mkdir -p ${BIN} && cd ${BIN} && CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=release .. && make -j
+
 clean:
 	rm -rf ${BIN} ${DOCKER}
 
