@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "lib/FileSystem/Walk.h"
+#include "lib/Support/Error.h"
 
 namespace eva {
 namespace fs {
@@ -17,6 +18,9 @@ namespace fs {
 void FileTree::Refresh() {
   WalkTree(root_path_.c_str(), [&](const WalkStat& stat) {
     if (stat.is_folder) return;
+    if (option_.fetch_checksum)
+      FatalError("Checksum is not supported for tree.");
+
     handles_.push_back(
         std::unique_ptr<FileHandle>{new FileHandle{stat.path, stat.size}});
   });
