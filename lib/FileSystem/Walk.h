@@ -8,9 +8,9 @@ namespace eva {
 namespace fs {
 
 struct WalkStat {
-  // A valid path in the OS. Should be accesiable via current directory of
+  // The real path in the OS. Should be accesiable via current directory of
   // processs.
-  std::string full_path;
+  std::string real_path;
 
   // Relative dir path to root.
   std::string d_path;

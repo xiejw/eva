@@ -55,13 +55,13 @@ void ListFiles(const char* root_path, const char* relative_d,
       {
         struct stat sb;
         auto f_path = dp->d_name;
-        auto full_path = PathJoin(d_path.c_str(), f_path);
-        if (stat(full_path.c_str(), &sb) == -1) {
-          printf("error stat %s: %d\n", full_path.c_str(), errno);
+        auto real_path = PathJoin(d_path.c_str(), f_path);
+        if (stat(real_path.c_str(), &sb) == -1) {
+          printf("error stat %s: %d\n", real_path.c_str(), errno);
           continue;
         }
 
-        auto* st = new WalkStat{/*full_path=*/full_path,
+        auto* st = new WalkStat{/*real_path=*/real_path,
                                 /*d_path*/ relative_d,
                                 /*f_path=*/f_path,
                                 /*path=*/PathJoin(relative_d, f_path),

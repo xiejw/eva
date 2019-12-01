@@ -1,4 +1,6 @@
 add_library(FileSystem
+  FileTree.cpp
+  FileTree.h
   Walk.cpp
   Walk.h
   Utility.cpp
