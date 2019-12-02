@@ -13,12 +13,14 @@ void FileTree::Refresh() {
   WalkTree(root_path_.c_str(), [&](const WalkStat& stat) {
     if (stat.is_folder) return;
 
-    std::optional<std::string> checksum{};
-    if (option_.fetch_checksum)
-      checksum = crypto::SHA256::DigestForFile(stat.real_path.c_str());
+    std::string digest;
+    if (option_.fetch_checksum) {
+      if (crypto::SHA256::DigestForFile(stat.real_path.c_str(), digest))
+        FatalError("Failed to get digest.");
+    }
 
     handles_.push_back(std::unique_ptr<FileHandle>{
-        new FileHandle{stat.path, stat.size, checksum}});
+        new FileHandle{stat.path, stat.size, {std::move(digest)}}});
   });
 }
 

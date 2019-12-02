@@ -203,12 +203,15 @@ std::string SHA256::Digest(std::string message) {
   return hash.Digest();
 }
 
-std::string SHA256::DigestForFile(const char *path) {
+Error SHA256::DigestForFile(const char *path, std::string &digest) {
   constexpr unsigned int kBufferSize = 4096;
 
   auto fd = open(path, O_RDONLY);
-  if (fd == -1)
-    FatalError("Faied to open file for %s digest: %s", path, strerror(errno));
+  if (fd == -1) {
+    fprintf(stderr, "Faied to open file for %s digest: %s", path,
+            strerror(errno));
+    return kFAILURE;
+  }
 
   unsigned char buffer[kBufferSize];
   ssize_t size;
@@ -217,13 +220,20 @@ std::string SHA256::DigestForFile(const char *path) {
   SHA256 hash{};
   while ((size = read(fd, buffer, kBufferSize)) > 0) hash.Update(buffer, size);
 
-  if (size == -1)
-    FatalError("Faied to read file for %s digest: %s", path, strerror(errno));
+  if (size == -1) {
+    fprintf(stderr, "Faied to read file for %s digest: %s", path,
+            strerror(errno));
+    return kFAILURE;
+  }
 
-  if (close(fd) == -1)
-    FatalError("Faied to close file for %s digest: %s", path, strerror(errno));
+  if (close(fd) == -1) {
+    fprintf(stderr, "Faied to close file for %s digest: %s", path,
+            strerror(errno));
+    return kFAILURE;
+  }
 
-  return hash.Digest();
+  digest = hash.Digest();
+  return kOK;
 }
 
 }  // namespace crypto

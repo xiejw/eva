@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "lib/Support/Error.h"
+
 namespace eva {
 namespace crypto {
 
@@ -26,8 +28,10 @@ class SHA256 {
   // Wrapper method to return digest for `message`.
   static std::string Digest(std::string message);
 
-  // Wrapper method to return digest for file specified by the path.
-  static std::string DigestForFile(const char *path);
+  // Wrapper method to generate digest for file specified by the path.
+  //
+  // The result will be filled in `digest`.
+  static Error DigestForFile(const char *path, std::string &digest);
 
  protected:
   typedef unsigned char uint8;
