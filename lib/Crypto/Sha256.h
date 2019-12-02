@@ -26,6 +26,9 @@ class SHA256 {
   // Wrapper method to return digest for `message`.
   static std::string Digest(std::string message);
 
+  // Wrapper method to return digest for file specified by the path.
+  static std::string DigestForFile(const char *path);
+
  protected:
   typedef unsigned char uint8;
   typedef unsigned int uint32;

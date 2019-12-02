@@ -19,6 +19,7 @@ struct FileHandle {
 class FileTree {
  public:
   struct Option {
+    // Fetches checksum and fills into `FileHandle` during `Refresh`.
     bool fetch_checksum;
   };
 

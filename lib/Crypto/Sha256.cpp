@@ -4,6 +4,9 @@
 #include <cstring>
 #include <fstream>
 
+#include <fcntl.h>  // open
+#include <unistd.h>
+
 #include "lib/Support/Error.h"
 
 namespace eva {
@@ -197,6 +200,29 @@ std::string SHA256::Digest(std::string message) {
   // Generates the checksum.
   SHA256 hash{};
   hash.Update((unsigned char *)message.c_str(), message.length());
+  return hash.Digest();
+}
+
+std::string SHA256::DigestForFile(const char *path) {
+  constexpr unsigned int kBufferSize = 4096;
+
+  auto fd = open(path, O_RDONLY);
+  if (fd == -1)
+    FatalError("Faied to open file for %s digest: %s", path, strerror(errno));
+
+  unsigned char buffer[kBufferSize];
+  ssize_t size;
+
+  // Generates the checksum.
+  SHA256 hash{};
+  while ((size = read(fd, buffer, kBufferSize)) > 0) hash.Update(buffer, size);
+
+  if (size == -1)
+    FatalError("Faied to read file for %s digest: %s", path, strerror(errno));
+
+  if (close(fd) == -1)
+    FatalError("Faied to close file for %s digest: %s", path, strerror(errno));
+
   return hash.Digest();
 }
 
