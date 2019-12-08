@@ -2,14 +2,15 @@
 
 #include "lib/FileSystem/FileSystem.h"
 
-int main(int argc, char** argv) {
-  bool fetch_checksum = true;
+constexpr bool kFetchChecksum = true;
+constexpr int kMaxNumFiles = 5;
 
-  eva::fs::FileTree tree{".", {fetch_checksum}};
+int main(int argc, char** argv) {
+  eva::fs::FileTree tree{".", {kFetchChecksum, kMaxNumFiles}};
   tree.Refresh();
 
   for (auto& handle : tree) {
-    if (fetch_checksum)
+    if (kFetchChecksum)
       std::cout << handle->checksum.value() << " " << handle->path << "\n";
     else
       std::cout << handle->size << "\t" << handle->path << "\n";

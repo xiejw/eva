@@ -21,6 +21,9 @@ class FileTree {
   struct Option {
     // Fetches checksum and fills into `FileHandle` during `Refresh`.
     bool fetch_checksum;
+
+    // Limits the number of files to visit.
+    std::optional<int> max_num_files;
   };
 
  public:
