@@ -25,7 +25,19 @@ struct WalkStat {
   long long size;
 };
 
-using WalkCallback = std::function<void(const WalkStat& stat)>;
+enum class WalkAction {
+  // Default. Continue current walking routing.
+  kContinue,
+
+  // Only operate on the folder. Do not dive into.
+  kDoNotDiveIntoFolder,
+
+  // Skip of the rest of walking. For any parent folder, it will skip also,
+  // i.e., abort protocol.
+  kSkipRest,
+};
+
+using WalkCallback = std::function<WalkAction(const WalkStat& stat)>;
 
 void WalkTree(const char* root_path, WalkCallback callback);
 

@@ -17,32 +17,40 @@ namespace fs {
 
 namespace {
 
-void ListFiles(const char*, const char*, WalkCallback callback);
+WalkAction ListFiles(const char*, const char*, WalkCallback callback);
 
-void PrintFileStat(const char* root_path, const WalkStat& stat,
-                   WalkCallback callback) {
+WalkAction PrintFileStat(const char* root_path, const WalkStat& stat,
+                         WalkCallback callback) {
   // Common fiter
-  if (stat.f_path.find(".", 0) == 0) return;
+  if (stat.f_path.find(".", 0) == 0) return WalkAction::kContinue;
 
-  callback(stat);
-
-  if (stat.is_folder) {
-    ListFiles(root_path, stat.path.c_str(), callback);
+  auto action = callback(stat);
+  switch (action) {
+    case WalkAction::kContinue:
+      if (stat.is_folder) {
+        ListFiles(root_path, stat.path.c_str(), callback);
+      }
+      return action;
+    case WalkAction::kDoNotDiveIntoFolder:
+      // We just ignore the folder action. So rewrites as kContinue.
+      return WalkAction::kContinue;
+    case WalkAction::kSkipRest:
+      return action;
   }
 }
 
-void ListFiles(const char* root_path, const char* relative_d,
-               WalkCallback callback) {
+WalkAction ListFiles(const char* root_path, const char* relative_d,
+                     WalkCallback callback) {
   auto d_path = PathJoin(root_path, relative_d);
   DIR* dirp;
   dirp = opendir(d_path.c_str());
   if (dirp == nullptr) {
     eva::FatalError("opendir failed on '%s'", d_path.c_str());
-    return;
+    return WalkAction::kSkipRest;
   }
 
+  std::vector<std::unique_ptr<WalkStat>> files{};
   {
-    std::vector<std::unique_ptr<WalkStat>> files{};
     struct dirent* dp;
     for (;;) {
       errno = 0;  // To distinguish error from end-of-directory
@@ -70,20 +78,26 @@ void ListFiles(const char* root_path, const char* relative_d,
         files.push_back(std::unique_ptr<WalkStat>{st});
       }
     }
+    if (errno != 0) eva::FatalError("readdir");
 
-    std::sort(
-        files.begin(), files.end(),
-        [](const std::unique_ptr<WalkStat>& a,
-           const std::unique_ptr<WalkStat>& b) { return a->path < b->path; });
+    if (closedir(dirp) == -1) eva::FatalError("closedir");
+  }
 
-    for (auto& stat : files) {
-      PrintFileStat(root_path, *stat, callback);
+  std::sort(
+      files.begin(), files.end(),
+      [](const std::unique_ptr<WalkStat>& a,
+         const std::unique_ptr<WalkStat>& b) { return a->path < b->path; });
+
+  for (auto& stat : files) {
+    auto action = PrintFileStat(root_path, *stat, callback);
+    // kDoNotDiveIntoFolder is not a valid action here.
+    assert(action == WalkAction::kContinue || action == WalkAction::kSkipRest);
+    if (action == WalkAction::kSkipRest) {
+      return action;
     }
   }
 
-  if (errno != 0) eva::FatalError("readdir");
-
-  if (closedir(dirp) == -1) eva::FatalError("closedir");
+  return WalkAction::kContinue;
 }
 }  // namespace
 
