@@ -1,0 +1,1 @@
+`__COUNTER__` macro.
