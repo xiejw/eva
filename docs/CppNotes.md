@@ -28,3 +28,7 @@ Fixes:
     // either should work.
     constexpr char const* kEvaPath = "~/Workspace/eva";
     constexpr const char* kEvaPath = "~/Workspace/eva";
+
+
+switch.
+Because transfer of control is not permitted to enter the scope of a variable, if a declaration statement is encountered inside the statement, it has to be scoped in its own compound statement:
