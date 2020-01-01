@@ -43,9 +43,14 @@ target_link_libraries(cron ${GFLAGS_LIBS})
 
 # {{{3 Scanner
 new_executable(scanner cmd/scanner/main.cpp)
+
+target_include_directories(scanner PUBLIC ${GFLAGS_INCLUDES})
+
 target_link_libraries(scanner ${FILESYSTEM_LIBS})
 target_link_libraries(scanner ${CRYPTO_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
+target_link_libraries(scanner ${GFLAGS_LIBS})
+
 
 # {{{2 Tests.
 if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
