@@ -9,8 +9,18 @@ namespace eva {
 namespace crypto {
 
 class SHA256 {
+ protected:
+  using uint8 = unsigned char;
+  using uint32 = unsigned int;
+  using uint64 = unsigned long long;
+
+  // Assets type sizes.
+  static_assert(sizeof(uint8) == 1);
+  static_assert(sizeof(uint32) == 4);
+  static_assert(sizeof(uint64) == 8);
+
  public:
-  static const unsigned int DIGEST_SIZE = (256 / 8);
+  static const uint64 DIGEST_SIZE = (256 / 8);
 
   SHA256() { Reset(); };
 
@@ -20,7 +30,7 @@ class SHA256 {
   // Appends `message` (length `len`) into the content for digest calculation.
   //
   // Can be invoked repeatedly before any finalization method, e.g., `Digest`.
-  void Update(const unsigned char *message, unsigned int len);
+  void Update(const unsigned char *message, uint64 len);
 
   // Finalizes the digest calculation.
   std::string Digest();
@@ -34,19 +44,10 @@ class SHA256 {
   static Error DigestForFile(const char *path, std::string &digest);
 
  protected:
-  using uint8 = unsigned char;
-  using uint32 = unsigned int;
-  using uint64 = unsigned long long;
-
-  // Assets type sizes.
-  static_assert(sizeof(uint8) == 1);
-  static_assert(sizeof(uint32) == 4);
-  static_assert(sizeof(uint64) == 8);
-
   // First 32 bits of the fractional parts of the cube roots of the first 64
   // primes 2..311.
   const static uint32 sha256_k[];
-  static const unsigned int SHA224_256_BLOCK_SIZE = (512 / 8);  // 32
+  static const uint64 SHA224_256_BLOCK_SIZE = (512 / 8);  // 32
 
  protected:
   // Finalizes the checksum calculation and store the value in `digest`.
@@ -59,11 +60,11 @@ class SHA256 {
 
  protected:
   // Total of bytes processed.
-  unsigned int m_total_len_;
+  uint64 m_total_len_;
 
   // Stores the unprocessed content with `m_len_` bytes.
   unsigned char m_block_[2 * SHA224_256_BLOCK_SIZE];
-  unsigned int m_len_;
+  uint64 m_len_;
 
   uint32 m_h[8];
   bool finalized_;

@@ -40,7 +40,7 @@ namespace {
 
 // Initialize array of round constants: first 32 bits of the fractional parts
 // of the cube roots of the first 64 primes 2..311
-const unsigned int SHA256::sha256_k[64] = {
+const SHA256::uint32 SHA256::sha256_k[64] = {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
     0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
     0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
@@ -106,10 +106,10 @@ void SHA256::Reset() {
   finalized_ = false;
 }
 
-void SHA256::Update(const unsigned char *message, unsigned int len) {
+void SHA256::Update(const unsigned char *message, uint64 len) {
   if (finalized_) FatalError("SHA256 has been finalized. Call `Reset()`.");
 
-  unsigned int current_len, chunk_remaining_len;
+  uint64 current_len, chunk_remaining_len;
 
   chunk_remaining_len = SHA224_256_BLOCK_SIZE - m_len_;
   current_len = len < chunk_remaining_len ? len : chunk_remaining_len;
@@ -126,8 +126,8 @@ void SHA256::Update(const unsigned char *message, unsigned int len) {
 
   // Handles all (rest) full chunks in message (after current_len, until the
   // final full 512-bit chunk.
-  unsigned int remaining_len_in_msg = len - current_len;
-  unsigned int num_chunks = remaining_len_in_msg / SHA224_256_BLOCK_SIZE;
+  uint64 remaining_len_in_msg = len - current_len;
+  uint64 num_chunks = remaining_len_in_msg / SHA224_256_BLOCK_SIZE;
   const unsigned char *shifted_message = message + current_len;
   Transform(shifted_message, num_chunks);
 
@@ -159,16 +159,17 @@ void SHA256::Finalize(unsigned char *digest) {
 
   assert(m_len_ <=
          SHA224_256_BLOCK_SIZE);  // Seems the following mod is not needed.
-  unsigned int num_chunks =
+  uint64 num_chunks =
       (1 + ((SHA224_256_BLOCK_SIZE - 9) < (m_len_ % SHA224_256_BLOCK_SIZE)));
-  unsigned int pm_len = num_chunks << 6;
+  uint64 pm_len = num_chunks << 6;
 
   // Zeros the paddings. The first bit should be 1.
   memset(m_block_ + m_len_, 0, pm_len - m_len_);
   m_block_[m_len_] = 0x80;
 
+  // TODO fix bug.
   // Append total bits `m_total_len_` as a 64-bit big-endian integer.
-  unsigned int total_bits = (m_total_len_ + m_len_) << 3;
+  uint64 total_bits = (m_total_len_ + m_len_) << 3;
   SHA2_UNPACK32(total_bits, m_block_ + pm_len - 4);
 
   // Process the final `num_chunks` chunks.
