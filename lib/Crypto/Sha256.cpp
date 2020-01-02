@@ -167,13 +167,18 @@ void SHA256::Finalize(unsigned char *digest) {
   memset(m_block_ + m_len_, 0, pm_len - m_len_);
   m_block_[m_len_] = 0x80;
 
-  // Append total bits `m_total_len_` as a 64-bit big-endian integer.
-  // As total_bits is 64 bit, we will unpack different parts of it separatedly.
+  // Converts from total number of bytes to total number of bits.
   uint64 total_bits = (m_total_len_ + m_len_) << 3;
+  // Append total bits as a 64-bit big-endian integer.  As total_bits is 64 bit,
+  // we will unpack different parts of it separatedly.
   {
-    uint32 first_half = (total_bits >> 32) & 0xFFFF;
+    // First part.
+    uint32 first_half = (total_bits >> 32) & 0xFFFFFFFFul;
     SHA2_UNPACK32(first_half, m_block_ + pm_len - 8);
-    uint32 second_half = total_bits & 0xFFFF;
+  }
+  {
+    // Second part.
+    uint32 second_half = (total_bits & 0xFFFFFFFFul);
     SHA2_UNPACK32(second_half, m_block_ + pm_len - 4);
   }
 
