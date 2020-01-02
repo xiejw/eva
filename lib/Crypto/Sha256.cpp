@@ -215,7 +215,7 @@ std::string SHA256::Digest(std::string message) {
 }
 
 Error SHA256::DigestForFile(const char *path, std::string &digest) {
-  constexpr unsigned int kBufferSize = 4096;
+  constexpr unsigned int kBufferSize = 4096 * 16;
 
   auto fd = open(path, O_RDONLY);
   if (fd == -1) {
