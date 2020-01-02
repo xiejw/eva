@@ -43,6 +43,29 @@ TEST_F(Sha256Test, CheckByteStream) {
             digest);
 }
 
+TEST_F(Sha256Test, CheckSuperLargeStream) {
+  using uint64 = SHA256::uint64;
+
+  unsigned int kBufferSize = 4096;
+  unsigned char buffer[kBufferSize];
+  memset(buffer, 0, kBufferSize);
+  buffer[0] = 'g';
+
+  SHA256 hash{};
+  uint64 total_len = 0;
+  // We create a online byte stream larger than 512MB. So it's length is larger
+  // than a 32 bit integer.
+  uint64 target_bits_len = (2ull << 32) - 1;
+  std::cout << std::hex << target_bits_len << "\n";
+  while ((total_len << 3) > target_bits_len) {
+    hash.Update((const unsigned char*)buffer, kBufferSize);
+    total_len += kBufferSize;
+  }
+  std::string digest = hash.Digest();
+  ASSERT_EQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            digest);
+}
+
 }  // namespace
 }  // namespace crypto
 }  // namespace eva

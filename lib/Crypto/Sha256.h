@@ -9,7 +9,7 @@ namespace eva {
 namespace crypto {
 
 class SHA256 {
- protected:
+ public:
   using uint8 = unsigned char;
   using uint32 = unsigned int;
   using uint64 = unsigned long long;
