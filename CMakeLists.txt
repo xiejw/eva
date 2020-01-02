@@ -51,6 +51,12 @@ target_link_libraries(scanner ${CRYPTO_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
 target_link_libraries(scanner ${GFLAGS_LIBS})
 
+# {{{3 Shasum
+new_executable(shasum cmd/shasum/main.cpp)
+
+target_link_libraries(shasum ${CRYPTO_LIBS})
+target_link_libraries(shasum ${SUPPORT_LIBS})
+
 
 # {{{2 Tests.
 if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
