@@ -34,9 +34,14 @@ class SHA256 {
   static Error DigestForFile(const char *path, std::string &digest);
 
  protected:
-  typedef unsigned char uint8;
-  typedef unsigned int uint32;
-  typedef unsigned long long uint64;
+  using uint8 = unsigned char;
+  using uint32 = unsigned int;
+  using uint64 = unsigned long long;
+
+  // Assets type sizes.
+  static_assert(sizeof(uint8) == 1);
+  static_assert(sizeof(uint32) == 4);
+  static_assert(sizeof(uint64) == 8);
 
   // First 32 bits of the fractional parts of the cube roots of the first 64
   // primes 2..311.
