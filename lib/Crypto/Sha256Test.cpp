@@ -55,14 +55,13 @@ TEST_F(Sha256Test, CheckSuperLargeStream) {
   uint64 total_len = 0;
   // We create a online byte stream larger than 512MB. So it's length is larger
   // than a 32 bit integer.
-  uint64 target_bits_len = (2ull << 32) - 1;
-  std::cout << std::hex << target_bits_len << "\n";
-  while ((total_len << 3) > target_bits_len) {
+  uint64 target_bits_len = (1ull << 32);
+  while ((total_len << 3) <= target_bits_len) {
     hash.Update((const unsigned char*)buffer, kBufferSize);
     total_len += kBufferSize;
   }
   std::string digest = hash.Digest();
-  ASSERT_EQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  ASSERT_EQ("8c49df103f1ae60431792786fe675253fec69bc4739718124638d0e31319e1ee",
             digest);
 }
 
