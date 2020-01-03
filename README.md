@@ -27,5 +27,12 @@ TL;DR;
     # Print the number of seconds until next time matching X hour Y minute
     .build/cron --hour X --minute Y
 
-See [usage](docs/usage/cron.md) for details.
+See [usage](docs/usages/cron.md) for details.
+
+## Shasum
+
+TL;DR;
+
+    # Prints the shasum 256 checksum for a file.
+    .build/shasum <file_name>
 
