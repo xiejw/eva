@@ -15,6 +15,11 @@ C++ library is useful as
     # Optional
     make test
 
+    # Create binaries for release mode.
+    make release
+
+# Binaries
+
 ## Cron
 
 ### Usage
