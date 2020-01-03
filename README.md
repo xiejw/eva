@@ -15,7 +15,7 @@ C++ library is useful as
     # Optional
     make test
 
-    # Create binaries for release mode.
+    # Create binaries for release mode. (Check .release folder.)
     make release
 
 # Binaries
@@ -25,7 +25,7 @@ C++ library is useful as
 TL;DR;
 
     # Print the number of seconds until next time matching X hour Y minute
-    .build/cron --hour X --minute Y
+    .debug/cron --hour X --minute Y
 
 See [usage](docs/usages/cron.md) for details.
 
@@ -34,5 +34,5 @@ See [usage](docs/usages/cron.md) for details.
 TL;DR;
 
     # Prints the shasum 256 checksum for a file.
-    .build/shasum <file_name>
+    .debug/shasum <file_name>
 
