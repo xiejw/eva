@@ -22,25 +22,10 @@ C++ library is useful as
 
 ## Cron
 
-### Usage
+TL;DR;
 
-    # Print the number of seconds until next time matching X hour Y minute, both
-    # the flags `--hour` and `--minute` are optional.
-
+    # Print the number of seconds until next time matching X hour Y minute
     .build/cron --hour X --minute Y
 
-Then, it can be used in the script, say a Docker, like
+See [usage](docs/usage/cron.md) for details.
 
-
-    #!/bin/sh
-
-    while true; do
-       sleep `cron --hour X --minute Y`
-       echo "Current time is `date`."
-
-       # Your job.
-    done
-
-### Docker
-
-See dockerfiels folder for usages or use `xiejw/cron` directly.
