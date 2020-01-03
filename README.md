@@ -36,3 +36,11 @@ TL;DR;
     # Prints the shasum 256 checksum for a file.
     .debug/shasum <file_name>
 
+## Scanner
+
+TL;DR;
+
+    # Prints the shasum 256 checksum of each non-hidden file under a directory
+    # tree (a file in hidden folder is considered as hidden file.)
+    .debug/scanner --dir <dire_name>
+
