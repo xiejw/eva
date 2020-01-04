@@ -5,6 +5,8 @@ add_library(FileSystem
   Walk.h
   Utility.cpp
   Utility.h
+  Glob.h
+  Glob.cpp
 )
 
 set(FILESYSTEM_LIBS ${FILESYSTEM_LIBS} FileSystem PARENT_SCOPE)
