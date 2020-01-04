@@ -1,5 +1,6 @@
 #include "lib/Crypto/Sha256.h"
 
+#include <stdlib.h>
 #include <string>
 
 #include "gtest/gtest.h"
@@ -44,6 +45,8 @@ TEST_F(Sha256Test, CheckByteStream) {
 }
 
 TEST_F(Sha256Test, CheckSuperLargeStream) {
+  if (getenv("SKIP_LONG_TEST") != NULL) GTEST_SKIP();
+
   using uint64 = SHA256::uint64;
 
   unsigned int kBufferSize = 4096;

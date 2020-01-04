@@ -70,6 +70,9 @@ if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
   target_link_libraries(test ${CRYPTO_LIBS})
   target_link_libraries(test ${TEST_CRYPTO_LIBS})
 
+  target_link_libraries(test ${FILESYSTEM_LIBS})
+  target_link_libraries(test ${TEST_FILESYSTEM_LIBS})
+
   target_link_libraries(test ${SUPPORT_LIBS})
   target_link_libraries(test ${TEST_SUPPORT_LIBS})
 else()

@@ -24,6 +24,9 @@ scanner: compile_only
 	${DEBUG}/scanner
 
 test: compile
+	SKIP_LONG_TEST=1 ${DEBUG}/test
+
+test_full: compile
 	${DEBUG}/test
 
 fmt:
