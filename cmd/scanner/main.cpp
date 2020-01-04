@@ -2,6 +2,7 @@
 
 #include <gflags/gflags.h>
 
+#include "cmd/scanner/Database.h"
 #include "lib/FileSystem/FileSystem.h"
 
 DEFINE_string(dir, ".", "The directory to scan.");
