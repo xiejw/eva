@@ -7,6 +7,8 @@ add_library(FileSystem
   Utility.h
   Glob.h
   Glob.cpp
+  FileReader.h
+  FileReader.cpp
 )
 
 set(FILESYSTEM_LIBS ${FILESYSTEM_LIBS} FileSystem PARENT_SCOPE)
