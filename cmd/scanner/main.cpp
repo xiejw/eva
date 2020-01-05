@@ -35,9 +35,10 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  std::cout << "Unsupported for db.\n";
+  Database db{FLAGS_database};
+  db.refresh();
 
-  return 1;
+  return 0;
 }
 
 void printTree(const eva::fs::FileTree& tree) {

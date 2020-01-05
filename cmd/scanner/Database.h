@@ -5,6 +5,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "lib/FileSystem/FileReader.h"
+#include "lib/FileSystem/Glob.h"
+
 namespace {
 
 struct Record {
@@ -24,6 +27,22 @@ class Database {
   std::string pattern_;
 };
 
-void Database::refresh() { std::cout << "Pattern: " << pattern_ << "\n"; };
+void Database::refresh() {
+  std::cout << "Pattern: " << pattern_ << "\n";
+
+  eva::fs::Glob g{pattern_};
+  g.refresh();
+  assert(g.results().size() > 0);
+
+  for (auto& file : g.results()) {
+    std::cout << "  -> File: " << file << "\n";
+    eva::fs::FileReader r{file};
+    int count = 0;
+    while (r.nextline()) {
+      count++;
+    }
+    std::cout << "    Line Count: " << count << "\n";
+  }
+};
 
 }  // namespace
