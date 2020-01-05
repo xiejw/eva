@@ -24,6 +24,19 @@ preprocessing token or followed by a `##` preprocessing token, is replaced by
 the corresponding argument **after** all macros contained therein have been
 expanded.
 
+#### 19.3.3 The `#` operator [cpp.stringize]
+
+Each `#` preprocessing token in the replacement list for a function-like macro
+shall we followed by a parameter as next preprocessing token in the replacement
+list.
+
+If, in the replacement list, a parameter is immediately preceded by a `#`
+preprocessing token, both are are replaced by a single character string literal
+preprocessing token that contains the spelling of the preprocessing token
+sequence for the corresponding argument.
+
+
+
 #### 19.3.3 The `##` operator [cpp.concat]
 
 If, in the replacement list of a function-like macro, a parameter is immediately
@@ -54,3 +67,12 @@ the corresponding argument's preprocessing token sequence.
     }
 
 > End of Personal note.
+
+#### 19.3.4 Rescanning and further replacement [cpp.rescan]
+
+After all parameters in the replacement list have been substituted and `#` and
+`##` processing has taken place...Then the resulting preprocessing token
+sequence is rescanned, along with all subsequent preprocessing token of the
+source file.
+
+
