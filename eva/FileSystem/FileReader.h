@@ -1,5 +1,5 @@
-#ifndef EVA_LIB_FILESYSTEM_FILEREADER_
-#define EVA_LIB_FILESYSTEM_FILEREADER_
+#ifndef EVA_FILESYSTEM_FILEREADER_H_
+#define EVA_FILESYSTEM_FILEREADER_H_
 
 #include <memory>
 #include <cassert>

@@ -28,6 +28,7 @@ include_directories(.)
 # Putting supporting dependencies in bottom.
 add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/FileSystem)
+add_subdirectory (eva/FileSystem)
 add_subdirectory (lib/Crypto)
 add_subdirectory (lib/Support)
 add_subdirectory (eva/Foundation)
