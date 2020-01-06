@@ -1,16 +1,16 @@
-add_library(EvaFoundation
+add_library(EVAFoundation
   Macros.h
   Status.h
   Status.cpp
   StatusOr.h
 )
 
-set(EVA_FOUNDATION_LIBS ${EVA_FOUNDATION_LIBS} Foundation PARENT_SCOPE)
+set(EVA_FOUNDATION_LIBS ${EVA_FOUNDATION_LIBS} EVAFoundation PARENT_SCOPE)
 
-# add_library(TestFoundation OBJECT
-#   StatusTest.cpp
-#   StatusOrTest.cpp
-# )
-#
-# target_include_directories(TestFoundation PUBLIC ${GTEST_INCLUDES})
-# set(TEST_MLVM_LIBS ${TEST_MLVM_LIBS} TestFoundation PARENT_SCOPE)
+add_library(TestEVAFoundation OBJECT
+  StatusTest.cpp
+  StatusOrTest.cpp
+)
+
+target_include_directories(TestEVAFoundation PUBLIC ${GTEST_INCLUDES})
+set(TEST_EVA_FOUNDATION_LIBS ${TEST_EVA_FOUNDATION_LIBS} TestEVAFoundation PARENT_SCOPE)

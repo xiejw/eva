@@ -6,7 +6,7 @@
 #include "eva/Foundation/Macros.h"
 #include "eva/Foundation/Status.h"
 
-namespace mlvm {
+namespace eva {
 
 template <class T>
 class StatusOr {
@@ -74,6 +74,6 @@ class StatusOr {
 #endif
 };
 
-}  // namespace mlvm
+}  // namespace eva
 
 #endif

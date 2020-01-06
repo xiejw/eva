@@ -1,14 +1,14 @@
-#include "mlvm/Foundation/StatusOr.h"
+#include "eva/Foundation/StatusOr.h"
 
 #include "gtest/gtest.h"
 
-namespace mlvm::foundation {
+namespace eva {
 
 namespace {
 
-class StatusOrTest : public ::testing::Test {};
+class FoundationStatusOrTest : public ::testing::Test {};
 
-TEST_F(StatusOrTest, CheckStatus) {
+TEST_F(FoundationStatusOrTest, CheckStatus) {
   auto status_or = StatusOr<std::string>{Status::InvalidArguments()};
   ASSERT_FALSE(status_or.ok());
 
@@ -17,13 +17,13 @@ TEST_F(StatusOrTest, CheckStatus) {
   ASSERT_FALSE(status.message().has_value());
 }
 
-TEST_F(StatusOrTest, CheckValue) {
+TEST_F(FoundationStatusOrTest, CheckValue) {
   auto status_or = StatusOr<std::string>{"hello"};
   ASSERT_TRUE(status_or.ok());
   ASSERT_STREQ("hello", status_or.valueOrDie().c_str());
 }
 
-TEST_F(StatusOrTest, ConsumeValue) {
+TEST_F(FoundationStatusOrTest, ConsumeValue) {
   auto status_or = StatusOr<std::string>{"hello"};
   ASSERT_TRUE(status_or.ok());
 
@@ -33,4 +33,4 @@ TEST_F(StatusOrTest, ConsumeValue) {
 
 }  // namespace
 
-}  // namespace mlvm::foundation
+}  // namespace eva

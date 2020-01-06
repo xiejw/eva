@@ -1,24 +1,24 @@
-#include "mlvm/Foundation/Status.h"
+#include "eva/Foundation/Status.h"
 
 #include "gtest/gtest.h"
 
-namespace mlvm::foundation {
+namespace eva {
 
 namespace {
 
-class StatusTest : public ::testing::Test {};
+class FoundationStatusTest : public ::testing::Test {};
 
-TEST_F(StatusTest, CheckOK) {
+TEST_F(FoundationStatusTest, CheckOK) {
   auto status = Status::OK;
   ASSERT_TRUE(status.ok());
 }
 
-TEST_F(StatusTest, CheckErrorCode) {
+TEST_F(FoundationStatusTest, CheckErrorCode) {
   auto status = Status(ErrorCode::InvalidArguments, "Hello");
   ASSERT_EQ(ErrorCode::InvalidArguments, status.errorCode());
 }
 
-TEST_F(StatusTest, CheckErrorMessage) {
+TEST_F(FoundationStatusTest, CheckErrorMessage) {
   auto status = Status(ErrorCode::InvalidArguments, "Hello");
   ASSERT_STREQ("Hello", status.message().value().c_str());
 
@@ -28,4 +28,4 @@ TEST_F(StatusTest, CheckErrorMessage) {
 
 }  // namespace
 
-}  // namespace mlvm::foundation
+}  // namespace eva
