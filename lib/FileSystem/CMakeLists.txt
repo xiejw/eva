@@ -15,6 +15,7 @@ set(FILESYSTEM_LIBS ${FILESYSTEM_LIBS} FileSystem PARENT_SCOPE)
 
 add_library(TestFileSystem OBJECT
   GlobTest.cpp
+  FileReaderTest.cpp
 )
 
 target_include_directories(TestFileSystem PUBLIC ${GTEST_INCLUDES})

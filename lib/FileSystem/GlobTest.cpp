@@ -9,7 +9,7 @@ namespace {
 class GlobTest : public ::testing::Test {};
 
 TEST_F(GlobTest, CheckFiles) {
-  Glob gb{"lib/FileSystem/*Test.cpp"};
+  Glob gb{"lib/FileSystem/G*Test.cpp"};
   gb.refresh();
   ASSERT_EQ(1, gb.results().size());
   // Should find myself.

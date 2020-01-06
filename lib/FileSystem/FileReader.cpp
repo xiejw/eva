@@ -1,5 +1,6 @@
 #include "lib/FileSystem/FileReader.h"
 
+#include <iostream>
 #include <errno.h>
 #include <fcntl.h>  // open
 #include <string.h>
@@ -62,6 +63,11 @@ std::optional<std::string> FileReader::nextline() {
     // Checks whether it is end-of-file.
     if (allocated_ == 0) {
       end_of_file_ = true;
+      if (current_len == 0) {
+        // If there is nothing left after the last end-of-line, we should not
+        // produce this.
+        return {};
+      }
       return std::string((const char *)line, current_len);
     }
 
