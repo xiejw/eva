@@ -1,6 +1,7 @@
 #ifndef EVA_LIB_FILESYSTEM_FILEREADER_
 #define EVA_LIB_FILESYSTEM_FILEREADER_
 
+#include <memory>
 #include <cassert>
 #include <optional>
 #include <string>
