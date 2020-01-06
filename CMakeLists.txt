@@ -30,6 +30,7 @@ add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/FileSystem)
 add_subdirectory (lib/Crypto)
 add_subdirectory (lib/Support)
+add_subdirectory (eva/Foundation)
 
 # {{{2 Executables.
 # {{{3 Cron
