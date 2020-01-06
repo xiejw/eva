@@ -2,9 +2,9 @@
 #define EVA_FILESYSTEM_FILEREADER_H_
 
 #include <memory>
-#include <cassert>
-#include <optional>
 #include <string>
+
+#include "eva/Foundation/Macros.h"
 
 namespace eva::fs {
 
@@ -15,15 +15,23 @@ class FileReader {
   // error.
   FileReader(std::string file_name, unsigned int max_line_len = 500)
       : file_name_{std::move(file_name)}, max_line_len_{max_line_len} {
-    assert(max_line_len_ > 0);
+    EVA_CHECK(max_line_len_ > 0);
   }
 
   // Cleans the resource.
   ~FileReader();
 
  public:
-  // Returns empty optional if end of file.
-  std::optional<std::string> nextline();
+  // The result of `nextline`.
+  struct TextLine {
+    // Indicates whether we reach end of file.
+    bool end_of_file;
+
+    // Valid iff `end_of_file` == false.
+    std::string line;
+  };
+
+  TextLine nextline();
 
  private:
   // Loads next block from file.

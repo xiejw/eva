@@ -1,10 +1,10 @@
 #include "eva/FileSystem/FileReader.h"
 
-#include <iostream>
 #include <errno.h>
 #include <fcntl.h>  // open
 #include <string.h>
 #include <unistd.h>
+#include <iostream>
 
 #include "lib/Support/Error.h"
 
@@ -34,8 +34,8 @@ FileReader::~FileReader() {
   fd_ = -1;
 }
 
-std::optional<std::string> FileReader::nextline() {
-  if (end_of_file_) return {};
+FileReader::TextLine FileReader::nextline() {
+  if (end_of_file_) return {true, {}};
 
   // Initialize all states, if applicable.
   if (!buffer_) {
@@ -66,9 +66,9 @@ std::optional<std::string> FileReader::nextline() {
       if (current_len == 0) {
         // If there is nothing left after the last end-of-line, we should not
         // produce this.
-        return {};
+        return {true, {}};
       }
-      return std::string((const char *)line, current_len);
+      return {false, std::string((const char *)line, current_len)};
     }
 
     // Tries to find end-of-line, i.e., `\n`
@@ -83,7 +83,7 @@ std::optional<std::string> FileReader::nextline() {
                length);
         current_len += length;
         pos_ = i + 1;
-        return std::string((const char *)line, current_len);
+        return {false, std::string((const char *)line, current_len)};
       }
     }
 

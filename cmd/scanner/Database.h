@@ -38,7 +38,7 @@ void Database::refresh() {
     std::cout << "  -> File: " << file << "\n";
     eva::fs::FileReader r{file};
     int count = 0;
-    while (r.nextline()) {
+    while (!r.nextline().end_of_file) {
       count++;
     }
     std::cout << "    Line Count: " << count << "\n";
