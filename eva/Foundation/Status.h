@@ -11,6 +11,7 @@ namespace eva {
 
 enum class ErrorCode {
   InvalidArguments,
+  OSError,
 };
 
 class Status {
@@ -27,6 +28,10 @@ class Status {
 
   static Status InvalidArguments(std::optional<std::string> msg = {}) {
     return Status(ErrorCode::InvalidArguments, msg);
+  };
+
+  static Status OSError(std::optional<std::string> msg = {}) {
+    return Status(ErrorCode::OSError, msg);
   };
 
  public:

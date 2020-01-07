@@ -5,6 +5,7 @@
 #include <string>
 
 #include "eva/Foundation/Macros.h"
+#include "eva/Foundation/Status.h"
 
 namespace eva::fs {
 
@@ -35,7 +36,7 @@ class FileReader {
 
  private:
   // Loads next block from file.
-  void loadNextBuffer();
+  Status loadNextBuffer();
 
  private:
   std::string file_name_;

@@ -17,11 +17,12 @@ constexpr unsigned int kBufferSize = 4096 * 16;
 
 }  // namespace
 
-void FileReader::loadNextBuffer() {
+Status FileReader::loadNextBuffer() {
   pos_ = 0;
   allocated_ = read(fd_, (void *)(buffer_.get()), kBufferSize);
 
   if (allocated_ == -1)
+    return Status::OSError(
     eva::FatalError("Faied to read file for %s: %s", file_name_.c_str(),
                     strerror(errno));
 }
