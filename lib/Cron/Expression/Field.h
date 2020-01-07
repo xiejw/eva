@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "eva/Foundation/Errors.h"
-#include "lib/Support/Types.h"
 
 namespace eva {
 namespace cron {
@@ -13,7 +12,7 @@ namespace cron {
 class Field {
  private:
   enum Kind { any, singleValue };
-  using ValueType = uint;
+  using ValueType = unsigned int;
 
  public:
   // Use factory methods instead.
