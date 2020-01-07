@@ -1,3 +1,5 @@
+#include "eva/Foundation/Errors.h"
+
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>

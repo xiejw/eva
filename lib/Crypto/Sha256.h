@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "lib/Support/Error.h"
+#include "eva/Foundation/Errors.h"
 
 namespace eva {
 namespace crypto {

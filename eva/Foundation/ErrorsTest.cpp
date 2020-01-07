@@ -1,5 +1,6 @@
+#include "eva/Foundation/Errors.h"
+
 #include "gtest/gtest.h"
-#include "lib/Support/Error.h"
 
 namespace eva {
 
@@ -8,9 +9,9 @@ namespace {
 Error fail() { return kFAILURE; }
 Error pass() { return kOK; }
 
-class ErrorTypeTest : public ::testing::Test {};
+class FoundationErrorTypeTest : public ::testing::Test {};
 
-TEST_F(ErrorTypeTest, CheckSignature) {
+TEST_F(FoundationErrorTypeTest, CheckSignature) {
   ASSERT_TRUE(fail());
   ASSERT_FALSE(pass());
 }

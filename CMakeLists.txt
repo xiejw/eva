@@ -30,7 +30,6 @@ add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/FileSystem)
 add_subdirectory (eva/FileSystem)
 add_subdirectory (lib/Crypto)
-add_subdirectory (lib/Support)
 add_subdirectory (eva/Foundation)
 
 # {{{2 Executables.
@@ -40,7 +39,7 @@ new_executable(cron cmd/cron/main.cpp)
 target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
 
 target_link_libraries(cron ${CRON_LIBS})
-target_link_libraries(cron ${SUPPORT_LIBS})
+target_link_libraries(cron ${EVA_FOUNDATION_LIBS})
 target_link_libraries(cron ${GFLAGS_LIBS})
 
 # {{{3 Scanner
@@ -50,7 +49,6 @@ target_include_directories(scanner PUBLIC ${GFLAGS_INCLUDES})
 
 target_link_libraries(scanner ${FILESYSTEM_LIBS})
 target_link_libraries(scanner ${CRYPTO_LIBS})
-target_link_libraries(scanner ${SUPPORT_LIBS})
 target_link_libraries(scanner ${EVA_FOUNDATION_LIBS})
 target_link_libraries(scanner ${GFLAGS_LIBS})
 
@@ -58,7 +56,7 @@ target_link_libraries(scanner ${GFLAGS_LIBS})
 new_executable(shasum cmd/shasum/main.cpp)
 
 target_link_libraries(shasum ${CRYPTO_LIBS})
-target_link_libraries(shasum ${SUPPORT_LIBS})
+target_link_libraries(shasum ${EVA_FOUNDATION_LIBS})
 
 
 # {{{2 Tests.
@@ -75,9 +73,6 @@ if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
 
   target_link_libraries(test ${FILESYSTEM_LIBS})
   target_link_libraries(test ${TEST_FILESYSTEM_LIBS})
-
-  target_link_libraries(test ${SUPPORT_LIBS})
-  target_link_libraries(test ${TEST_SUPPORT_LIBS})
 
   target_link_libraries(test ${EVA_FOUNDATION_LIBS})
   target_link_libraries(test ${TEST_EVA_FOUNDATION_LIBS})

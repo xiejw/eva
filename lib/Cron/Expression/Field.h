@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "lib/Support/Error.h"
+#include "eva/Foundation/Errors.h"
 #include "lib/Support/Types.h"
 
 namespace eva {
