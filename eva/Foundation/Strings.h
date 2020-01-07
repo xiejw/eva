@@ -7,25 +7,24 @@ namespace eva {
 
 class Strings {
  public:
-  template <class A>
-  static std::string concat(const A& a) {
+  template <typename... Args>
+  inline static std::string concat(const Args&... args) {
     std::stringstream ss;
-    ss << a;
+    concat_impl(ss, args...);
     return ss.str();
   };
 
-  template <class A, class B>
-  static std::string concat(const A& a, const B& b) {
-    std::stringstream ss;
-    ss << a << b;
-    return ss.str();
+ protected:
+  template <typename T>
+  inline static void concat_impl(std::stringstream& ss, const T& t) {
+    ss << t;
   };
 
-  template <class A, class B, class C>
-  static std::string concat(const A& a, const B& b, const C& c) {
-    std::stringstream ss;
-    ss << a << b << c;
-    return ss.str();
+  template <typename T, typename... Args>
+  inline static void concat_impl(std::stringstream& ss, const T& t,
+                                 const Args&... args) {
+    ss << t;
+    concat_impl(ss, args...);
   };
 };
 
