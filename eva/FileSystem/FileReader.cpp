@@ -22,8 +22,8 @@ Status FileReader::loadNextBuffer() {
   allocated_ = read(fd_, (void *)(buffer_.get()), kBufferSize);
 
   if (allocated_ == -1)
-    return Status::OSError("Failed to read file for ", file_name_, ": ",
-                           strerror(errno));
+    return EVA_ERROR(OSError, "Failed to read file for ", file_name_, ": ",
+                     strerror(errno));
 
   return Status::OK;
 }
@@ -43,8 +43,8 @@ StatusOr<FileReader::TextLine> FileReader::nextline() {
   if (!buffer_) {
     fd_ = open(file_name_.c_str(), O_RDONLY);
     if (fd_ == -1) {
-      return Status::OSError("Failed to open file for ", file_name_.c_str(),
-                             ": ", strerror(errno));
+      return EVA_ERROR(OSError, "Failed to open file for ", file_name_.c_str(),
+                       ": ", strerror(errno));
     }
 
     buffer_.reset(new unsigned char[kBufferSize]);
@@ -80,7 +80,7 @@ StatusOr<FileReader::TextLine> FileReader::nextline() {
       if (buffer_[i] == '\n') {
         int length = i - pos_;
         if (current_len + length >= max_line_len_)
-          return Status::IOError("Line length is too long.");
+          return EVA_ERROR(IOError, "Line length is too long.");
 
         memcpy((void *)(line + current_len), (void *)(buffer_.get() + pos_),
                length);
@@ -93,7 +93,7 @@ StatusOr<FileReader::TextLine> FileReader::nextline() {
     // We reach the end of the buffer.
     int length = allocated_ - pos_;
     if (current_len + length >= max_line_len_)
-      return Status::IOError("Line length is too long.");
+      return EVA_ERROR(IOError, "Line length is too long.");
 
     memcpy((void *)(line + current_len), (void *)(buffer_.get() + pos_),
            length);

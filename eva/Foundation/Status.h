@@ -16,6 +16,12 @@ enum class ErrorCode {
   IOError,
 };
 
+// A macro to ease providing error message.
+// - `err_code` is the preprocessing token of `ErrorCode` above.
+// - The rest is for error message. They shall not be empty. And will be passed
+//   to Strings::concat directly.
+#define EVA_ERROR(err_code, ...) Status(ErrorCode::err_code, __VA_ARGS__)
+
 class Status {
  public:
   // Sets the error code. If present, allows an error message to be set.
@@ -26,35 +32,15 @@ class Status {
     EVA_CHECK(err_.has_value() || !msg_.has_value());
   };
 
+  explicit Status(ErrorCode err) : err_{err} {};
+
+  template <typename... T>
+  explicit Status(ErrorCode err, const T&... args) : err_{err} {
+    msg_ = Strings::concat(args...);
+  };
+
  public:
   static const Status OK;
-
-  static Status InvalidArguments(std::optional<std::string> msg = {}) {
-    return Status(ErrorCode::InvalidArguments, msg);
-  };
-
-  template <typename... T>
-  static Status InvalidArguments(const T&... args) {
-    return Status(ErrorCode::InvalidArguments, Strings::concat(args...));
-  };
-
-  static Status OSError(std::optional<std::string> msg = {}) {
-    return Status(ErrorCode::OSError, msg);
-  };
-
-  template <typename... T>
-  static Status OSError(const T&... args) {
-    return Status(ErrorCode::OSError, Strings::concat(args...));
-  };
-
-  static Status IOError(std::optional<std::string> msg = {}) {
-    return Status(ErrorCode::IOError, msg);
-  };
-
-  template <typename... T>
-  static Status IOError(const T&... args) {
-    return Status(ErrorCode::IOError, Strings::concat(args...));
-  };
 
  public:
   // Returns true if no error.
@@ -65,7 +51,7 @@ class Status {
 
  private:
   std::optional<ErrorCode> err_;
-  std::optional<std::string> msg_;
+  std::optional<std::string> msg_ = {};
 };
 
 }  // namespace eva
