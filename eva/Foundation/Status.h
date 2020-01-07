@@ -20,7 +20,7 @@ enum class ErrorCode {
 // - `err_code` is the preprocessing token of `ErrorCode` above.
 // - The rest is for error message. They shall not be empty. And will be passed
 //   to Strings::concat directly.
-#define EVA_ERROR(err_code, ...) Status(ErrorCode::err_code, __VA_ARGS__)
+#define EVA_ERROR(err_code, ...) Status{ErrorCode::err_code __VA_OPT__(,) __VA_ARGS__}
 
 class Status {
  public:

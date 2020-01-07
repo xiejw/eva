@@ -9,7 +9,7 @@ namespace {
 class FoundationStatusOrTest : public ::testing::Test {};
 
 TEST_F(FoundationStatusOrTest, CheckStatus) {
-  auto status_or = StatusOr<std::string>{Status{ErrorCode::InvalidArguments}};
+  auto status_or = StatusOr<std::string>{EVA_ERROR(InvalidArguments)};
   ASSERT_FALSE(status_or.ok());
 
   auto status = status_or.statusOrDie();

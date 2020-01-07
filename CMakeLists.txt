@@ -6,7 +6,7 @@ project(eva)
 
 # {{{3 Compiler Part.
 # Set the C++17 standard and Clang for compiler.
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
