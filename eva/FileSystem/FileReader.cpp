@@ -22,7 +22,7 @@ Status FileReader::loadNextBuffer() {
   allocated_ = read(fd_, (void *)(buffer_.get()), kBufferSize);
 
   if (allocated_ == -1)
-    return Status::OSError("Faied to read file for ", file_name_, ": ",
+    return Status::OSError("Failed to read file for ", file_name_, ": ",
                            strerror(errno));
 
   return Status::OK;
@@ -30,7 +30,7 @@ Status FileReader::loadNextBuffer() {
 
 FileReader::~FileReader() {
   if (fd_ != -1 && close(fd_) == -1)
-    eva::FatalError("Faied to close file for %s: %s", file_name_.c_str(),
+    eva::FatalError("Failed to close file for %s: %s", file_name_.c_str(),
                     strerror(errno));
 
   fd_ = -1;
@@ -43,7 +43,7 @@ StatusOr<FileReader::TextLine> FileReader::nextline() {
   if (!buffer_) {
     fd_ = open(file_name_.c_str(), O_RDONLY);
     if (fd_ == -1) {
-      return Status::OSError("Faied to open file for ", file_name_.c_str(),
+      return Status::OSError("Failed to open file for ", file_name_.c_str(),
                              ": ", strerror(errno));
     }
 
