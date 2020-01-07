@@ -51,6 +51,7 @@ target_include_directories(scanner PUBLIC ${GFLAGS_INCLUDES})
 target_link_libraries(scanner ${FILESYSTEM_LIBS})
 target_link_libraries(scanner ${CRYPTO_LIBS})
 target_link_libraries(scanner ${SUPPORT_LIBS})
+target_link_libraries(scanner ${EVA_FOUNDATION_LIBS})
 target_link_libraries(scanner ${GFLAGS_LIBS})
 
 # {{{3 Shasum

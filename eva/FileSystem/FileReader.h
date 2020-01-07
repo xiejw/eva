@@ -6,6 +6,7 @@
 
 #include "eva/Foundation/Macros.h"
 #include "eva/Foundation/Status.h"
+#include "eva/Foundation/StatusOr.h"
 
 namespace eva::fs {
 
@@ -32,7 +33,7 @@ class FileReader {
     std::string line;
   };
 
-  TextLine nextline();
+  StatusOr<TextLine> nextline();
 
  private:
   // Loads next block from file.
