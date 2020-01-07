@@ -4,6 +4,10 @@
 
 ### 19.3 Macro replacement [cpp.replace]
 
+The identifiers `__VA_ARGS__` and `__VA_OPT__` shall occur only in the
+replacement-list of a function-like macro that uses the ellipsis notation in the
+parameters.
+
 A preprocessing directive of the form
 
     # define identifier replacement-list new-line
@@ -23,6 +27,18 @@ A parameter in the replacement list, unless preceded by a `#` or `##`
 preprocessing token or followed by a `##` preprocessing token, is replaced by
 the corresponding argument **after** all macros contained therein have been
 expanded.
+
+An identifier `__VA_ARGS__` that occurs in the replacement list shall be treated
+as if it were a parameter, and the variable arguments shall form the
+preprocessing tokens used to replace it.
+
+The token sequence `__VA_OPT__`(content) shall be treated as if it were a
+parameter, and the preprocessing tokens used to replace it are defined as
+follows. If the variable arguments consist of no tokens, the replacement
+consists of a single placemarker preprocessing token.  Otherwise, the
+replacement consists of the results of the expansion of content as the
+replacement list of the current function-like macro before rescanning and
+further replacement.
 
 #### 19.3.3 The `#` operator [cpp.stringize]
 
