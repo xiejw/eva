@@ -8,6 +8,7 @@ add_library(EVAFoundation
 set(EVA_FOUNDATION_LIBS ${EVA_FOUNDATION_LIBS} EVAFoundation PARENT_SCOPE)
 
 add_library(TestEVAFoundation OBJECT
+  StringsTest.cpp
   StatusTest.cpp
   StatusOrTest.cpp
 )
