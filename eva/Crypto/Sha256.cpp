@@ -1,4 +1,4 @@
-#include "lib/Crypto/Sha256.h"
+#include "eva/Crypto/Sha256.h"
 
 #include <cassert>
 #include <cstring>
@@ -9,8 +9,7 @@
 
 #include "eva/Foundation/Errors.h"
 
-namespace eva {
-namespace crypto {
+namespace eva::crypto {
 
 namespace {
 
@@ -247,5 +246,4 @@ Error SHA256::DigestForFile(const char *path, std::string &digest) {
   return kOK;
 }
 
-}  // namespace crypto
-}  // namespace eva
+}  // namespace eva::crypto

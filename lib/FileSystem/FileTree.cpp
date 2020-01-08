@@ -2,12 +2,11 @@
 
 #include <iostream>
 
+#include "eva/Crypto/Sha256.h"
 #include "eva/Foundation/Errors.h"
-#include "lib/Crypto/Sha256.h"
 #include "lib/FileSystem/Walk.h"
 
-namespace eva {
-namespace fs {
+namespace eva::fs {
 
 void FileTree::Refresh() {
   int max_num_files =
@@ -35,5 +34,4 @@ void FileTree::Refresh() {
   });
 }
 
-}  // namespace fs
-}  // namespace eva
+}  // namespace eva::fs

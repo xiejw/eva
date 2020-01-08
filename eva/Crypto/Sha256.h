@@ -1,12 +1,11 @@
-#ifndef EVA_LIB_CRYPTO_SHA256_H
-#define EVA_LIB_CRYPTO_SHA256_H
+#ifndef EVA_CRYPTO_SHA256_H_
+#define EVA_CRYPTO_SHA256_H_
 
 #include <string>
 
 #include "eva/Foundation/Errors.h"
 
-namespace eva {
-namespace crypto {
+namespace eva::crypto {
 
 class SHA256 {
  public:
@@ -70,7 +69,6 @@ class SHA256 {
   bool finalized_;
 };
 
-}  // namespace crypto
-}  // namespace eva
+}  // namespace eva::crypto
 
 #endif

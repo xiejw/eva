@@ -1,12 +1,12 @@
-#include "lib/Crypto/Sha256.h"
+#include "eva/Crypto/Sha256.h"
 
 #include <stdlib.h>
 #include <string>
 
 #include "gtest/gtest.h"
 
-namespace eva {
-namespace crypto {
+namespace eva::crypto {
+
 namespace {
 
 class Sha256Test : public ::testing::Test {};
@@ -69,5 +69,4 @@ TEST_F(Sha256Test, CheckSuperLargeStream) {
 }
 
 }  // namespace
-}  // namespace crypto
-}  // namespace eva
+}  // namespace eva::crypto

@@ -29,7 +29,7 @@ include_directories(.)
 add_subdirectory (lib/Cron/Expression)
 add_subdirectory (lib/FileSystem)
 add_subdirectory (eva/FileSystem)
-add_subdirectory (lib/Crypto)
+add_subdirectory (eva/Crypto)
 add_subdirectory (eva/Foundation)
 
 # {{{2 Executables.
@@ -48,14 +48,14 @@ new_executable(scanner cmd/scanner/main.cpp)
 target_include_directories(scanner PUBLIC ${GFLAGS_INCLUDES})
 
 target_link_libraries(scanner ${FILESYSTEM_LIBS})
-target_link_libraries(scanner ${CRYPTO_LIBS})
+target_link_libraries(scanner ${EVA_CRYPTO_LIBS})
 target_link_libraries(scanner ${EVA_FOUNDATION_LIBS})
 target_link_libraries(scanner ${GFLAGS_LIBS})
 
 # {{{3 Shasum
 new_executable(shasum cmd/shasum/main.cpp)
 
-target_link_libraries(shasum ${CRYPTO_LIBS})
+target_link_libraries(shasum ${EVA_CRYPTO_LIBS})
 target_link_libraries(shasum ${EVA_FOUNDATION_LIBS})
 
 
@@ -68,8 +68,8 @@ if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
   target_link_libraries(test ${CRON_LIBS})
   target_link_libraries(test ${TEST_CRON_LIBS})
 
-  target_link_libraries(test ${CRYPTO_LIBS})
-  target_link_libraries(test ${TEST_CRYPTO_LIBS})
+  target_link_libraries(test ${EVA_CRYPTO_LIBS})
+  target_link_libraries(test ${TEST_EVA_CRYPTO_LIBS})
 
   target_link_libraries(test ${FILESYSTEM_LIBS})
   target_link_libraries(test ${TEST_FILESYSTEM_LIBS})

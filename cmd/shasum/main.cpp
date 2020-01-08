@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "lib/Crypto/Sha256.h"
+#include "eva/Crypto/Sha256.h"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
