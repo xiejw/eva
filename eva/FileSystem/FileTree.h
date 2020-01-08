@@ -1,5 +1,5 @@
-#ifndef EVA_LIB_FILESYSTEM_FILETREE
-#define EVA_LIB_FILESYSTEM_FILETREE
+#ifndef EVA_FILESYSTEM_FILETREE_H_
+#define EVA_FILESYSTEM_FILETREE_H_
 
 #include <memory>
 #include <optional>

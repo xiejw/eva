@@ -1,5 +1,5 @@
-#ifndef EVA_LIB_FILESYSTEM_GLOB_
-#define EVA_LIB_FILESYSTEM_GLOB_
+#ifndef EVA_FILESYSTEM_GLOB_H_
+#define EVA_FILESYSTEM_GLOB_H_
 
 #include <string>
 #include <vector>

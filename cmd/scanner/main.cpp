@@ -3,7 +3,7 @@
 #include <gflags/gflags.h>
 
 #include "cmd/scanner/Database.h"
-#include "lib/FileSystem/FileSystem.h"
+#include "eva/FileSystem/FileSystem.h"
 
 DEFINE_string(dir, ".", "The directory to scan.");
 DEFINE_int32(max_num_files, -1, "The nax number of files to scan.");

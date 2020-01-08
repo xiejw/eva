@@ -27,7 +27,6 @@ include_directories(.)
 #
 # Putting supporting dependencies in bottom.
 add_subdirectory (eva/Cron)
-add_subdirectory (lib/FileSystem)
 add_subdirectory (eva/FileSystem)
 add_subdirectory (eva/Crypto)
 add_subdirectory (eva/Foundation)
@@ -47,7 +46,7 @@ new_executable(scanner cmd/scanner/main.cpp)
 
 target_include_directories(scanner PUBLIC ${GFLAGS_INCLUDES})
 
-target_link_libraries(scanner ${FILESYSTEM_LIBS})
+target_link_libraries(scanner ${EVA_FILESYSTEM_LIBS})
 target_link_libraries(scanner ${EVA_CRYPTO_LIBS})
 target_link_libraries(scanner ${EVA_FOUNDATION_LIBS})
 target_link_libraries(scanner ${GFLAGS_LIBS})
@@ -71,8 +70,8 @@ if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
   target_link_libraries(test ${EVA_CRYPTO_LIBS})
   target_link_libraries(test ${TEST_EVA_CRYPTO_LIBS})
 
-  target_link_libraries(test ${FILESYSTEM_LIBS})
-  target_link_libraries(test ${TEST_FILESYSTEM_LIBS})
+  target_link_libraries(test ${EVA_FILESYSTEM_LIBS})
+  target_link_libraries(test ${TEST_EVA_FILESYSTEM_LIBS})
 
   target_link_libraries(test ${EVA_FOUNDATION_LIBS})
   target_link_libraries(test ${TEST_EVA_FOUNDATION_LIBS})

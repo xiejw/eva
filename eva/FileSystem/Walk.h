@@ -1,5 +1,5 @@
-#ifndef EVA_LIB_FILESYSTEM_WALK
-#define EVA_LIB_FILESYSTEM_WALK
+#ifndef EVA_FILESYSTEM_WALK_H_
+#define EVA_FILESYSTEM_WALK_H_
 
 #include <functional>
 #include <string>
