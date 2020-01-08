@@ -9,21 +9,21 @@ namespace eva::crypto {
 
 namespace {
 
-class Sha256Test : public ::testing::Test {};
+class CryptoSha256Test : public ::testing::Test {};
 
-TEST_F(Sha256Test, CheckEmptyString) {
+TEST_F(CryptoSha256Test, CheckEmptyString) {
   std::string digest{SHA256::Digest("")};
   ASSERT_EQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             digest);
 }
 
-TEST_F(Sha256Test, CheckString) {
+TEST_F(CryptoSha256Test, CheckString) {
   std::string digest{SHA256::Digest("grape")};
   ASSERT_EQ("0f78fcc486f5315418fbf095e71c0675ee07d318e5ac4d150050cd8e57966496",
             digest);
 }
 
-TEST_F(Sha256Test, CheckLongString) {
+TEST_F(CryptoSha256Test, CheckLongString) {
   std::string digest{SHA256::Digest(
       R"(Vanilla Policy Gradient is the most basic, entry-level algorithm in the deep RL space because it completely predates the advent of deep RL altogether. The core elements of VPG go all the way back to the late 80s / early 90s. It started a trail of research which ultimately led to stronger algorithms such as TRPO and then PPO soon after.
 
@@ -33,7 +33,7 @@ A key feature of this line of work is that all of these algorithms are on-policy
             digest);
 }
 
-TEST_F(Sha256Test, CheckByteStream) {
+TEST_F(CryptoSha256Test, CheckByteStream) {
   auto buf = "grape";
   SHA256 hash{};
   for (int i = 0; i < 5; i++) {
@@ -44,7 +44,7 @@ TEST_F(Sha256Test, CheckByteStream) {
             digest);
 }
 
-TEST_F(Sha256Test, CheckSuperLargeStream) {
+TEST_F(CryptoSha256Test, CheckSuperLargeStream) {
   if (getenv("SKIP_LONG_TEST") != NULL) GTEST_SKIP();
 
   using uint64 = SHA256::uint64;
