@@ -26,7 +26,7 @@ include_directories(.)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
-add_subdirectory (lib/Cron/Expression)
+add_subdirectory (eva/Cron)
 add_subdirectory (lib/FileSystem)
 add_subdirectory (eva/FileSystem)
 add_subdirectory (eva/Crypto)
@@ -38,7 +38,7 @@ new_executable(cron cmd/cron/main.cpp)
 
 target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
 
-target_link_libraries(cron ${CRON_LIBS})
+target_link_libraries(cron ${EVA_CRON_LIBS})
 target_link_libraries(cron ${EVA_FOUNDATION_LIBS})
 target_link_libraries(cron ${GFLAGS_LIBS})
 
@@ -65,8 +65,8 @@ if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
   new_test_exec(test cmd/tests/main.cpp)
 
   # We combine all tests in one binary for convenience.
-  target_link_libraries(test ${CRON_LIBS})
-  target_link_libraries(test ${TEST_CRON_LIBS})
+  target_link_libraries(test ${EVA_CRON_LIBS})
+  target_link_libraries(test ${TEST_EVA_CRON_LIBS})
 
   target_link_libraries(test ${EVA_CRYPTO_LIBS})
   target_link_libraries(test ${TEST_EVA_CRYPTO_LIBS})

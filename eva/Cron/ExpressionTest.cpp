@@ -1,15 +1,15 @@
 #include <cstdlib>
 
 #include "gtest/gtest.h"
-#include "lib/Cron/Expression/Expression.h"
-#include "lib/Cron/Expression/Field.h"
 
-namespace eva {
-namespace cron {
+#include "eva/Cron/Expression.h"
+#include "eva/Cron/Field.h"
+
+namespace eva::cron {
 
 namespace {
 
-class ExpressionTest : public ::testing::Test {
+class CronExpressionTest : public ::testing::Test {
  public:
   void SetUp() override {
     // All the epoch values here are based on America/Los_Angeles.
@@ -34,7 +34,7 @@ class ExpressionTest : public ::testing::Test {
   char* tz_value_ = nullptr;
 };
 
-TEST_F(ExpressionTest, CheckMinute) {
+TEST_F(CronExpressionTest, CheckMinute) {
   // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
   const time_t start_time = 1553711518;
   auto expression = Expression(/*minute = */ Field::MakeSingleValue(40));
@@ -43,7 +43,7 @@ TEST_F(ExpressionTest, CheckMinute) {
   ASSERT_EQ(1553712000, NextTime(expression, start_time));
 }
 
-TEST_F(ExpressionTest, CheckHour) {
+TEST_F(CronExpressionTest, CheckHour) {
   // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
   const time_t start_time = 1553711518;
   auto expression = Expression(/*minute = */ Field::MakeAny(),
@@ -53,7 +53,7 @@ TEST_F(ExpressionTest, CheckHour) {
   ASSERT_EQ(1553716800, NextTime(expression, start_time));
 }
 
-TEST_F(ExpressionTest, CheckHourInNextDay) {
+TEST_F(CronExpressionTest, CheckHourInNextDay) {
   // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
   const time_t start_time = 1553711518;
   auto expression = Expression(/*minute = */ Field::MakeAny(),
@@ -63,7 +63,7 @@ TEST_F(ExpressionTest, CheckHourInNextDay) {
   ASSERT_EQ(1553788800, NextTime(expression, start_time));
 }
 
-TEST_F(ExpressionTest, EndToEnd) {
+TEST_F(CronExpressionTest, EndToEnd) {
   // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
   const time_t start_time = 1553711518;
   auto expression = Expression(/*minute = */ Field::MakeSingleValue(13),
@@ -74,5 +74,4 @@ TEST_F(ExpressionTest, EndToEnd) {
 }
 
 }  // namespace
-}  // namespace cron
-}  // namespace eva
+}  // namespace eva::cron

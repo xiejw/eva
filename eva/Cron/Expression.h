@@ -1,13 +1,12 @@
-#ifndef EVA_LIB_CRON_EXPRESSION_EXPRESSION
-#define EVA_LIB_CRON_EXPRESSION_EXPRESSION
+#ifndef EVA_CRON_EXPRESSION_H_
+#define EVA_CRON_EXPRESSION_H_
 
 #include <ctime>
 
+#include "eva/Cron/Field.h"
 #include "eva/Foundation/Errors.h"
-#include "lib/Cron/Expression/Field.h"
 
-namespace eva {
-namespace cron {
+namespace eva::cron {
 
 class Expression {
  public:
@@ -41,7 +40,6 @@ class Expression {
   std::unique_ptr<Field> dayOfWeek_;
 };
 
-}  // namespace cron
-}  // namespace eva
+}  // namespace eva::cron
 
 #endif

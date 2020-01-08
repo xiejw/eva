@@ -1,12 +1,11 @@
-#ifndef EVA_LIB_CRON_EXPRESSION_FIELD
-#define EVA_LIB_CRON_EXPRESSION_FIELD
+#ifndef EVA_CRON_FIELD_H_
+#define EVA_CRON_FIELD_H_
 
 #include <memory>
 
 #include "eva/Foundation/Errors.h"
 
-namespace eva {
-namespace cron {
+namespace eva::cron {
 
 // Representing a field in cron expression.
 class Field {
@@ -54,7 +53,6 @@ class Field {
   ValueType value_;
 };
 
-}  // namespace cron
-}  // namespace eva
+}  // namespace eva::cron
 
 #endif
