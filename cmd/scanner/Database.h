@@ -1,19 +1,25 @@
 // Written as a simple header file with all code so the main.cpp can include
 // this.
 //
+#include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
 #include "eva/FileSystem/FileReader.h"
 #include "eva/FileSystem/Glob.h"
+#include "eva/Foundation/Macros.h"
 #include "eva/Foundation/Status.h"
 
 namespace {
 
 struct Record {
   std::string checksum;
+
+  // The path to the file having this checksum.
   std::string checksum_path;
+
+  // The file the record is stored in.
   std::string file_path;
 };
 
@@ -30,6 +36,7 @@ class Database {
 
  private:
   std::string pattern_;
+  std::unordered_map<std::string, std::list<Record>> map_ = {};
 };
 
 [[nodiscard]] eva::Status Database::refresh() {
@@ -49,10 +56,27 @@ class Database {
 [[nodiscard]] eva::Status Database::record_file(const std::string& file_path) {
   eva::fs::FileReader r{file_path};
   int count = 0;
-  while (!r.nextline().consumeValue().end_of_file) {
+  while (true) {
+    EVA_ASSIGN_OR_RETURN(textline, r.nextline());
+    if (textline.end_of_file) break;
+
+    // Make sure the line is somehow valid.
+    auto line = textline.content;
+    auto pos = line.find_first_of(' ');
+    if (pos == std::string::npos) continue;
+    EVA_CHECK(pos > 0 && pos < line.size());
+
+    // Decomp the line.
+    Record r;
+    r.checksum = line.substr(0, pos);
+    r.checksum_path = line.substr(pos + 1);
+    r.file_path = file_path;
+    map_[r.checksum].push_back(std::move(r));
+
     count++;
   }
   std::cout << "    Line Count: " << count << "\n";
+  std::cout << "    DB Count: " << map_.size() << "\n";
   return eva::Status::OK;
 };
 

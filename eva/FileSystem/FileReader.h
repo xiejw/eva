@@ -30,7 +30,7 @@ class FileReader {
     bool end_of_file;
 
     // Valid iff `end_of_file` == false.
-    std::string line;
+    std::string content;
   };
 
   StatusOr<TextLine> nextline();
