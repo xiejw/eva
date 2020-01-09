@@ -29,14 +29,15 @@ int main(int argc, char** argv) {
   eva::fs::FileTree tree{FLAGS_dir.c_str(), {kFetchChecksum, max_num_files}};
   tree.Refresh();
 
+  // If database is not specified, just prints results.
   if (FLAGS_database.empty()) {
-    // If database is not specified, just prints results.
     printTree(tree);
     return 0;
   }
 
   Database db{FLAGS_database};
-  db.refresh();
+  auto status = db.refresh();
+  EVA_CHECK(status.ok());
 
   return 0;
 }

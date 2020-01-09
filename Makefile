@@ -29,6 +29,10 @@ test: compile
 test_full: compile
 	${DEBUG}/test
 
+# TODO: remove this after finished.
+db: compile_only
+	.debug/scanner --database "../photos/data/*_photo.txt"
+
 fmt:
 	docker run --rm -ti \
     --user `id -u ${USER}`:`id -g ${USER}` \

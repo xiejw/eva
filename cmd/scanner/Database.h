@@ -7,6 +7,7 @@
 
 #include "eva/FileSystem/FileReader.h"
 #include "eva/FileSystem/Glob.h"
+#include "eva/Foundation/Status.h"
 
 namespace {
 
@@ -21,13 +22,17 @@ class Database {
   Database(std::string pattern) : pattern_{std::move(pattern)} {};
 
  public:
-  void refresh();
+  eva::Status refresh();
+
+ private:
+  // Restores the records into the database.
+  eva::Status record_file(const std::string& file_path);
 
  private:
   std::string pattern_;
 };
 
-void Database::refresh() {
+[[nodiscard]] eva::Status Database::refresh() {
   std::cout << "Pattern: " << pattern_ << "\n";
 
   eva::fs::Glob g{pattern_};
@@ -36,13 +41,19 @@ void Database::refresh() {
 
   for (auto& file : g.results()) {
     std::cout << "  -> File: " << file << "\n";
-    eva::fs::FileReader r{file};
-    int count = 0;
-    while (!r.nextline().consumeValue().end_of_file) {
-      count++;
-    }
-    std::cout << "    Line Count: " << count << "\n";
+    EVA_RETURN_IF_ERROR(record_file(file));
   }
+  return eva::Status::OK;
+};
+
+[[nodiscard]] eva::Status Database::record_file(const std::string& file_path) {
+  eva::fs::FileReader r{file_path};
+  int count = 0;
+  while (!r.nextline().consumeValue().end_of_file) {
+    count++;
+  }
+  std::cout << "    Line Count: " << count << "\n";
+  return eva::Status::OK;
 };
 
 }  // namespace
