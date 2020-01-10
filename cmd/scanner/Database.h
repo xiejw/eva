@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include "eva/FileSystem/FileReader.h"
 #include "eva/FileSystem/Glob.h"
@@ -30,14 +31,23 @@ class Database {
  public:
   eva::Status refresh();
 
+  std::pair<std::list<const Record>*, bool> lookup(const std::string& key);
+
  private:
   // Restores the records into the database.
   eva::Status record_file(const std::string& file_path);
 
  private:
   std::string pattern_;
-  std::unordered_map<std::string, std::list<Record>> map_ = {};
+  std::unordered_map<std::string, std::list<const Record>> map_ = {};
 };
+
+[[nodiscard]] std::pair<std::list<const Record>*, bool> Database::lookup(
+    const std::string& key) {
+  const auto result = map_.find(key);
+  return (result == map_.end()) ? std::make_pair(nullptr, false)
+                                : std::make_pair(&result->second, true);
+}
 
 [[nodiscard]] eva::Status Database::refresh() {
   std::cout << "Pattern: " << pattern_ << "\n";
