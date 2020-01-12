@@ -8,3 +8,7 @@
 
 # Docker context
 .docker
+
+# TeX output
+*.log
+*.pdf

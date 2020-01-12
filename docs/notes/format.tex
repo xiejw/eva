@@ -1,0 +1,56 @@
+% {{{1 Basic Configuration
+
+% {{{3 Load Fonts
+\font\ninett=cmtt9
+
+% {{{1 Use opamc for macros. See: https://tug.org/TUGboat/tb34-1/tb106olsak-opmac.pdf
+
+% {{{3 Import OPmac
+\input opmac
+% \tit \chap \sec \secc
+
+% {{{3 Defines size
+\parindent=0 pt
+\parskip=6 pt
+
+% {{{3 Defines Colors.
+% See http://www.december.com/html/spec/cmykshades.html
+\def\StarbuckGreen{\setcmykcolor{1.0 0 0.5 0.6}}
+
+% {{{3 Margin Notes.
+\fixmnotes\right \mnotesize=1.7in \def\mnotehook{\typosize[8/10]\it}
+\mnoteindent=20pt
+\margins/1 letter (1,2.5,,)in
+
+% {{{3 Hyper Links.
+\hyperlinks \Green \Blue % Internal green, external blue.
+
+% {{{3 Ajudst verbatim.
+\def\tthook{\typosize[9/11]}  % Adjust size for verbatim.
+
+% {{{1 Customized Macors
+%
+% {{{3 Defines a section-like date.
+%
+% - Insert a title in bold.
+% - Skip 5pt vertically.
+% - The first paragraph has no indent. This is done via the \everypar, which is
+%   invoked at the start of each paragraph. It sets an empty box at first and
+%   resets itself.
+\def\date#1{\vskip10pt \noindent{\bf #1}\hfill\vskip 5pt
+  \everypar={{\setbox0\lastbox}\everypar={}}}
+
+% {{{3 Defines a \symbol macro for coding related nouns
+%
+% * It starts with a group and redfines the undercore (_) to be normal char
+% * As all arguments are read when process macro. The macro should be defined as
+%   two macros, so the underscore in the argument can be handled correctly.
+% * \relax makes the \catcode effective immediately. A {} (empty group) or empty
+%   space can work also. This is the space-after-number rule (See TexBook Page
+%   208).
+% * In the second macro, we use the OPmac local color to change the group as
+%   green color.
+\def\symbol{\begingroup\catcode`\_=12\relax\symbolimpl}
+\def\symbolimpl#1{{\ninett #1}\endgroup}
+
+
