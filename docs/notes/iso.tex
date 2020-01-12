@@ -24,7 +24,7 @@ A preprocessing directive of the form
 defines a {\it function-like} macro with parameters.
 
 
-\sec 19.3.1 Argument substitution [cpp.subst]
+\secc 19.3.1 Argument substitution [cpp.subst]
 
 A parameter in the replacement list, unless preceded by a \symbol{\#} or
 \symbol{\#\#} preprocessing token or followed by a \symbol{\#\#} preprocessing
@@ -43,56 +43,57 @@ replacement consists of the results of the expansion of content as the
 replacement list of the current function-like macro before rescanning and
 further replacement.
 
-% #### 19.3.3 The `#` operator [cpp.stringize]
-%
-% Each `#` preprocessing token in the replacement list for a function-like macro
-% shall we followed by a parameter as next preprocessing token in the replacement
-% list.
-%
-% If, in the replacement list, a parameter is immediately preceded by a `#`
-% preprocessing token, both are are replaced by a single character string literal
-% preprocessing token that contains the spelling of the preprocessing token
-% sequence for the corresponding argument.
-%
-%
-%
-% #### 19.3.3 The `##` operator [cpp.concat]
-%
-% If, in the replacement list of a function-like macro, a parameter is immediately
-% preceded or followed by a `##` preprocessing token, the parameter is replaced by
-% the corresponding argument's preprocessing token sequence.
-%
-% > Personal note: This is the reason why to expand `__COUNTER__`, we need two
-% > macros, rather than one.
-%
-%     #include <iostream>
-%
-%     // The following code does not work.
-%     //
-%     //    #define CONCAT(x, y) x##y
-%     #define CONCAT(x, y) CONCAT_IMPL(x, y)
-%     #define CONCAT_IMPL(x, y) x##y
-%
-%     #define MKSTR(x) # x
-%     #define NAME(x) MKSTR(x)
-%
-%     #define UNIQUE_NAME(x) NAME(CONCAT(x, __COUNTER__))
-%     #define PRINT_NEW_NAME
-%
-%     int main(int argc, char** argv) {
-%       std::cout << UNIQUE_NAME(h) << "\n";
-%       std::cout << UNIQUE_NAME(h) << "\n";
-%       return 0;
-%     }
-%
-% > End of Personal note.
-%
-% #### 19.3.4 Rescanning and further replacement [cpp.rescan]
-%
-% After all parameters in the replacement list have been substituted and `#` and
-% `##` processing has taken place...Then the resulting preprocessing token
-% sequence is rescanned, along with all subsequent preprocessing token of the
-% source file.
+\secc 19.3.2 The \symbol{\#} operator [cpp.stringize]
+
+Each \symbol{\#} preprocessing token in the replacement list for a function-like
+macro shall we followed by a parameter as next preprocessing token in the
+replacement list.
+
+If, in the replacement list, a parameter is immediately preceded by a \symbol{\#}
+preprocessing token, both are are replaced by a single character string literal
+preprocessing token that contains the spelling of the preprocessing token
+sequence for the corresponding argument.
+
+
+\secc 19.3.3 The \symbol{\#\#} operator [cpp.concat]
+
+If, in the replacement list of a function-like macro, a parameter is immediately
+preceded or followed by a \symbol{\#\#} preprocessing token, the parameter is
+replaced by the corresponding argument's preprocessing token sequence.
+
+{\sl Personal note:} This is the reason why to expand \symbol{\_\_COUNTER\_\_},
+we need two macros, rather than one.
+
+\begtt
+#include <iostream>
+
+// The following code does not work.
+//
+//    #define CONCAT(x, y) x##y
+#define CONCAT(x, y) CONCAT_IMPL(x, y)
+#define CONCAT_IMPL(x, y) x##y
+
+#define MKSTR(x) # x
+#define NAME(x) MKSTR(x)
+
+#define UNIQUE_NAME(x) NAME(CONCAT(x, __COUNTER__))
+#define PRINT_NEW_NAME
+
+int main(int argc, char** argv) {
+  std::cout << UNIQUE_NAME(h) << "\n";
+  std::cout << UNIQUE_NAME(h) << "\n";
+  return 0;
+}
+\endtt
+
+{\sl End of Personal note.}
+
+\secc 19.3.4 Rescanning and further replacement [cpp.rescan]
+
+After all parameters in the replacement list have been substituted and
+\symbol{\#} and \symbol{\#\#} processing has taken place...Then the resulting
+preprocessing token sequence is rescanned, along with all subsequent
+preprocessing token of the source file.
 
 \vfill
 \bye
