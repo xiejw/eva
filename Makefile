@@ -1,10 +1,10 @@
-SRC        =  c
+SRC        = src
 BUILD_BASE = .build
 BUILD      = ${BUILD_BASE}
 DOCKER     = .docker
 
 CFLAGS := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
-CFLAGS := ${CFLAGS} -Ic
+CFLAGS := ${CFLAGS} -I${SRC}
 
 # enable release by `make RELEASE=1`
 ifeq (1, $(RELEASE))
