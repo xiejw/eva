@@ -13,10 +13,10 @@ class Expression {
   using Time = time_t;
 
   // Construcotr. Defaults to `* * * * *`.
-  Expression(std::unique_ptr<Field> minute = Field::MakeAny(),
-             std::unique_ptr<Field> hour = Field::MakeAny(),
-             std::unique_ptr<Field> day = Field::MakeAny(),
-             std::unique_ptr<Field> month = Field::MakeAny(),
+  Expression(std::unique_ptr<Field> minute    = Field::MakeAny(),
+             std::unique_ptr<Field> hour      = Field::MakeAny(),
+             std::unique_ptr<Field> day       = Field::MakeAny(),
+             std::unique_ptr<Field> month     = Field::MakeAny(),
              std::unique_ptr<Field> dayOfWeek = Field::MakeAny())
       : minute_(std::move(minute)),
         hour_(std::move(hour)),

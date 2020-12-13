@@ -1,9 +1,14 @@
 BUILD  = .build
-SRC    = ./c
-DOCKER = ./.docker
+SRC    = c
+DOCKER = .docker
 
 CFLAGS :=-std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS :=${CFLAGS} -Ic
+
+FMT = docker run --rm -ti \
+    --user `id -u ${USER}`:`id -g ${USER}` \
+    -v `pwd`:/workdir xiejw/clang-format \
+    /clang-format.sh
 
 compile: init ${BUILD}/cron.o
 
@@ -16,16 +21,13 @@ ${BUILD}/cron.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
-	rm -rf ${DEBUG} ${RELEASE} ${DOCKER}
+	rm -rf ${BUILD} ${DOCKER}
 
 cron: compile_only
 	${DEBUG}/cron
 
 fmt:
-	docker run --rm -ti \
-    --user `id -u ${USER}`:`id -g ${USER}` \
-    -v `pwd`:/source xiejw/clang-format \
-    /clang-format.sh .
+	${FMT} ${SRC}
 
 # Docker related.
 docker: clean release
