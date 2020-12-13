@@ -1,22 +1,16 @@
-# My Core C++ Library
+# My Core C Library
 
-C++ library is useful as
+C library is useful as
 
-1. Once a while, I need a super tiny binary for Docker. So, I use C++, with
+1. Once a while, I need a super tiny binary for Docker. So, I use C, with
    static link for that purpose.
-2. For decades long investiment, C++ is a good choice.
+2. For decades long investiment, C is a good choice.
 
 ## Compile
 
-    # Requires clang, cmake, make.
-    # Requires https://github.com/xiejw/common-lib.git at ../common-lib
-    make
-
-    # Optional
-    make test
-
-    # Create binaries for release mode. (Check .release folder.)
-    make release
+```
+make
+```
 
 # Binaries
 

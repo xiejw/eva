@@ -2,13 +2,9 @@
 *.swp
 *.swo
 
-# CXX output
-.debug
-.release
+# outputs
+.build
 
 # Docker context
 .docker
 
-# TeX output
-*.log
-*.pdf

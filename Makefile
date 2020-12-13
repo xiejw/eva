@@ -1,37 +1,25 @@
-DEBUG=./.debug
-RELEASE=./.release
-DOCKER=./.docker
+BUILD  = .build
+SRC    = ./c
+DOCKER = ./.docker
 
-compile:
-	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake .. && make -j
+CFLAGS :=-std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
+CFLAGS :=${CFLAGS} -Ic
 
-compile_only:
-	cd ${DEBUG} && make -j --no-print-directory
+compile: init ${BUILD}/cron.o
 
-release:
-	mkdir -p ${RELEASE} && \
-		cd ${RELEASE} && \
-		CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=RELEASE .. && \
-		make -j
+init: ${BUILD}
+
+${BUILD}:
+	@mkdir -p ${BUILD}
+
+${BUILD}/cron.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
+	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
 	rm -rf ${DEBUG} ${RELEASE} ${DOCKER}
 
 cron: compile_only
 	${DEBUG}/cron
-
-scanner: compile_only
-	${DEBUG}/scanner
-
-test: compile
-	SKIP_LONG_TEST=1 ${DEBUG}/test
-
-test_full: compile
-	${DEBUG}/test
-
-# TODO: remove this after finished.
-db: compile_only
-	.debug/scanner --database "../photos/data/*_photo.txt"
 
 fmt:
 	docker run --rm -ti \
