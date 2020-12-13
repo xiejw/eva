@@ -3,7 +3,7 @@
 *.swo
 
 # outputs
-.build
+.build*
 
 # Docker context
 .docker
