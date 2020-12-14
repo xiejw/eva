@@ -1,3 +1,6 @@
+# ------------------------------------------------------------------------------
+# configurations.
+# ------------------------------------------------------------------------------
 SRC        = src
 BUILD_BASE = .build
 BUILD      = ${BUILD_BASE}
@@ -17,7 +20,15 @@ FMT = docker run --rm -ti \
     -v `pwd`:/workdir xiejw/clang-format \
     /clang-format.sh
 
-compile: ${BUILD} ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
+# ------------------------------------------------------------------------------
+# libs.
+# ------------------------------------------------------------------------------
+CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
+
+# ------------------------------------------------------------------------------
+# actions.
+# ------------------------------------------------------------------------------
+compile: ${BUILD} ${CRON_LIB}
 
 ${BUILD}:
 	mkdir -p ${BUILD}
@@ -34,8 +45,16 @@ clean:
 fmt:
 	${FMT} ${SRC}
 
-# cron: compile_only
-# 	${DEBUG}/cron
+# ------------------------------------------------------------------------------
+# cmds.
+# ------------------------------------------------------------------------------
+
+cron: compile ${BUILD}/cron
+	${BUILD}/cron
+
+${BUILD}/cron: cmd/cron/main.c ${CRON_LIB}
+	${CC} ${CFLAGS} -o $@ $^
+
 #
 # # Docker related.
 # docker: clean release
