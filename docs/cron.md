@@ -2,7 +2,7 @@
 
 ### Usage
 
-See [cron.1](cron1.) for details. But in short,
+See [cron.1](cron.1) for details. But in short,
 
     # print the number of seconds until next time matching X hour Y minute,
     # both options `--hour` and `--minute` are optional.
