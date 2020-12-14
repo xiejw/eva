@@ -2,10 +2,12 @@
 
 ### Usage
 
-    # Print the number of seconds until next time matching X hour Y minute, both
-    # the flags `--hour` and `--minute` are optional.
+See [cron.1] for details. But in short,
 
-    .debug/cron --hour X --minute Y
+    # print the number of seconds until next time matching X hour Y minute,
+    # both options `--hour` and `--minute` are optional.
+
+    .build/cron [--hour X] [--minute Y]
 
 Then, it can be used in the script, say a Docker, like
 
