@@ -6,9 +6,16 @@ CMD        = cmd
 BUILD_BASE = .build
 BUILD      = ${BUILD_BASE}
 DOCKER     = .docker
+UNAME      = $(shell uname)
 
 CFLAGS := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS := ${CFLAGS} -I${SRC}
+
+# enable posix
+ifeq ($(UNAME), Linux)
+CFLAGS := ${CFLAGS} -D_POSIX_SOURCE
+endif
+
 
 # enable release by `make RELEASE=1`
 ifeq (1, $(RELEASE))
