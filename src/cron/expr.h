@@ -13,10 +13,9 @@ typedef struct {
   cron_field_t day_of_week;
 } cron_expr_t;
 
-// TODO Init
-
-extern int cronExprNext(cron_expr_t* expr, time_t start_time,
-                        time_t* next_time);
-extern int cronExprMatch(cron_expr_t* expr, time_t time);
+extern void cronExprInit(cron_expr_t* expr);
+extern int  cronExprNext(cron_expr_t* expr, time_t start_time,
+                         time_t* next_time);
+extern int  cronExprMatch(cron_expr_t* expr, time_t time);
 
 #endif

@@ -26,6 +26,15 @@ static int  searchNextMatching(tm_t* start_time, cron_field_t* field,
 // implementation.
 // -----------------------------------------------------------------------------
 
+void cronExprInit(cron_expr_t* expr) {
+  assert(expr != NULL);
+  cronFieldSetAsAny(&expr->minute);
+  cronFieldSetAsAny(&expr->hour);
+  cronFieldSetAsAny(&expr->day);
+  cronFieldSetAsAny(&expr->month);
+  cronFieldSetAsAny(&expr->day_of_week);
+}
+
 int cronExprMatch(cron_expr_t* expr, time_t time) {
   tm_t time_tm;
   localtime_r(&time, &time_tm);
