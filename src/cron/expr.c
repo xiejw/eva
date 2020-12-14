@@ -1,17 +1,17 @@
-#include <ctime>
+#include "cron/expr.h"
 
-#include "eva/Cron/Expression.h"
-#include "eva/Foundation/Errors.h"
-
-namespace eva::cron {
-
-namespace {
+typedef int Error;
+typedef int bool;
+#define kOK      0
+#define kFAILURE 1
+#define true 1
+#define false 0
 
 enum Component { minute, hour, day, dayOfWeek, month };
 
-/// Rewinds all components in the candidate up to `up_to`. For example, if
-/// `up_to` is `day`, then `hour`, `minute` are rewinded to `zero`.
-void rewind(tm* candidate, Component up_to) {
+// Rewinds all components in the candidate up to `up_to`. For example, if
+// `up_to` is `day`, then `hour`, `minute` are rewinded to `zero`.
+static void rewind(struct tm* candidate, enum Component up_to) {
   switch (up_to) {
     case month:
       candidate->tm_mday = 1;
@@ -28,17 +28,19 @@ void rewind(tm* candidate, Component up_to) {
       // no-op
       break;
     default:
-      FatalError("Unexpected component: %d", up_to);
+      assert(0);
+      // FatalError("Unexpected component: %d", up_to);
   }
 }
 
 /// Validates the candidate. We only search up to 5 years.
-Error validate(const tm* const candidate, const tm* const start_time) {
+static Error validate(const struct tm* const candidate,
+                      const struct tm* const start_time) {
   return candidate->tm_year - start_time->tm_year > 5;
 }
 
 /// Retrieves the component from the time.
-int value(tm* time_tm, Component component) {
+static int value(struct tm* time_tm, enum Component component) {
   switch (component) {
     case minute:
       return time_tm->tm_min;
@@ -52,7 +54,8 @@ int value(tm* time_tm, Component component) {
       // Month starts with 0 in `tm`.
       return time_tm->tm_mon + 1;
     default:
-      FatalError("Unexpected component: %d", component);
+      assert(0);
+      // FatalError("Unexpected component: %d", component);
   }
 }
 
@@ -61,7 +64,7 @@ int value(tm* time_tm, Component component) {
 //
 // For example: if the minute reaches 60, minute will be reset as 0 and hour
 // will be increaesed.
-void increase(tm* time_tm, Component component) {
+static void increase(struct tm* time_tm, enum Component component) {
   switch (component) {
     case minute:
       time_tm->tm_min += 1;
@@ -79,7 +82,8 @@ void increase(tm* time_tm, Component component) {
       time_tm->tm_mon += 1;
       break;
     default:
-      FatalError("Unexpected component: %d", component);
+      assert(0);
+      // FatalError("Unexpected component: %d", component);
   }
   mktime(time_tm);
 }
@@ -87,11 +91,12 @@ void increase(tm* time_tm, Component component) {
 // Focusing only on the component inside the `candidate`, searching the next
 // value, by keeping increasing it, until matching the `field` of the
 // expression.
-Error searchNextMatching(const tm* const start_time, const Field* const field,
-                         const Component component, tm* candidate,
-                         bool* changed) {
-  auto initial_value = value(candidate, component);
-  if (field->Match(initial_value)) {
+static Error searchNextMatching(const struct tm* const start_time,
+                                cron_field_t*          field,
+                                const enum Component   component,
+                                struct tm* candidate, bool* changed) {
+  int initial_value = value(candidate, component);
+  if (cronFieldMatch(field, initial_value)) {
     *changed = false;
     return kOK;
   }
@@ -104,27 +109,25 @@ Error searchNextMatching(const tm* const start_time, const Field* const field,
     if (validate(candidate, start_time)) {
       return kFAILURE;
     }
-    auto new_value = value(candidate, component);
+    int new_value = value(candidate, component);
 
-    if (field->Match(new_value)) {
+    if (cronFieldMatch(field, new_value)) {
       return kOK;
     }
   }
 }
 
-}  // namespace
+int cronExprMatch(cron_expr_t* expr, time_t time) {
+  struct tm time_tm;
+  localtime_r(&time, &time_tm);
 
-bool Expression::Match(Time time) {
-  auto time_tm = std::make_unique<tm>();
-  localtime_r(&time, time_tm.get());
-
-  if (!minute_->Match(time_tm->tm_min)) return false;
-  if (!hour_->Match(time_tm->tm_hour)) return false;
-  if (!day_->Match(time_tm->tm_mday)) return false;
+  if (!cronFieldMatch(&expr->minute, time_tm.tm_min)) return false;
+  if (!cronFieldMatch(&expr->hour, time_tm.tm_hour)) return false;
+  if (!cronFieldMatch(&expr->day, time_tm.tm_mday)) return false;
   // tm_wday starts with 0 (Sunday).
-  if (!dayOfWeek_->Match(time_tm->tm_wday)) return false;
+  if (!cronFieldMatch(&expr->day_of_week, time_tm.tm_wday)) return false;
   // tm_mon starts with zero.
-  if (!month_->Match(time_tm->tm_mon + 1)) return false;
+  if (!cronFieldMatch(&expr->month, time_tm.tm_mon + 1)) return false;
 
   return true;
 }
@@ -138,12 +141,12 @@ bool Expression::Match(Time time) {
 /// Step 4: Search day until match. If day changed, reset lower components
 ///         (hour and minute in this case) and jump to `mainLoop`.
 /// Step 5-6: Search month and year. Same rule as step 3 and 4.
-Error Expression::Next(Time start_time, Time* next_time) {
-  tm candidate;
+Error cronExprNext(cron_expr_t* expr, time_t start_time, time_t* next_time) {
+  struct tm candidate;
   localtime_r(&start_time, &candidate);
 
   // Make a deep copy.
-  tm start_point{candidate};
+  struct tm start_point = candidate;
 
   // Advance the minute once to start the search and reset the second field.
   candidate.tm_min += 1;
@@ -151,26 +154,27 @@ Error Expression::Next(Time start_time, Time* next_time) {
 
 mainLoop:
   while (true) {
-    for (auto component : {minute, hour, day, dayOfWeek, month}) {
-      Field* field = nullptr;
+    for (enum Component component = minute; component <= month; component++) {
+      cron_field_t* field;
       switch (component) {
         case minute:
-          field = minute_.get();
+          field = &expr->minute;
           break;
         case hour:
-          field = hour_.get();
+          field = &expr->hour;
           break;
         case day:
-          field = day_.get();
+          field = &expr->day;
           break;
         case dayOfWeek:
-          field = dayOfWeek_.get();
+          field = &expr->day_of_week;
           break;
         case month:
-          field = month_.get();
+          field = &expr->month;
           break;
         default:
-          FatalError("Unexpected component: %d", component);
+          assert(0);
+          // FatalError("Unexpected component: %d", component);
       }
 
       bool changed;
@@ -189,5 +193,3 @@ mainLoop:
   *next_time = mktime(&candidate);
   return kOK;
 }
-
-}  // namespace eva::cron

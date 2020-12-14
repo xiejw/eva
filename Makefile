@@ -17,12 +17,15 @@ FMT = docker run --rm -ti \
     -v `pwd`:/workdir xiejw/clang-format \
     /clang-format.sh
 
-compile: ${BUILD} ${BUILD}/cron.o
+compile: ${BUILD} ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 
 ${BUILD}:
 	mkdir -p ${BUILD}
 
-${BUILD}/cron.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
+${BUILD}/cron_field.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/cron_expr.o: ${SRC}/cron/expr.c ${SRC}/cron/expr.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
