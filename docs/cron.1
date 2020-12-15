@@ -1,15 +1,19 @@
-.TH CRON 1
-.SH NAME
-cron \- utility printing the number of seconds matching cron expressions.
-.SH SYNOPSIS
-.B cron
-[options]
-.SH OPTIONS
-.PP
-if optionts are absent, it prints the number of seconds to next minute.
-.TP
-.BR \-m ", " \-\-minute-\fIminute\fR
+.Dt CRON 1
+.Sh NAME
+.Nm cron
+.Nd utility printing the number of seconds matching cron expressions.
+.Sh SYNOPSIS
+.Nm
+.Op Ar options
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It if optionts are absent, it prints the number of seconds to next minute.
+.It Fl m Ar minute
+same as
+Fl -minute
+.It Fl -minute Ar minute
 set the cron expression field for minute.
-.TP
-.BR \-h ", " \-\-hour=\fIhour\fR
-set the cron expression field for hour.
+.\".TP
+.\".BR \-h ", " \-\-hour=\fIhour\fR
+.\"set the cron expression field for hour.
+.El
