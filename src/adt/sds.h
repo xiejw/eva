@@ -74,10 +74,7 @@ void sdsCatPrintf(_mut_ sds_t *s, const char *fmt, ...);
 void sdsCpyLen(_mut_ sds_t *s, const char *t, size_t len);
 void sdsCpy(_mut_ sds_t *s, const char *t);
 
-// unimplemented.
-
-sds_t sdscatfmt(sds_t s, char const *fmt, ...);
-int   sdscmp(const sds_t s1, const sds_t s2);
+int sdsCmp(const sds_t s1, const sds_t s2);
 
 // -----------------------------------------------------------------------------
 // impl of static inline fns.

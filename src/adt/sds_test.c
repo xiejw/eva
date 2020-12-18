@@ -142,6 +142,21 @@ static char* test_cpy_len() {
   return NULL;
 }
 
+static char* test_cmp() {
+  sds_t s1 = sdsNew("hello");
+  sds_t s2 = sdsNew("hello");
+  ASSERT_TRUE("cmp", 0 == sdsCmp(s1, s2));
+
+  sdsCpy(&s1, "i");
+  ASSERT_TRUE("cmp", 0 < sdsCmp(s1, s2));
+  sdsCpy(&s1, "hell");
+  ASSERT_TRUE("cmp", 0 > sdsCmp(s1, s2));
+
+  sdsFree(s1);
+  sdsFree(s2);
+  return NULL;
+}
+
 char* run_adt_sds_suite() {
   RUN_TEST(test_new);
   RUN_TEST(test_new_len);
@@ -155,5 +170,6 @@ char* run_adt_sds_suite() {
   RUN_TEST(test_reserve);
   RUN_TEST(test_cpy);
   RUN_TEST(test_cpy_len);
+  RUN_TEST(test_cmp);
   return NULL;
 }
