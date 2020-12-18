@@ -100,13 +100,13 @@ static char* test_cat_printf() {
   return NULL;
 }
 
-static char* test_make_room() {
+static char* test_reserve() {
   sds_t s = sdsNew("hello");
   ASSERT_TRUE("len", sdsLen(s) == 5);
   ASSERT_TRUE("cap", sdsCap(s) == 5);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
 
-  sdsReserve(&s, 5);
+  sdsReserve(&s, 10);
   ASSERT_TRUE("len", sdsLen(s) == 5);
   ASSERT_TRUE("cap", sdsCap(s) >= 10);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
@@ -122,6 +122,26 @@ static char* test_make_room() {
   return NULL;
 }
 
+static char* test_cpy() {
+  sds_t s = sdsNew("");
+  ASSERT_TRUE("len", sdsLen(s) == 0);
+  sdsCpy(&s, "hello");
+  ASSERT_TRUE("len", sdsLen(s) == 5);
+  ASSERT_TRUE("str", strcmp(s, "hello") == 0);
+  sdsFree(s);
+  return NULL;
+}
+
+static char* test_cpy_len() {
+  sds_t s = sdsNew("");
+  ASSERT_TRUE("len", sdsLen(s) == 0);
+  sdsCpyLen(&s, "hello", 3);
+  ASSERT_TRUE("len", sdsLen(s) == 3);
+  ASSERT_TRUE("str", strcmp(s, "hel") == 0);
+  sdsFree(s);
+  return NULL;
+}
+
 char* run_adt_sds_suite() {
   RUN_TEST(test_new);
   RUN_TEST(test_new_len);
@@ -132,6 +152,8 @@ char* run_adt_sds_suite() {
   RUN_TEST(test_cat);
   RUN_TEST(test_cat_sds);
   RUN_TEST(test_cat_printf);
-  RUN_TEST(test_make_room);
+  RUN_TEST(test_reserve);
+  RUN_TEST(test_cpy);
+  RUN_TEST(test_cpy_len);
   return NULL;
 }

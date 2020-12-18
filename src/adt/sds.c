@@ -64,31 +64,28 @@ void sdsFree(sds_t s) {
 sds_t sdsEmpty() { return sdsNewLen("", 0); }
 sds_t sdsDup(const sds_t s) { return sdsNewLen(s, sdsLen(s)); }
 
-void sdsReserve(sds_t* s, size_t addlen) {
-  size_t avail = sdsAvail(*s);
-  if (avail >= addlen) return;
+void sdsReserve(sds_t* s, size_t new_len) {
+  size_t cap = sdsCap(*s);
+  if (cap >= new_len) return;
 
-  size_t len    = sdsLen(*s);
-  size_t newlen = len + addlen;
-
-  newlen *= 2;
+  new_len *= 2;
 
   int   hdrlen = sizeof(sdshdr);
   void* buf    = SDS_HDR(*s);
-  buf          = realloc(buf, hdrlen + newlen + 1);
+  buf          = realloc(buf, hdrlen + new_len + 1);
   if (buf == NULL) {
     *s = NULL;
     return;
   }
   *s = (sds_t)buf + hdrlen;
-  sdsSetCap(*s, newlen);
+  sdsSetCap(*s, new_len);
 }
 
 void sdsCatLen(sds_t* s, const void* t, size_t len) {
   size_t curlen = sdsLen(*s);
-  sdsReserve(s, len);
-  if (*s == NULL) return;
   size_t newlen = curlen + len;
+  sdsReserve(s, newlen);
+  if (*s == NULL) return;
   memcpy((*s) + curlen, t, len);
   sdsSetLen(*s, newlen);
   (*s)[newlen] = '\0';
@@ -144,3 +141,13 @@ void sdsCatVprintf(sds_t* s, const char* fmt, va_list ap) {
   sdsCat(s, buf);
   if (buf != staticbuf) free(buf);
 }
+
+void sdsCpyLen(sds_t* s, const char* t, size_t len) {
+  sdsReserve(s, len);
+  if (*s == NULL) return;
+  memcpy(*s, t, len);
+  (*s)[len] = '\0';
+  sdsSetLen(*s, len);
+  return;
+}
+void sdsCpy(sds_t* s, const char* t) { sdsCpyLen(s, t, strlen(t)); }

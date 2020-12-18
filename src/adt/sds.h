@@ -71,10 +71,10 @@ void sdsCatLen(_mut_ sds_t *s, const void *t, size_t len);
 void sdsCatVprintf(_mut_ sds_t *s, const char *fmt, va_list ap);
 void sdsCatPrintf(_mut_ sds_t *s, const char *fmt, ...);
 
-// unimplemented.
+void sdsCpyLen(_mut_ sds_t *s, const char *t, size_t len);
+void sdsCpy(_mut_ sds_t *s, const char *t);
 
-sds_t sdsCpylen(sds_t s, const char *t, size_t len);
-sds_t sdsCpy(sds_t s, const char *t);
+// unimplemented.
 
 sds_t sdscatfmt(sds_t s, char const *fmt, ...);
 int   sdscmp(const sds_t s1, const sds_t s2);
