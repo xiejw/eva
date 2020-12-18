@@ -40,7 +40,7 @@ CRON_TEST_SUITE = ${BUILD}/cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
 CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
 
-ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o
+ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o
 ADT_TEST_DEP   = ${ADT_LIB}
 ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 
@@ -68,6 +68,9 @@ ${BUILD}/adt_vec_test.o: ${SRC}/adt/vec_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_sds.o: ${SRC}/adt/sds.c ${SRC}/adt/sds.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_sds_test.o: ${SRC}/adt/sds_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:

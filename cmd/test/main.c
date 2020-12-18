@@ -35,6 +35,7 @@ int main() {
 
   ADD_SUITE(cron);     // cron/cron_test.c
   ADD_SUITE(adt_vec);  // adt/vec_test.c
+  ADD_SUITE(adt_sds);  // adt/sds_test.c
 
   // ---------------------------------------------------------------------------
   // Runs all suites and reports.
