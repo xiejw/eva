@@ -31,6 +31,7 @@ FMT = docker run --rm -ti \
 # libs.
 # ------------------------------------------------------------------------------
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
+ADT_LIB = ${BUILD}/adt_vec.o
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -39,10 +40,14 @@ CRON_TEST_SUITE = ${BUILD}/cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
 CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
 
+ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o
+ADT_TEST_DEP   = ${ADT_LIB}
+ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
+
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${CRON_LIB}
+compile: ${BUILD} ${CRON_LIB} ${ADT_LIB}
 
 ${BUILD}:
 	mkdir -p ${BUILD}
@@ -54,6 +59,12 @@ ${BUILD}/cron_expr.o: ${SRC}/cron/expr.c ${SRC}/cron/expr.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_test.o: ${SRC}/cron/cron_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_vec.o: ${SRC}/adt/vec.c ${SRC}/adt/vec.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_vec_test.o: ${SRC}/adt/vec_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
@@ -76,7 +87,7 @@ ${BUILD}/cron: cmd/cron/main.c ${CRON_LIB}
 test: compile ${BUILD}/test
 	${BUILD}/test
 
-${BUILD}/test: cmd/test/main.c ${CRON_TEST}
+${BUILD}/test: cmd/test/main.c ${CRON_TEST} ${ADT_TEST}
 	${CC} ${CFLAGS} -o $@ $^
 
 #

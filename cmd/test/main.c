@@ -33,7 +33,8 @@ int main() {
   // Convenstion is for foo, a test suite fn run_foo_suite is called. For
   // customized case, use ADD_SUITE_NAME_AND_FN.
 
-  ADD_SUITE(cron);  // cron_test.c
+  ADD_SUITE(cron);     // cron/cron_test.c
+  ADD_SUITE(adt_vec);  // adt/vec_test.c
 
   // ---------------------------------------------------------------------------
   // Runs all suites and reports.
