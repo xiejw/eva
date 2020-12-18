@@ -31,7 +31,7 @@ FMT = docker run --rm -ti \
 # libs.
 # ------------------------------------------------------------------------------
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-ADT_LIB = ${BUILD}/adt_vec.o
+ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -65,6 +65,9 @@ ${BUILD}/adt_vec.o: ${SRC}/adt/vec.c ${SRC}/adt/vec.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_vec_test.o: ${SRC}/adt/vec_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_sds.o: ${SRC}/adt/sds.c ${SRC}/adt/sds.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
