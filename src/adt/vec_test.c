@@ -3,7 +3,7 @@
 #include "vec.h"
 
 static char* test_vec_init() {
-  vect(int) v = vecNew();
+  vec_t(int) v = vecNew();
   ASSERT_TRUE("size is 0", vecSize(v) == 0);
   ASSERT_TRUE("cap is 0", vecCap(v) == 0);
   vecFree(v);
@@ -11,7 +11,7 @@ static char* test_vec_init() {
 }
 
 static char* test_vec_push_back() {
-  vect(int) v = vecNew();
+  vec_t(int) v = vecNew();
   vecPushBack(v, 123);
   ASSERT_TRUE("v[0] is 123", v[0] == 123);
   ASSERT_TRUE("size is 1", vecSize(v) == 1);
@@ -21,7 +21,7 @@ static char* test_vec_push_back() {
 }
 
 static char* test_vec_reserve() {
-  vect(int) v = vecNew();
+  vec_t(int) v = vecNew();
   vecReserve(v, 100);
   ASSERT_TRUE("size is 0", vecSize(v) == 0);
   ASSERT_TRUE("cap is 100", vecCap(v) == 100);
@@ -30,7 +30,7 @@ static char* test_vec_reserve() {
 }
 
 static char* test_vec_grow() {
-  vect(int) v = vecNew();
+  vec_t(int) v = vecNew();
   vecReserve(v, 2);
   ASSERT_TRUE("size is 0", vecSize(v) == 0);
   ASSERT_TRUE("cap is 2", vecCap(v) == 2);

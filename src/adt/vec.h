@@ -55,7 +55,7 @@ static inline void _vecGrow(_mut_ size_t** vec, size_t unit_size) {
 // -----------------------------------------------------------------------------
 // Public macros.
 // -----------------------------------------------------------------------------
-#define vect(type)    type*
+#define vec_t(type)   type*
 #define vecNew()      NULL
 #define vecSize(vec)  ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
 #define vecCap(vec)   ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
