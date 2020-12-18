@@ -13,7 +13,7 @@ CFLAGS := ${CFLAGS} -I${SRC}
 
 # enable POSIX
 ifeq ($(UNAME), Linux)
-CFLAGS := ${CFLAGS} -D_POSIX_SOURCE
+CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
 endif
 
 # enable release by `make RELEASE=1`
