@@ -33,6 +33,13 @@ FMT = docker run --rm -ti \
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 
 # ------------------------------------------------------------------------------
+# tests.
+# ------------------------------------------------------------------------------
+CRON_TEST_SUITE = ${BUILD}/cron_test.o
+CRON_TEST_DEP   = ${CRON_LIB}
+CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
+
+# ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
 compile: ${BUILD} ${CRON_LIB}
@@ -44,6 +51,9 @@ ${BUILD}/cron_field.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_expr.o: ${SRC}/cron/expr.c ${SRC}/cron/expr.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/cron_test.o: ${SRC}/cron/cron_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
@@ -61,6 +71,12 @@ cron: compile ${BUILD}/cron
 	${BUILD}/cron
 
 ${BUILD}/cron: cmd/cron/main.c ${CRON_LIB}
+	${CC} ${CFLAGS} -o $@ $^
+
+test: compile ${BUILD}/test
+	${BUILD}/test
+
+${BUILD}/test: cmd/test/main.c ${CRON_TEST}
 	${CC} ${CFLAGS} -o $@ $^
 
 #
