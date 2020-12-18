@@ -5,8 +5,6 @@
 
 #include "cron/expr.h"
 
-typedef int error_t;
-
 // -----------------------------------------------------------------------------
 // helper methods prototypes.
 // -----------------------------------------------------------------------------
@@ -61,26 +59,26 @@ error_t parseOptions(cron_expr_t* expr, int argc, char** argv) {
   }
   if (argv[optind] != NULL) {
     fprintf(stderr, "remaining options cannot be parsed: %s\n", argv[optind]);
-    return -1;
+    return ERROR;
   }
-  return 0;
+  return OK;
 }
 
 error_t parsePosInt(char* str, int* v) {
   if (*str == '\0') {
     fprintf(stderr, "int argument cannot be empty string\n");
-    return -1;
+    return ERROR;
   }
 
   char* end_p;
   *v = (int)strtol(str, &end_p, /*base=*/10);
   if (*end_p != '\0') {
     fprintf(stderr, "int argument cannot be parsed: %s\n", str);
-    return -1;
+    return ERROR;
   }
   if (*v < 0) {
     fprintf(stderr, "require positive int argument: %d\n", *v);
-    return -1;
+    return ERROR;
   }
-  return 0;
+  return OK;
 }
