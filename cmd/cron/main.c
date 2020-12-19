@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
   if (parseOptions(&expr, argc, argv)) {
     errDump("failed to parse options");
-    errClear();
+    errFree();
     exit(1);
   }
 
@@ -50,11 +50,11 @@ error_t parseOptions(cron_expr_t* expr, int argc, char** argv) {
   while ((ch = getopt_long(argc, argv, "h:m:", longopts, NULL)) != -1) {
     switch (ch) {
       case 'm':
-        if (parsePosInt(optarg, &v)) return errNum();
+        if (parsePosInt(optarg, &v)) return errEmitNote("parsing minute");
         cronFieldSetSingleValue(&expr->minute, v);
         break;
       case 'h':
-        if (parsePosInt(optarg, &v)) return errNum();
+        if (parsePosInt(optarg, &v)) return errEmitNote("parsing hour");
         cronFieldSetSingleValue(&expr->hour, v);
         break;
       default:
