@@ -21,4 +21,10 @@ typedef int error_t;
 #define ERROR      -1
 #define ENOT_FOUND -2
 
+extern error_t errNew(const char* fmt, ...);
+extern error_t errWrapNote(error_t err, const char* fmt, ...);
+extern error_t errNum();
+extern void    errDump(char*);
+extern void    errClear();
+
 #endif

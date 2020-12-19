@@ -30,6 +30,7 @@ FMT = docker run --rm -ti \
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
+BASE_LIB = ${BUILD}/base_error.o
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o
 
@@ -47,10 +48,13 @@ ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${CRON_LIB} ${ADT_LIB}
+compile: ${BUILD} ${BASE_LIB} ${CRON_LIB} ${ADT_LIB}
 
 ${BUILD}:
 	mkdir -p ${BUILD}
+
+${BUILD}/base_error.o: ${SRC}/base/error.c ${SRC}/base/error.h
+	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_field.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
 	${CC} ${CFLAGS} -o $@ -c $<
@@ -87,7 +91,7 @@ fmt:
 cron: compile ${BUILD}/cron
 	${BUILD}/cron
 
-${BUILD}/cron: cmd/cron/main.c ${CRON_LIB}
+${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
 	${CC} ${CFLAGS} -o $@ $^
 
 test: compile ${BUILD}/test

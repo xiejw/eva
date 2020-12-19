@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "base/defs.h"
 #include "cron/expr.h"
 
 // -----------------------------------------------------------------------------
@@ -21,7 +22,11 @@ int main(int argc, char** argv) {
   cron_expr_t expr;
   cronExprInit(&expr);
 
-  if (parseOptions(&expr, argc, argv)) exit(1);
+  if (parseOptions(&expr, argc, argv)) {
+    errDump("failed to parse options");
+    errClear();
+    exit(1);
+  }
 
   time_t current_time = time(NULL);
   time_t next_time;
@@ -45,40 +50,28 @@ error_t parseOptions(cron_expr_t* expr, int argc, char** argv) {
   while ((ch = getopt_long(argc, argv, "h:m:", longopts, NULL)) != -1) {
     switch (ch) {
       case 'm':
-        if (parsePosInt(optarg, &v)) return -1;
+        if (parsePosInt(optarg, &v)) return errNum();
         cronFieldSetSingleValue(&expr->minute, v);
         break;
       case 'h':
-        if (parsePosInt(optarg, &v)) return -1;
+        if (parsePosInt(optarg, &v)) return errNum();
         cronFieldSetSingleValue(&expr->hour, v);
         break;
       default:
-        printf("error on parsing options.\n");
-        exit(-1);
+        return errNew("error on parsing options.");
     }
   }
-  if (argv[optind] != NULL) {
-    fprintf(stderr, "remaining options cannot be parsed: %s\n", argv[optind]);
-    return ERROR;
-  }
+
+  if (argv[optind] != NULL)
+    return errNew("remaining options cannot be parsed: %s", argv[optind]);
   return OK;
 }
 
 error_t parsePosInt(char* str, int* v) {
-  if (*str == '\0') {
-    fprintf(stderr, "int argument cannot be empty string\n");
-    return ERROR;
-  }
-
+  if (*str == '\0') return errNew("int argument cannot be empty string");
   char* end_p;
   *v = (int)strtol(str, &end_p, /*base=*/10);
-  if (*end_p != '\0') {
-    fprintf(stderr, "int argument cannot be parsed: %s\n", str);
-    return ERROR;
-  }
-  if (*v < 0) {
-    fprintf(stderr, "require positive int argument: %d\n", *v);
-    return ERROR;
-  }
+  if (*end_p != '\0') return errNew("int argument cannot be parsed: %s", str);
+  if (*v < 0) return errNew("require positive int argument: %d", *v);
   return OK;
 }
