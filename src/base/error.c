@@ -16,23 +16,21 @@ typedef struct err_msg_list_t {
   struct err_msg_list_t* next;
 } err_msg_list_t;
 
+// -----------------------------------------------------------------------------
+// helper methods prototypes.
+// -----------------------------------------------------------------------------
+
 static err_msg_list_t* err_msg_header = NULL;
 
-static void errNewHeader(error_t err);
+static void    errNewHeader(error_t err);
+static void    errMsgAppend(const char* fmt, va_list ap);
+static error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap);
 
-static void errMsgAppend(const char* fmt, va_list ap) {
-  sds_t s = sdsNewLen(SDS_NOINIT, ERR_MSG_DEFAULT_LEN);
-  sdsClear(s);
-  sdsCatVprintf(&s, fmt, ap);
+// -----------------------------------------------------------------------------
+// implementation.
+// -----------------------------------------------------------------------------
 
-  err_msg_list_t* p          = malloc(sizeof(err_msg_list_t));
-  p->msg                     = s;  // s ownership moved.
-  p->prev                    = err_msg_header->prev;
-  p->next                    = err_msg_header;
-  err_msg_header->prev->next = p;
-  err_msg_header->prev       = p;
-}
-
+// emit a new note and return the errro code stored.
 error_t errEmitNote(const char* fmt, ...) {
   assert(err_msg_header != NULL);
   va_list ap;
@@ -40,15 +38,6 @@ error_t errEmitNote(const char* fmt, ...) {
   errMsgAppend(fmt, ap);
   va_end(ap);
   return err_msg_header->err;
-}
-
-static error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap) {
-  assert(err_msg_header == NULL);
-  assert(err != OK);
-
-  errNewHeader(err);
-  errMsgAppend(fmt, ap);
-  return err;
 }
 
 error_t errNewWithNote(error_t err, const char* fmt, ...) {
@@ -99,7 +88,9 @@ void errDump(char* title) {
   }
 }
 
-// impl
+// -----------------------------------------------------------------------------
+// helper methods. implementation.
+// -----------------------------------------------------------------------------
 
 void errNewHeader(error_t err) {
   assert(err_msg_header == NULL);
@@ -108,4 +99,26 @@ void errNewHeader(error_t err) {
   p->next           = p;
   p->prev           = p;
   err_msg_header    = p;
+}
+
+void errMsgAppend(const char* fmt, va_list ap) {
+  sds_t s = sdsNewLen(SDS_NOINIT, ERR_MSG_DEFAULT_LEN);
+  sdsClear(s);
+  sdsCatVprintf(&s, fmt, ap);
+
+  err_msg_list_t* p          = malloc(sizeof(err_msg_list_t));
+  p->msg                     = s;  // s ownership moved.
+  p->prev                    = err_msg_header->prev;
+  p->next                    = err_msg_header;
+  err_msg_header->prev->next = p;
+  err_msg_header->prev       = p;
+}
+
+error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap) {
+  assert(err_msg_header == NULL);
+  assert(err != OK);
+
+  errNewHeader(err);
+  errMsgAppend(fmt, ap);
+  return err;
 }
