@@ -1,11 +1,18 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include "string.h"
 #include "stdlib.h"
+#include "string.h"
 
 #include "base/defs.h"
 
+// -----------------------------------------------------------------------------
+// Onwership.
+//
+// 1. container `vec` does not own the ownership of each elements. So caller
+//    should free them.
+// 2. Must call vecFree to release the memory, used by vec, on heap.
+//
 // github.com/rxi/map
 
 // -----------------------------------------------------------------------------
@@ -13,18 +20,17 @@
 // -----------------------------------------------------------------------------
 
 struct map_node_t;
-typedef struct map_node_t map_node_t;
 
 typedef struct {
-  map_node_t** buckets;
-  unsigned     nbuckets, nnodes;
+  struct map_node_t** buckets;
+  unsigned            nbuckets, nnodes;
 } map_base_t;
 
 static inline void _mapGrow(_mut_ void** m, int vsize) {
   if (*m) {
   } else {
     void* p = malloc(vsize);
-    *m = p;
+    *m      = p;
     memset(p, 0, vsize);
   }
 }

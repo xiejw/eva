@@ -25,10 +25,17 @@
 // - Fast modification. Reserve a proper cap. Sets all values directly. Calls
 //     vecSetSize to corrects the size. Use with caution.
 //
-// Caveats
+// -----------------------------------------------------------------------------
+// Onwership.
 //
-// 1. Must call vecFree to release the memory on heap.
-// 2. As the buf might be re-allocated (for growth), pass &vec for
+// 1. container `vec` does not own the ownership of each elements. So caller
+//    should free them.
+// 2. Must call vecFree to release the memory, used by vec, on heap.
+//
+// -----------------------------------------------------------------------------
+// Caveats.
+//
+// 1. As the buf might be re-allocated (for growth), pass &vec for
 //    modificaitons.
 // -----------------------------------------------------------------------------
 
