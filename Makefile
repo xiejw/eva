@@ -43,7 +43,7 @@ CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
 
 ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
 								 ${BUILD}/adt_map_test.o
-ADT_TEST_DEP   = ${ADT_LIB}  ${BASE_LIB}
+ADT_TEST_DEP   = ${ADT_LIB} ${BASE_LIB}
 ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 
 # ------------------------------------------------------------------------------

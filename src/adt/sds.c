@@ -6,31 +6,35 @@
 
 const char* SDS_NOINIT = "SDS_NOINIT";
 
-/* Create a new sds string with the content specified by the 'init' pointer
- * and 'initlen'.
- *
- * Special values of `init`:
- * - If NULL is used for 'init' the string is initialized with zero bytes.
- * - If SDS_NOINIT is used, the buffer is left uninitialized;
- *
- * The string is always null-termined (all the sds strings are, always) so
- * even if you create an sds string with:
- *
- *     mystring = sdsNewLen("abc",3);
- *
- * You can print the string with printf() as there is an implicit \0 at the
- * end of the string. However the string is binary safe and can contain
- * \0 characters in the middle, as the length is stored in the sds header.
- *
- * The sdsLen(s) will be `initlen` even `strlen(init)` is different (larger or
- * smaller).
- *
- * To allocate a large, uninitialized, do the following:
- *
- *     sds_t s = sdsNew(SDS_NOINIT, allocates_size);
- *     sdsClear(s);
- *
- */
+// -----------------------------------------------------------------------------
+// implementation.
+// -----------------------------------------------------------------------------
+
+// Create a new sds string with the content specified by the 'init' pointer
+// and 'initlen'.
+//
+// Special values of `init`:
+// - If NULL is used for 'init' the string is initialized with zero bytes.
+// - If SDS_NOINIT is used, the buffer is left uninitialized;
+//
+// The string is always null-termined (all the sds strings are, always) so
+// even if you create an sds string with:
+//
+//     mystring = sdsNewLen("abc",3);
+//
+// You can print the string with printf() as there is an implicit \0 at the
+// end of the string. However the string is binary safe and can contain
+// \0 characters in the middle, as the length is stored in the sds header.
+//
+// The sdsLen(s) will be `initlen` even `strlen(init)` is different (larger or
+// smaller).
+//
+// To allocate a large, uninitialized, do the following:
+//
+//     sds_t s = sdsNew(SDS_NOINIT, allocates_size);
+//     sdsClear(s);
+//
+//
 sds_t sdsNewLen(const void* init, size_t initlen) {
   int   hdrlen = sizeof(sdshdr);
   void* buf    = malloc(hdrlen + initlen + 1);
@@ -152,18 +156,18 @@ void sdsCpyLen(sds_t* s, const char* t, size_t len) {
 }
 void sdsCpy(sds_t* s, const char* t) { sdsCpyLen(s, t, strlen(t)); }
 
-/* Compare two sds strings s1 and s2 with memcmp().
- *
- * Return value:
- *
- *     positive if s1 > s2.
- *     negative if s1 < s2.
- *     0 if s1 and s2 are exactly the same binary string.
- *
- * If two strings share exactly the same prefix, but one of the two has
- * additional characters, the longer string is considered to be greater than
- * the smaller one.
- */
+// Compare two sds strings s1 and s2 with memcmp().
+//
+// Return value:
+//
+//     positive if s1 > s2.
+//     negative if s1 < s2.
+//     0 if s1 and s2 are exactly the same binary string.
+//
+// If two strings share exactly the same prefix, but one of the two has
+// additional characters, the longer string is considered to be greater than
+// the smaller one.
+//
 int sdsCmp(const sds_t s1, const sds_t s2) {
   size_t l1, l2, minlen;
   int    cmp;
