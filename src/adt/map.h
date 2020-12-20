@@ -1,6 +1,7 @@
 #ifndef MAP_H_
 #define MAP_H_
 
+#include "string.h"
 #include "stdlib.h"
 
 #include "base/defs.h"
@@ -23,9 +24,14 @@ static inline void _mapGrow(_mut_ void** m, int vsize) {
   if (*m) {
   } else {
     void* p = malloc(vsize);
-
     *m = p;
+    memset(p, 0, vsize);
   }
+}
+
+static inline void _mapFree(void* m) {
+  if (m == NULL) return;
+  free(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -35,12 +41,13 @@ static inline void _mapGrow(_mut_ void** m, int vsize) {
 #define map_t(type)  \
   struct {           \
     map_base_t base; \
-    type*      ref   \
+    type*      ref;  \
   }*
 #define mapNew() NULL
 #define mapSet(m, k, v)                    \
   do {                                     \
     _mapGrow((void*)(&(m)), sizeof(*(m))); \
   } while (0)
+#define mapFree(m) _mapFree(m)
 
 #endif
