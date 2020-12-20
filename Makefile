@@ -32,7 +32,7 @@ FMT = docker run --rm -ti \
 # ------------------------------------------------------------------------------
 BASE_LIB = ${BUILD}/base_error.o
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o
+ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -41,7 +41,8 @@ CRON_TEST_SUITE = ${BUILD}/cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
 CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
 
-ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o
+ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
+								 ${BUILD}/adt_map_test.o
 ADT_TEST_DEP   = ${ADT_LIB}
 ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 
@@ -75,6 +76,12 @@ ${BUILD}/adt_sds.o: ${SRC}/adt/sds.c ${SRC}/adt/sds.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_sds_test.o: ${SRC}/adt/sds_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_map.o: ${SRC}/adt/map.c ${SRC}/adt/map.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/adt_map_test.o: ${SRC}/adt/map_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
