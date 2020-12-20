@@ -113,7 +113,7 @@ mainLoop:
 }
 
 // -----------------------------------------------------------------------------
-// helper methods. implementation.
+// helper methods implementation.
 // -----------------------------------------------------------------------------
 
 // Rewinds all components in the candidate up to `up_to`. For example, if

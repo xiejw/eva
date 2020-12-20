@@ -19,7 +19,8 @@ typedef int error_t;
 #define OK 0
 
 #define ERROR      -1
-#define ENOT_FOUND -2
+#define EMALLOC    -2
+#define ENOT_FOUND -3
 
 // APis for error handling.
 
@@ -30,5 +31,9 @@ extern void    errFree();
 
 extern error_t errNum();
 extern void    errDump(char*);
+
+// helper methods.
+#define errMalloc() \
+  errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
 
 #endif
