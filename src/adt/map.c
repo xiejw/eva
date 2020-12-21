@@ -1,10 +1,12 @@
 #include "adt/map.h"
 
-#include "base/defs.h"
+#include "assert.h"
 
 // -----------------------------------------------------------------------------
 // internal data structure.
 // -----------------------------------------------------------------------------
+
+#define MAP_INIT_N_BUCKETS 16
 
 // Node type.
 //
@@ -28,11 +30,51 @@ static int          map_bucketidx(map_base_t *m, unsigned hash);
 static void         map_addnode(map_base_t *m, map_node_t *node);
 static map_node_t **map_getref(map_base_t *m, const char *key);
 
+static error_t map_resize(map_base_t *m, int nbuckets) {
+  map_node_t * nodes, *node, *next;
+  map_node_t **buckets;
+  int          i;
+
+  // chain all nodes together.
+  nodes = NULL;
+  i     = m->nbuckets;
+  while (i--) {
+    node = (m->buckets)[i];
+    while (node) {
+      next       = node->next;
+      node->next = nodes;
+      nodes      = node;
+      node       = next;
+    }
+  }
+  // reset buckets.
+  buckets = realloc(m->buckets, sizeof(*m->buckets) * nbuckets);
+  if (buckets == NULL) return errMalloc();
+  m->buckets  = buckets;
+  m->nbuckets = nbuckets;
+
+  memset(m->buckets, 0, sizeof(*m->buckets) * m->nbuckets);
+  // re-add nodes to buckets.
+  node = nodes;
+  while (node) {
+    next = node->next;
+    map_addnode(m, node);
+    node = next;
+  }
+
+  return OK;
+}
+
 // -----------------------------------------------------------------------------
 // implementation.
 // -----------------------------------------------------------------------------
 
-error_t map_set_(map_base_t *m, const char *key, void *value, int vsize) {
+void *_mapGet(map_base_t *m, const char *key) {
+  map_node_t **next = map_getref(m, key);
+  return next ? (*next)->pvalue : NULL;
+}
+
+error_t _mapSet(map_base_t *m, const char *key, void *value, int vsize) {
   // find and replace existing node.
   map_node_t **next = map_getref(m, key);
   if (next) {
@@ -44,16 +86,34 @@ error_t map_set_(map_base_t *m, const char *key, void *value, int vsize) {
   map_node_t *node = map_newnode(key, value, vsize);
   if (node == NULL) return errMalloc();
   if (m->nnodes >= m->nbuckets) {
-    // int n = (m->nbuckets > 0) ? (m->nbuckets << 1) : 1;
-    // TODO err = map_resize(m, n);
-    // if (err) {
-    // if (node) free(node);
-    // return errNew("malloc: %s, %s", __FILE__, __LINE__);
-    //}
+    int n = (m->nbuckets > 0) ? (m->nbuckets << 1) : MAP_INIT_N_BUCKETS;
+    if (map_resize(m, n)) {
+      free(node);
+      return errNum();
+    }
   }
   map_addnode(m, node);
   m->nnodes++;
   return OK;
+}
+
+void _mapFree(map_base_t *m) {
+  if (m == NULL) return;
+
+  struct map_node_t *next, *node;
+  int                i;
+  i = m->nbuckets;
+  assert(m->buckets != NULL);
+  while (i--) {
+    node = m->buckets[i];
+    while (node) {
+      next = node->next;
+      free(node);
+      node = next;
+    }
+  }
+  free(m->buckets);
+  free(m);
 }
 
 // -----------------------------------------------------------------------------

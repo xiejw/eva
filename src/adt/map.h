@@ -16,7 +16,7 @@
 // github.com/rxi/map
 
 // -----------------------------------------------------------------------------
-// Private prototype.
+// data structure.
 // -----------------------------------------------------------------------------
 
 struct map_node_t;
@@ -26,34 +26,48 @@ typedef struct {
   unsigned            nbuckets, nnodes;
 } map_base_t;
 
-static inline void _mapGrow(_mut_ void** m, int vsize) {
-  if (*m) {
-  } else {
-    void* p = malloc(vsize);
-    *m      = p;
-    memset(p, 0, vsize);
-  }
-}
-
-static inline void _mapFree(void* m) {
-  if (m == NULL) return;
-  free(m);
-}
-
 // -----------------------------------------------------------------------------
-// Public macros.
+// public macros.
 // -----------------------------------------------------------------------------
 
 #define map_t(type)  \
   struct {           \
     map_base_t base; \
     type*      ref;  \
+    type       tmp;  \
   }*
-#define mapNew() NULL
-#define mapSet(m, k, v)                    \
-  do {                                     \
-    _mapGrow((void*)(&(m)), sizeof(*(m))); \
-  } while (0)
-#define mapFree(m) _mapFree(m)
+
+#define mapNew()   NULL
+#define mapFree(m) _mapFree((map_base_t*)(m))
+
+#define mapSize(m)     ((m) != NULL ? (m)->base.nnodes : 0)
+#define mapNBuckets(m) ((m) != NULL ? (m)->base.nbuckets : 0)
+// mapReserve
+
+// return error_t
+#define mapSet(m, k, v)                                   \
+  (_mapInit((void*)(&(m)), sizeof(*(m))), (m)->tmp = (v), \
+   _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp)))
+
+// return NULL-able address pointing to value.
+#define mapGet(m, k) \
+  ((m) != NULL ? ((m)->ref = _mapGet(&(m)->base, (k))) : NULL)
+
+// -----------------------------------------------------------------------------
+// private prototype.
+// -----------------------------------------------------------------------------
+
+static inline void _mapInit(_mut_ void** m, int vsize);
+extern void        _mapFree(map_base_t*);
+extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
+extern void*   _mapGet(map_base_t* m, const char* key);
+
+void _mapInit(_mut_ void** m, int vsize) {
+  if (*m == NULL) {
+    void* p = malloc(vsize);
+    *m      = p;
+    memset(p, 0, vsize);
+  }
+}
 
 #endif
