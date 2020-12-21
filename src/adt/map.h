@@ -76,6 +76,14 @@ typedef struct {
 #define mapGet(m, k) \
   ((m) != NULL ? ((m)->ref = _mapGet(&(m)->base, (k))) : NULL)
 
+typedef struct {
+  unsigned bucketidx;
+  map_node_t *node;
+} map_iter_t;
+
+#define MAP_EACH(m, k, v) \
+  for ( map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, &k &k);)
+
 // -----------------------------------------------------------------------------
 // private prototype.
 // -----------------------------------------------------------------------------
@@ -84,6 +92,7 @@ extern void    _mapFree(map_base_t*);
 extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
 extern void*   _mapGet(map_base_t* m, const char* key);
 extern error_t _mapResize(map_base_t* m, int nbuckets);
+extern int _mapNext(void*, map_iter_t*, const char**, void*);
 
 static inline void _mapInit(_mut_ void** m, int vsize) {
   if (*m == NULL) {

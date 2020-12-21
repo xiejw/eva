@@ -102,6 +102,26 @@ void _mapFree(map_base_t *m) {
   free(m);
 }
 
+int _mapNext(void*m, map_iter_t* iter, const char** pk, void* pv) {
+  if (m==NULL) return 0;
+
+  map_base_t* base = (map_base_t*)m;
+
+  if (iter->node) {
+    iter->node = iter->node->next;
+    if (iter->node == NULL) goto nextBucket;
+  } else {
+nextBucket:
+    do {
+      if (++iter->bucketidx >= base->nbuckets) {
+        return 0;
+      }
+      iter->node = m->buckets[iter->bucketidx];
+    } while (iter->node == NULL);
+  }
+  return (char*) (iter->node + 1);
+}
+
 // -----------------------------------------------------------------------------
 // helper methods implementation.
 // -----------------------------------------------------------------------------
