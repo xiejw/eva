@@ -40,9 +40,10 @@ static int run_all_suites() {
   free(test_suites);
 
   // Reports.
-  printf("Tests run: %d\n", tests_run);
-  if (suites_failed)
-    printf("\033[1;31mTest suites failed: %d\033[0m\n", suites_failed);
+  if (!suites_failed)
+    printf("\033[1;32m\n>>> Tests run: %d\033[0m\n", tests_run);
+  else
+    printf("\033[1;31m\n!!! Test suites failed: %d\033[0m\n", suites_failed);
 
   return suites_failed;
 }

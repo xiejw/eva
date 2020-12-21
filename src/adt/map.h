@@ -42,7 +42,11 @@ typedef struct {
 
 #define mapSize(m)     ((m) != NULL ? (m)->base.nnodes : 0)
 #define mapNBuckets(m) ((m) != NULL ? (m)->base.nbuckets : 0)
-// mapReserve
+
+// return error_t
+#define mapReserve(m, n)                                            \
+  (((m) == NULL) ? _mapInit((void*)(&(m)), sizeof(*(m))) : (void)0, \
+   (n <= mapNBuckets((m))) ? OK : _mapResize(&(m)->base, power_ceiling(n)))
 
 // return error_t
 #define mapSet(m, k, v)                                   \
@@ -57,17 +61,27 @@ typedef struct {
 // private prototype.
 // -----------------------------------------------------------------------------
 
-static inline void _mapInit(_mut_ void** m, int vsize);
-extern void        _mapFree(map_base_t*);
+extern void    _mapFree(map_base_t*);
 extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
 extern void*   _mapGet(map_base_t* m, const char* key);
+extern error_t _mapResize(map_base_t* m, int nbuckets);
 
-void _mapInit(_mut_ void** m, int vsize) {
+static inline void _mapInit(_mut_ void** m, int vsize) {
   if (*m == NULL) {
     void* p = malloc(vsize);
     *m      = p;
     memset(p, 0, vsize);
   }
+}
+
+static inline int power_ceiling(int x) {
+  if (x > 1) {
+    int power = 2;
+    x--;
+    while (x >>= 1) power <<= 1;
+    return power;
+  }
+  return 1;
 }
 
 #endif
