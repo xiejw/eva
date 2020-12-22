@@ -12,7 +12,7 @@ static char* test_vec_init() {
 
 static char* test_vec_push_back() {
   vec_t(int) v = vecNew();
-  vecPushBack(v, 123);
+  ASSERT_TRUE("no err", OK == vecPushBack(v, 123));
   ASSERT_TRUE("v[0] is 123", v[0] == 123);
   ASSERT_TRUE("size is 1", vecSize(v) == 1);
   ASSERT_TRUE("cap is >0", vecCap(v) > 0);
@@ -31,21 +31,21 @@ static char* test_vec_reserve() {
 
 static char* test_vec_grow() {
   vec_t(int) v = vecNew();
-  vecReserve(v, 2);
+  ASSERT_TRUE("no err", OK == vecReserve(v, 2));
   ASSERT_TRUE("size is 0", vecSize(v) == 0);
   ASSERT_TRUE("cap is 2", vecCap(v) == 2);
 
-  vecPushBack(v, 0);
+  ASSERT_TRUE("no err", OK == vecPushBack(v, 0));
   ASSERT_TRUE("v[i]", v[0] == 0);
   ASSERT_TRUE("size", vecSize(v) == 1);
   ASSERT_TRUE("cap", vecCap(v) == 2);
 
-  vecPushBack(v, 1);
+  ASSERT_TRUE("no err", OK == vecPushBack(v, 1));
   ASSERT_TRUE("v[i]", v[1] == 1);
   ASSERT_TRUE("size", vecSize(v) == 2);
   ASSERT_TRUE("cap", vecCap(v) == 2);
 
-  vecPushBack(v, 2);
+  ASSERT_TRUE("no err", OK == vecPushBack(v, 2));
   ASSERT_TRUE("v[i]", v[2] == 2);
   ASSERT_TRUE("size", vecSize(v) == 3);
   ASSERT_TRUE("cap", vecCap(v) == 4);

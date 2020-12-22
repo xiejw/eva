@@ -43,15 +43,17 @@
 // public macros.
 // -----------------------------------------------------------------------------
 
-#define vec_t(type)            type*
-#define vecNew()               NULL
-#define vecSize(vec)           ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
-#define vecCap(vec)            ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
-#define vecEmpty(vec)          (vecSize(v) == 0)
-#define vecFree(vec)           _VEC_FREE(vec)
-#define vecSetSize(vec, new_s) _VEC_SET_SIZE(vec, new_s)
-#define vecReserve(vec, count) _VEC_RESERVE(vec, count)
-#define vecPushBack(vec, v)    _VEC_PUSH_BACK(vec, v)
+#define vec_t(type)  type*
+#define vecNew()     NULL
+#define vecFree(vec) _VEC_FREE(vec)
+
+#define vecSize(vec)  ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
+#define vecCap(vec)   ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
+#define vecEmpty(vec) (vecSize(v) == 0)
+
+#define vecSetSize(vec, new_s) _VEC_SET_SIZE(vec, new_s)  // return error_t
+#define vecReserve(vec, count) _VEC_RESERVE(vec, count)   // return error_t
+#define vecPushBack(vec, v)    _VEC_PUSH_BACK(vec, v)     // return error_t
 
 // -----------------------------------------------------------------------------
 // private prototype.
@@ -62,37 +64,33 @@
     if (vec) free(&((size_t*)vec)[-2]); \
   } while (0)
 
-#define _VEC_SET_SIZE(vec, new_s)          \
-  do {                                     \
-    if (vec) ((size_t*)vec)[-2] = (new_s); \
-  } while (0)
+#define _VEC_SET_SIZE(vec, new_s) \
+  ((vec) ? (((size_t*)vec)[-2] = (new_s), OK) : ENOTEXIST)
 
 #define _VEC_RESERVE(vec, count) \
   _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
 
-#define _VEC_PUSH_BACK(vec, v)                    \
-  do {                                            \
-    _vecGrow((size_t**)(&(vec)), sizeof(*(vec))); \
-    size_t s             = vecSize(vec);          \
-    (vec)[s]             = (v);                   \
-    ((size_t*)(vec))[-2] = s + 1;                 \
-  } while (0)
+#define _VEC_PUSH_BACK(vec, v)                     \
+  (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
+   (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
 
 #define VEC_INIT_BUF_SIZE 16
 
-extern void _vecReserve(_mut_ size_t** vec, size_t new_cap, size_t unit_size);
-static inline void _vecGrow(_mut_ size_t** vec, size_t unit_size) {
-  if (!*vec) {
-    _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);
-  } else {
-    const size_t cap  = (*vec)[-1];
-    const size_t size = (*vec)[-2];
-    assert(size <= cap);
-    if (cap == size) {
-      _vecReserve(vec, 2 * cap, unit_size);
-    }
-  }
-}
+extern error_t _vecReserve(_mut_ size_t** vec, size_t new_cap,
+                           size_t unit_size);
 
+static inline error_t _vecGrow(_mut_ size_t** vec, size_t unit_size) {
+  if (!*vec) {
+    return _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);
+  }
+
+  const size_t cap  = (*vec)[-1];
+  const size_t size = (*vec)[-2];
+  assert(size <= cap);
+  if (cap == size) {
+    return _vecReserve(vec, 2 * cap, unit_size);
+  }
+  return OK;
+}
 
 #endif

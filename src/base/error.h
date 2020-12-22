@@ -18,9 +18,9 @@ typedef int error_t;
 
 #define OK 0
 
-#define ERROR      -1
-#define EMALLOC    -2
-#define ENOT_FOUND -3
+#define ERROR     -1
+#define EMALLOC   -2
+#define ENOTEXIST -3
 
 // APis for error handling.
 
