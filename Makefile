@@ -30,9 +30,10 @@ FMT = docker run --rm -ti \
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
+ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
 BASE_LIB = ${BUILD}/base_error.o
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
+RNG_LIB = ${BUILD}/rng_srng64.o
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -49,7 +50,7 @@ ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${BASE_LIB} ${CRON_LIB} ${ADT_LIB}
+compile: ${BUILD} ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB}
 
 ${BUILD}:
 	mkdir -p ${BUILD}
@@ -82,6 +83,9 @@ ${BUILD}/adt_map.o: ${SRC}/adt/map.c ${SRC}/adt/map.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_map_test.o: ${SRC}/adt/map_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/rng_srng64.o: ${SRC}/rng/srng64.c ${SRC}/rng/srng64.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
