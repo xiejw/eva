@@ -1,4 +1,4 @@
-#include "rng64normal.h"
+#include "rng/srng64_normal.h"
 
 #include <assert.h>
 #include <float.h>
@@ -15,7 +15,7 @@ static const double two_pi_     = 2.0 * 3.141592653589793238;
  * For each pair of [0, 1) uniform rn, a pair of independent, standard,
  * normally distributed rn are generated.
  */
-void rng64StdNormal(rng64t* rng64, size_t size, double* buffer) {
+void srng64StdNormal(srng64_t* rng64, size_t size, double* buffer) {
   size_t  i;
   size_t  num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
   double* uniforms  = malloc(num_seeds * sizeof(double));
@@ -23,7 +23,7 @@ void rng64StdNormal(rng64t* rng64, size_t size, double* buffer) {
   assert(size > 0);
 
   for (i = 0; i < num_seeds;) {
-    uint64_t seed = rng64NextInt64(rng64);
+    uint64_t seed = srng64NextUint64(rng64);
     double   u    = (seed >> 11) * double_ulp_;
     /* The first rn in each pair is used by log, so cannot be zero. */
     if (i % 2 == 1 || u >= DBL_EPSILON) uniforms[i++] = u;

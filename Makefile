@@ -33,19 +33,23 @@ FMT = docker run --rm -ti \
 ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
 BASE_LIB = ${BUILD}/base_error.o
 CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-RNG_LIB = ${BUILD}/rng_srng64.o
+RNG_LIB = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
 
 # ------------------------------------------------------------------------------
 # tests.
 # ------------------------------------------------------------------------------
+ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
+							    ${BUILD}/adt_map_test.o
+ADT_TEST_DEP    = ${ADT_LIB} ${BASE_LIB}
+ADT_TEST        = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
+
 CRON_TEST_SUITE = ${BUILD}/cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
 CRON_TEST       = ${CRON_TEST_SUITE} ${CRON_TEST_DEP}
 
-ADT_TEST_SUITE = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
-								 ${BUILD}/adt_map_test.o
-ADT_TEST_DEP   = ${ADT_LIB} ${BASE_LIB}
-ADT_TEST       = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
+RNG_TEST_SUITE  = ${BUILD}/rng_srng64_test.o ${BUILD}/rng_srng64_normal_test.o
+RNG_TEST_DEP    = ${RNG_LIB}
+RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 
 # ------------------------------------------------------------------------------
 # actions.
@@ -88,6 +92,15 @@ ${BUILD}/adt_map_test.o: ${SRC}/adt/map_test.c
 ${BUILD}/rng_srng64.o: ${SRC}/rng/srng64.c ${SRC}/rng/srng64.h
 	${CC} ${CFLAGS} -o $@ -c $<
 
+${BUILD}/rng_srng64_test.o: ${SRC}/rng/srng64_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/rng_srng64_normal.o: ${SRC}/rng/srng64_normal.c ${SRC}/rng/srng64_normal.h
+	${CC} ${CFLAGS} -o $@ -c $<
+
+${BUILD}/rng_srng64_normal_test.o: ${SRC}/rng/srng64_normal_test.c
+	${CC} ${CFLAGS} -o $@ -c $<
+
 clean:
 	rm -rf ${BUILD} ${DOCKER}
 
@@ -108,7 +121,7 @@ ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
 test: compile ${BUILD}/test
 	${BUILD}/test
 
-${BUILD}/test: cmd/test/main.c ${CRON_TEST} ${ADT_TEST}
+${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
 	${CC} ${CFLAGS} -o $@ $^
 
 #
