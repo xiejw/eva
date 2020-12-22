@@ -40,8 +40,43 @@
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
-// Private prototype.
+// public macros.
 // -----------------------------------------------------------------------------
+
+#define vec_t(type)            type*
+#define vecNew()               NULL
+#define vecSize(vec)           ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
+#define vecCap(vec)            ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
+#define vecEmpty(vec)          (vecSize(v) == 0)
+#define vecFree(vec)           _VEC_FREE(vec)
+#define vecSetSize(vec, new_s) _VEC_SET_SIZE(vec, new_s)
+#define vecReserve(vec, count) _VEC_RESERVE(vec, count)
+#define vecPushBack(vec, v)    _VEC_PUSH_BACK(vec, v)
+
+// -----------------------------------------------------------------------------
+// private prototype.
+// -----------------------------------------------------------------------------
+
+#define _VEC_FREE(vec)                  \
+  do {                                  \
+    if (vec) free(&((size_t*)vec)[-2]); \
+  } while (0)
+
+#define _VEC_SET_SIZE(vec, new_s)          \
+  do {                                     \
+    if (vec) ((size_t*)vec)[-2] = (new_s); \
+  } while (0)
+
+#define _VEC_RESERVE(vec, count) \
+  _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
+
+#define _VEC_PUSH_BACK(vec, v)                    \
+  do {                                            \
+    _vecGrow((size_t**)(&(vec)), sizeof(*(vec))); \
+    size_t s             = vecSize(vec);          \
+    (vec)[s]             = (v);                   \
+    ((size_t*)(vec))[-2] = s + 1;                 \
+  } while (0)
 
 #define VEC_INIT_BUF_SIZE 16
 
@@ -59,31 +94,5 @@ static inline void _vecGrow(_mut_ size_t** vec, size_t unit_size) {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Public macros.
-// -----------------------------------------------------------------------------
-#define vec_t(type)   type*
-#define vecNew()      NULL
-#define vecSize(vec)  ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
-#define vecCap(vec)   ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
-#define vecEmpty(vec) (vecSize(v) == 0)
-#define vecFree(vec)                    \
-  do {                                  \
-    if (vec) free(&((size_t*)vec)[-2]); \
-  } while (0)
-#define vecSetSize(vec, new_s)             \
-  do {                                     \
-    if (vec) ((size_t*)vec)[-2] = (new_s); \
-  } while (0)
-#define vecReserve(vec, count) \
-  _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
-
-#define vecPushBack(vec, v)                       \
-  do {                                            \
-    _vecGrow((size_t**)(&(vec)), sizeof(*(vec))); \
-    size_t s             = vecSize(vec);          \
-    (vec)[s]             = (v);                   \
-    ((size_t*)(vec))[-2] = s + 1;                 \
-  } while (0)
 
 #endif

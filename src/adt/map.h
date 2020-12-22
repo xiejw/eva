@@ -83,12 +83,14 @@ extern void*   _mapGet(map_base_t* m, const char* key);
 extern error_t _mapResize(map_base_t* m, int nbuckets);
 extern int     _mapNext(void*, map_iter_t*, const char**, void*);
 
-static inline void _mapInit(_mut_ void** m, int vsize) {
+static inline error_t _mapInit(_mut_ void** m, int vsize) {
   if (*m == NULL) {
     void* p = malloc(vsize);
-    *m      = p;
+    if (p == NULL) return errMalloc();
+    *m = p;
     memset(p, 0, vsize);
   }
+  return OK;
 }
 
 static inline int power_ceiling(int x) {
@@ -104,13 +106,13 @@ static inline int power_ceiling(int x) {
 #define _MAP_FOREACH_IMPL(m, k, v) \
   for (map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, &k & k);)
 
-#define _MAP_RESERVE_IMPL(m, n)                                     \
-  (((m) == NULL) ? _mapInit((void*)(&(m)), sizeof(*(m))) : (void)0, \
-   (n <= mapNBuckets((m))) ? OK : _mapResize(&(m)->base, power_ceiling(n)))
+#define _MAP_RESERVE_IMPL(m, n)             \
+  (_mapInit((void*)(&(m)), sizeof(*(m))) || \
+   ((n <= mapNBuckets((m))) ? OK : _mapResize(&(m)->base, power_ceiling(n))))
 
-#define _MAP_SET_IMPL(m, k, v)                            \
-  (_mapInit((void*)(&(m)), sizeof(*(m))), (m)->tmp = (v), \
-   _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp)))
+#define _MAP_SET_IMPL(m, k, v)              \
+  (_mapInit((void*)(&(m)), sizeof(*(m))) || \
+   ((m)->tmp = (v), _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp))))
 
 #define _MAP_GET_IMPL(m, k) \
   ((m) != NULL ? ((m)->ref = _mapGet(&(m)->base, (k))) : NULL)
