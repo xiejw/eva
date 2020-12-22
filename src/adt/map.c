@@ -1,15 +1,15 @@
 // Copyright (c) 2020 xiejw
 // Copyright (c) 2014 rxi (github.com/rxi/map)
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -102,24 +102,28 @@ void _mapFree(map_base_t *m) {
   free(m);
 }
 
-int _mapNext(void*m, map_iter_t* iter, const char** pk, void* pv) {
-  if (m==NULL) return 0;
+int _mapNext(void *m, map_iter_t *iter, const char **pk, void *pv) {
+  if (m == NULL) return 0;
 
-  map_base_t* base = (map_base_t*)m;
+  map_base_t *base = (map_base_t *)m;
 
   if (iter->node) {
     iter->node = iter->node->next;
     if (iter->node == NULL) goto nextBucket;
   } else {
-nextBucket:
+  nextBucket:
     do {
       if (++iter->bucketidx >= base->nbuckets) {
         return 0;
       }
-      iter->node = m->buckets[iter->bucketidx];
+      iter->node = base->buckets[iter->bucketidx];
     } while (iter->node == NULL);
   }
-  return (char*) (iter->node + 1);
+
+  if (pk) {
+    *pk = (char *)(iter->node + 1);
+  }
+  return 1;
 }
 
 // -----------------------------------------------------------------------------

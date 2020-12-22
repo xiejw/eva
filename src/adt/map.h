@@ -1,15 +1,15 @@
 // Copyright (c) 2020 xiejw
 // Copyright (c) 2014 rxi (github.com/rxi/map)
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -62,37 +62,26 @@ typedef struct {
 #define mapSize(m)     ((m) != NULL ? (m)->base.nnodes : 0)
 #define mapNBuckets(m) ((m) != NULL ? (m)->base.nbuckets : 0)
 
-// return error_t
-#define mapReserve(m, n)                                            \
-  (((m) == NULL) ? _mapInit((void*)(&(m)), sizeof(*(m))) : (void)0, \
-   (n <= mapNBuckets((m))) ? OK : _mapResize(&(m)->base, power_ceiling(n)))
+#define MAP_FOREACH(m, k, v) _MAP_FOREACH_IMPL(m, k, v)
 
-// return error_t
-#define mapSet(m, k, v)                                   \
-  (_mapInit((void*)(&(m)), sizeof(*(m))), (m)->tmp = (v), \
-   _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp)))
-
-// return NULL-able address pointing to value.
-#define mapGet(m, k) \
-  ((m) != NULL ? ((m)->ref = _mapGet(&(m)->base, (k))) : NULL)
-
-typedef struct {
-  unsigned bucketidx;
-  map_node_t *node;
-} map_iter_t;
-
-#define MAP_EACH(m, k, v) \
-  for ( map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, &k &k);)
+#define mapReserve(m, n) _MAP_RESERVE_IMPL(m, n)  // return error_t
+#define mapSet(m, k, v)  _MAP_SET_IMPL(m, k, v)   // return error_t
+#define mapGet(m, k)     _MAP_GET_IMPL(m, k)  // return NULL-able point to value.
 
 // -----------------------------------------------------------------------------
 // private prototype.
 // -----------------------------------------------------------------------------
 
+typedef struct {
+  unsigned           bucketidx;
+  struct map_node_t* node;
+} map_iter_t;
+
 extern void    _mapFree(map_base_t*);
 extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
 extern void*   _mapGet(map_base_t* m, const char* key);
 extern error_t _mapResize(map_base_t* m, int nbuckets);
-extern int _mapNext(void*, map_iter_t*, const char**, void*);
+extern int     _mapNext(void*, map_iter_t*, const char**, void*);
 
 static inline void _mapInit(_mut_ void** m, int vsize) {
   if (*m == NULL) {
@@ -111,5 +100,19 @@ static inline int power_ceiling(int x) {
   }
   return 1;
 }
+
+#define _MAP_FOREACH_IMPL(m, k, v) \
+  for (map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, &k & k);)
+
+#define _MAP_RESERVE_IMPL(m, n)                                     \
+  (((m) == NULL) ? _mapInit((void*)(&(m)), sizeof(*(m))) : (void)0, \
+   (n <= mapNBuckets((m))) ? OK : _mapResize(&(m)->base, power_ceiling(n)))
+
+#define _MAP_SET_IMPL(m, k, v)                            \
+  (_mapInit((void*)(&(m)), sizeof(*(m))), (m)->tmp = (v), \
+   _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp)))
+
+#define _MAP_GET_IMPL(m, k) \
+  ((m) != NULL ? ((m)->ref = _mapGet(&(m)->base, (k))) : NULL)
 
 #endif
