@@ -102,7 +102,7 @@ void _mapFree(map_base_t *m) {
   free(m);
 }
 
-int _mapNext(void *m, map_iter_t *iter, const char **pk, void *pv) {
+int _mapNext(void *m, map_iter_t *iter, const char **pk, void **pv) {
   if (m == NULL) return 0;
 
   map_base_t *base = (map_base_t *)m;
@@ -120,9 +120,8 @@ int _mapNext(void *m, map_iter_t *iter, const char **pk, void *pv) {
     } while (iter->node == NULL);
   }
 
-  if (pk) {
-    *pk = (char *)(iter->node + 1);
-  }
+  if (pk) *pk = (char *)(iter->node + 1);
+  if (pv) *pv = iter->node->pvalue;
   return 1;
 }
 

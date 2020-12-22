@@ -45,32 +45,32 @@
 
 #define vec_t(type)  type*
 #define vecNew()     NULL
-#define vecFree(vec) _VEC_FREE(vec)
+#define vecFree(vec) _VEC_FREE_IMPL(vec)
 
 #define vecSize(vec)  ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
 #define vecCap(vec)   ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
 #define vecEmpty(vec) (vecSize(v) == 0)
 
-#define vecSetSize(vec, new_s) _VEC_SET_SIZE(vec, new_s)  // return error_t
-#define vecReserve(vec, count) _VEC_RESERVE(vec, count)   // return error_t
-#define vecPushBack(vec, v)    _VEC_PUSH_BACK(vec, v)     // return error_t
+#define vecSetSize(vec, new_s) _VEC_SET_SIZE_IMPL(vec, new_s)  // return error_t
+#define vecReserve(vec, count) _VEC_RESERVE_IMPL(vec, count)   // return error_t
+#define vecPushBack(vec, v)    _VEC_PUSH_BACK_IMPL(vec, v)     // return error_t
 
 // -----------------------------------------------------------------------------
 // private prototype.
 // -----------------------------------------------------------------------------
 
-#define _VEC_FREE(vec)                  \
+#define _VEC_FREE_IMPL(vec)             \
   do {                                  \
     if (vec) free(&((size_t*)vec)[-2]); \
   } while (0)
 
-#define _VEC_SET_SIZE(vec, new_s) \
+#define _VEC_SET_SIZE_IMPL(vec, new_s) \
   ((vec) ? (((size_t*)vec)[-2] = (new_s), OK) : ENOTEXIST)
 
-#define _VEC_RESERVE(vec, count) \
+#define _VEC_RESERVE_IMPL(vec, count) \
   _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
 
-#define _VEC_PUSH_BACK(vec, v)                     \
+#define _VEC_PUSH_BACK_IMPL(vec, v)                \
   (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
    (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
 
@@ -87,10 +87,8 @@ static inline error_t _vecGrow(_mut_ size_t** vec, size_t unit_size) {
   const size_t cap  = (*vec)[-1];
   const size_t size = (*vec)[-2];
   assert(size <= cap);
-  if (cap == size) {
-    return _vecReserve(vec, 2 * cap, unit_size);
-  }
-  return OK;
+  if (cap != size) return OK;
+  return _vecReserve(vec, 2 * cap, unit_size);
 }
 
 #endif

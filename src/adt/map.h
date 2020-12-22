@@ -62,11 +62,11 @@ typedef struct {
 #define mapSize(m)     ((m) != NULL ? (m)->base.nnodes : 0)
 #define mapNBuckets(m) ((m) != NULL ? (m)->base.nbuckets : 0)
 
-#define MAP_FOREACH(m, k, v) _MAP_FOREACH_IMPL(m, k, v)
-
-#define mapReserve(m, n) _MAP_RESERVE_IMPL(m, n)  // return error_t
-#define mapSet(m, k, v)  _MAP_SET_IMPL(m, k, v)   // return error_t
+#define mapSet(m, k, v)  _MAP_SET_IMPL(m, k, v)  // return error_t
 #define mapGet(m, k)     _MAP_GET_IMPL(m, k)  // return NULL-able point to value.
+#define mapReserve(m, n) _MAP_RESERVE_IMPL(m, n)  // return error_t
+
+#define MAP_FOREACH(m, k, v) _MAP_FOREACH_IMPL(m, k, v)
 
 // -----------------------------------------------------------------------------
 // private prototype.
@@ -81,7 +81,7 @@ extern void    _mapFree(map_base_t*);
 extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
 extern void*   _mapGet(map_base_t* m, const char* key);
 extern error_t _mapResize(map_base_t* m, int nbuckets);
-extern int     _mapNext(void*, map_iter_t*, const char**, void*);
+extern int     _mapNext(void*, map_iter_t*, const char**, void**);
 
 static inline error_t _mapInit(_mut_ void** m, int vsize) {
   if (*m == NULL) {
@@ -104,7 +104,7 @@ static inline int power_ceiling(int x) {
 }
 
 #define _MAP_FOREACH_IMPL(m, k, v) \
-  for (map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, &k & k);)
+  for (map_iter_t iter = {-1, NULL}; _mapNext((m), &iter, (k), (void**)(v));)
 
 #define _MAP_RESERVE_IMPL(m, n)             \
   (_mapInit((void*)(&(m)), sizeof(*(m))) || \
