@@ -13,6 +13,9 @@ static char* test_new() {
   return NULL;
 }
 
+#ifndef _ASAN
+// the following test copies extra bits beyong a string literal.
+// asan is not happy but this is the purpose of the testing.
 static char* test_new_len() {
   sds_t s = sdsNewLen("hello", 10);
   ASSERT_TRUE("len", sdsLen(s) == 10);
@@ -26,6 +29,7 @@ static char* test_new_len() {
   sdsFree(s);
   return NULL;
 }
+#endif
 
 static char* test_new_len_null() {
   sds_t s = sdsNewLen(NULL, 10);
@@ -159,7 +163,9 @@ static char* test_cmp() {
 
 char* run_adt_sds_suite() {
   RUN_TEST(test_new);
+#ifndef _ASAN
   RUN_TEST(test_new_len);
+#endif
   RUN_TEST(test_new_len_null);
   RUN_TEST(test_empty);
   RUN_TEST(test_dup);

@@ -3,3 +3,5 @@ simplify expre with ||
 doc for vec and map
 more adt hyperloglog?
 macro one line with impl later
+
+2020-12-22 added asan for testing.

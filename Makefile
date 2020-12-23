@@ -10,16 +10,23 @@ UNAME      = $(shell uname)
 
 CFLAGS := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS := ${CFLAGS} -I${SRC}
+LDFLAGS := ${LDFLAGS}
 
 # enable POSIX
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+LDFLAGS := -lm ${LDFLAGS}
 endif
 
 # enable release by `make RELEASE=1`
 ifeq (1, $(RELEASE))
   CFLAGS := ${CFLAGS} -DNDEBUG -O2
-  BUILD := ${BUILD}_release
+  BUILD  := ${BUILD}_release
+endif
+
+ifeq (1, $(ASAN))
+	CFLAGS := ${CFLAGS} -g -fsanitize=address -D_ASAN=1
+	BUILD  := ${BUILD}_asan
 endif
 
 FMT = docker run --rm -ti \
@@ -102,7 +109,7 @@ ${BUILD}/rng_srng64_normal_test.o: ${SRC}/rng/srng64_normal_test.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
 clean:
-	rm -rf ${BUILD} ${DOCKER}
+	rm -rf ${BUILD}* ${DOCKER}
 
 fmt:
 	${FMT} ${SRC}
@@ -116,13 +123,13 @@ cron: compile ${BUILD}/cron
 	${BUILD}/cron
 
 ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
-	${CC} ${CFLAGS} -o $@ $^
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
 
 test: compile ${BUILD}/test
 	${BUILD}/test
 
 ${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
-	${CC} ${CFLAGS} -o $@ $^
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
 
 #
 # # Docker related.
