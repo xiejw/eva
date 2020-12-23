@@ -29,6 +29,23 @@ ifeq (1, $(ASAN))
 	BUILD  := ${BUILD}_asan
 endif
 
+# compact print with some colors.
+EVA_CC  = ${QUIET_CC}${CC}
+EVA_LD  = ${QUIET_LD}${CC} ${LDFLAGS}
+EVA_EX  = ${QUIET_EX}
+
+CCCOLOR="\033[34m"
+LINKCOLOR="\033[34;1m"
+SRCCOLOR="\033[33m"
+BINCOLOR="\033[37;1m"
+ENDCOLOR="\033[0m"
+
+ifndef V
+  QUIET_CC = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) $(SRCCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
+  QUIET_LD = @printf '    %b %b\n' $(LINKCOLOR)LD$(ENDCOLOR) $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
+  QUIET_EX = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
+endif
+
 FMT = docker run --rm -ti \
     --user `id -u ${USER}`:`id -g ${USER}` \
     -v `pwd`:/workdir xiejw/clang-format \
@@ -64,49 +81,49 @@ RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 compile: ${BUILD} ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB}
 
 ${BUILD}:
-	mkdir -p ${BUILD}
+	@mkdir -p ${BUILD}
 
 ${BUILD}/base_error.o: ${SRC}/base/error.c ${SRC}/base/error.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_field.o: ${SRC}/cron/field.c ${SRC}/cron/field.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_expr.o: ${SRC}/cron/expr.c ${SRC}/cron/expr.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/cron_test.o: ${SRC}/cron/cron_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_vec.o: ${SRC}/adt/vec.c ${SRC}/adt/vec.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_vec_test.o: ${SRC}/adt/vec_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_sds.o: ${SRC}/adt/sds.c ${SRC}/adt/sds.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_sds_test.o: ${SRC}/adt/sds_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_map.o: ${SRC}/adt/map.c ${SRC}/adt/map.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/adt_map_test.o: ${SRC}/adt/map_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/rng_srng64.o: ${SRC}/rng/srng64.c ${SRC}/rng/srng64.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/rng_srng64_test.o: ${SRC}/rng/srng64_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/rng_srng64_normal.o: ${SRC}/rng/srng64_normal.c ${SRC}/rng/srng64_normal.h
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 ${BUILD}/rng_srng64_normal_test.o: ${SRC}/rng/srng64_normal_test.c
-	${CC} ${CFLAGS} -o $@ -c $<
+	${EVA_CC} ${CFLAGS} -o $@ -c $<
 
 clean:
 	rm -rf ${BUILD}* ${DOCKER}
@@ -120,16 +137,16 @@ fmt:
 # ------------------------------------------------------------------------------
 
 cron: compile ${BUILD}/cron
-	${BUILD}/cron
+	${EVA_EX} ${BUILD}/cron
 
 ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+	${EVA_LD} ${CFLAGS} -o $@ $^
 
 test: compile ${BUILD}/test
-	${BUILD}/test
+	${EVA_EX} ${BUILD}/test
 
 ${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+	${EVA_LD} ${CFLAGS} -o $@ $^
 
 #
 # # Docker related.
