@@ -1,31 +1,35 @@
 # ------------------------------------------------------------------------------
 # configurations.
 # ------------------------------------------------------------------------------
-SRC        = src
-CMD        = cmd
-BUILD_BASE = .build
-BUILD      = ${BUILD_BASE}
-DOCKER     = .docker
-UNAME      = $(shell uname)
+SRC           = src
+CMD           = cmd
+BUILD_BASE    = .build
+BUILD         = ${BUILD_BASE}
+BUILD_RELEASE = ${BUILD_BASE}_release
+DOCKER        = .docker
+UNAME         = $(shell uname)
 
-CFLAGS     := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
-CFLAGS     := ${CFLAGS} -I${SRC}
-LDFLAGS    := -lm ${LDFLAGS}
+CFLAGS        := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
+CFLAGS        := ${CFLAGS} -I${SRC}
+LDFLAGS       := -lm ${LDFLAGS}
 
-# enable POSIX and lm
+# enable POSIX
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+endif
+
+# enable asan by `make ASAN=1`
+ifdef ASAN
+	CFLAGS := ${CFLAGS} -g -fsanitize=address -D_ASAN=1
+	BUILD  := ${BUILD}_asan
 endif
 
 # enable release by `make RELEASE=1`
 ifdef RELEASE
   CFLAGS := ${CFLAGS} -DNDEBUG -O2
   BUILD  := ${BUILD}_release
-endif
 
-ifdef ASAN
-	CFLAGS := ${CFLAGS} -g -fsanitize=address -D_ASAN=1
-	BUILD  := ${BUILD}_asan
+compile: check_release_folder
 endif
 
 # compact print with some colors.
@@ -39,6 +43,7 @@ SRCCOLOR  = "\033[33m"
 BINCOLOR  = "\033[36;1m"
 ENDCOLOR  = "\033[0m"
 
+# enable verbose cmd by `make V=1`
 ifndef V
 QUIET_CC  = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) \
 				  $(SRCCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
@@ -97,6 +102,12 @@ ${BUILD}/adt_%.o: ${SRC}/adt/%.c
 ${BUILD}/rng_%.o: ${SRC}/rng/%.c
 	${EVA_CC} -o $@ -c $<
 
+check_release_folder:
+ifneq (${BUILD}, ${BUILD_RELEASE})
+	@echo "release mode cannot mix with other modes, e.g., asan."
+	@exit 1
+endif
+
 clean:
 	rm -rf ${BUILD_BASE}* ${DOCKER}
 
@@ -120,12 +131,19 @@ test: compile ${BUILD}/test
 ${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
 	${EVA_LD} -o $@ $^
 
-#
-# # Docker related.
-# docker: clean release
-# 	mkdir -p ${DOCKER} && \
-# 		cp ${RELEASE}/cron ${DOCKER} && \
-# 		docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron ${DOCKER}
-#
-# push_docker:
-# 	docker push xiejw/cron
+
+# ------------------------------------------------------------------------------
+# docker.
+# ------------------------------------------------------------------------------
+docker:
+ifeq ($(UNAME), Linux)
+	make RELEASE=1 -C . clean compile ${BUILD_RELEASE}/cron && \
+	mkdir -p ${DOCKER} && \
+		cp ${BUILD_RELEASE}/cron ${DOCKER} && \
+ 		docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron ${DOCKER}
+else
+	@echo "building docker is supported on linux only."
+endif
+
+push_docker:
+	docker push xiejw/cron
