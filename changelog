@@ -1,4 +1,10 @@
 doc for vec and map
 more adt hyperloglog?
+dancing links
+redis module/neural eng.
+redis raft
+skiplist
+bloom filter
 
+2020-12-23 added compact color makefile printing.
 2020-12-22 added asan for testing.
