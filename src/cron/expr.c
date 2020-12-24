@@ -73,7 +73,7 @@ mainLoop:
   while (1) {
     for (cron_comp_t comp = cron_minute; comp < cron_final_component_marker;
          comp++) {
-      cron_field_t* field;
+      cron_field_t* field = NULL;
       switch (comp) {
         case cron_minute:
           field = &expr->minute;
@@ -161,6 +161,7 @@ int value(tm_t* time_tm, cron_comp_t comp) {
       return time_tm->tm_mon + 1;
     default:
       assert(0);
+      return 0;
       // FatalError("Unexpected comp: %d", comp);
   }
 }
