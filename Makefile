@@ -41,7 +41,7 @@ EVA_EX    = ${QUIET_EX}
 CCCOLOR   = "\033[34m"
 LINKCOLOR = "\033[34;1m"
 SRCCOLOR  = "\033[33m"
-BINCOLOR  = "\033[37;1m"
+BINCOLOR  = "\033[36;1m"
 ENDCOLOR  = "\033[0m"
 
 ifndef V
