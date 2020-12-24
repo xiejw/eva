@@ -91,8 +91,7 @@ mainLoop:
           field = &expr->month;
           break;
         default:
-          assert(0);
-          // FatalError("Unexpected component: %d", component);
+          errFatalAndExit("unexpected component: %d", comp);
       }
 
       int changed;
@@ -135,8 +134,7 @@ void rewind(tm_t* candidate, cron_comp_t up_to) {
       // no-op
       break;
     default:
-      assert(0);
-      // FatalError("Unexpected comp: %d", up_to);
+      errFatalAndExit("unexpected component: %d", up_to);
   }
 }
 
@@ -160,9 +158,8 @@ int value(tm_t* time_tm, cron_comp_t comp) {
       // Month starts with 0 in `tm_t`.
       return time_tm->tm_mon + 1;
     default:
-      assert(0);
+      errFatalAndExit("unexpected component: %d", comp);
       return 0;
-      // FatalError("Unexpected comp: %d", comp);
   }
 }
 
@@ -189,8 +186,7 @@ void increase(tm_t* time_tm, cron_comp_t comp) {
       time_tm->tm_mon += 1;
       break;
     default:
-      assert(0);
-      // FatalError("Unexpected comp: %d", comp);
+      errFatalAndExit("unexpected component: %d", comp);
   }
   mktime(time_tm);
 }

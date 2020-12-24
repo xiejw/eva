@@ -32,6 +32,8 @@ extern void    errFree();
 extern error_t errNum();
 extern void    errDump(char*);
 
+extern void errFatalAndExit(const char* fmt, ...);
+
 // helper methods.
 #define errMalloc() \
   errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
