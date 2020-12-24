@@ -102,18 +102,18 @@ ${BUILD}/adt_%.o: ${SRC}/adt/%.c
 ${BUILD}/rng_%.o: ${SRC}/rng/%.c
 	${EVA_CC} -o $@ -c $<
 
-check_release_folder:
-ifneq (${BUILD}, ${BUILD_RELEASE})
-	@echo "release mode cannot mix with other modes, e.g., asan."
-	@exit 1
-endif
-
 clean:
 	rm -rf ${BUILD_BASE}* ${DOCKER}
 
 fmt:
 	${FMT} ${SRC}
 	${FMT} ${CMD}
+
+check_release_folder:
+ifneq (${BUILD}, ${BUILD_RELEASE})
+	@echo "release mode cannot mix with other modes, e.g., asan."
+	@exit 1
+endif
 
 # ------------------------------------------------------------------------------
 # cmds.
