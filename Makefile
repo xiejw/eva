@@ -12,9 +12,13 @@ CFLAGS     := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS     := ${CFLAGS} -I${SRC}
 LDFLAGS    := ${LDFLAGS}
 
-# enable POSIX
+# enable POSIX and lm
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+LDFLAGS := -lm ${LDFLAGS}
+endif
+
+ifeq ($(UNAME), FreeBSD)
 LDFLAGS := -lm ${LDFLAGS}
 endif
 
