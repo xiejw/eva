@@ -10,16 +10,11 @@ UNAME      = $(shell uname)
 
 CFLAGS     := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS     := ${CFLAGS} -I${SRC}
-LDFLAGS    := ${LDFLAGS}
+LDFLAGS    := -lm ${LDFLAGS}
 
 # enable POSIX and lm
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
-LDFLAGS := -lm ${LDFLAGS}
-endif
-
-ifeq ($(UNAME), FreeBSD)
-LDFLAGS := -lm ${LDFLAGS}
 endif
 
 # enable release by `make RELEASE=1`
@@ -45,12 +40,12 @@ BINCOLOR  = "\033[36;1m"
 ENDCOLOR  = "\033[0m"
 
 ifndef V
-  QUIET_CC = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) \
-						 $(SRCCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
-  QUIET_LD = @printf '    %b %b\n' $(LINKCOLOR)LD$(ENDCOLOR) \
-						 $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
-  QUIET_EX = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
-						 $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
+QUIET_CC  = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) \
+				  $(SRCCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
+QUIET_LD  = @printf '    %b %b\n' $(LINKCOLOR)LD$(ENDCOLOR) \
+				  $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
+QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
+				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
 endif
 
 FMT = docker run --rm -ti \
