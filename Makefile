@@ -131,6 +131,11 @@ test: compile ${BUILD}/test
 ${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
 	${EVA_LD} -o $@ $^
 
+dl: compile ${BUILD}/dl
+	${EVA_EX} ${BUILD}/dl
+
+${BUILD}/dl: src/algorithms/dancing_links.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
+	${EVA_LD} -o $@ $^
 
 # ------------------------------------------------------------------------------
 # docker.
