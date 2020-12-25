@@ -60,6 +60,20 @@ void print(vec_t(dl_node_t) h, int n, int num_heads) {
   }
 }
 
+void search(vec_t(dl_node_t) h, int k) {
+  if (h[0].R == 0) {
+    printf("found solution, printing....not impl.");
+    return;
+  }
+
+  int c = h[0].R;
+  cover(h, c);
+  for (int r = h[c].D; r != c; r = h[r].D) {
+    // store o_k to r;
+    for (int j =
+  }
+}
+
 int main() {
   // use set size and reserve to allocate space.
   // pushBack is expensive.
