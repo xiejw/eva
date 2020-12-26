@@ -53,7 +53,6 @@ void print(vec_t(dl_node_t) h, int n, int num_items) {
 void cover_col(vec_t(dl_node_t) h, int c) {
   h[h[c].R].L = h[c].L;
   h[h[c].L].R = h[c].R;
-  // TODO
   for (int i = h[c].D; i != c; i = h[i].D) {
     for (int j = h[i].R; j != i; j = h[j].R) {
       h[h[j].D].U = h[j].U;
@@ -63,8 +62,9 @@ void cover_col(vec_t(dl_node_t) h, int c) {
   }
 }
 
+void dlCoverCol(dl_table_t* t, int c) { cover_col(t->nodes, c); }
+
 void uncover_col(vec_t(dl_node_t) h, int c) {
-  // TODO
   for (int i = h[c].U; i != c; i = h[i].U) {
     for (int j = h[i].L; j != i; j = h[j].L) {
       (h[h[j].C].S)++;

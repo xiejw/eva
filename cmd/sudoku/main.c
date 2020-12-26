@@ -2,41 +2,134 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SIZE  9
-#define DEBUG 1
+#include "adt/vec.h"
+#include "algorithms/dancing_links.h"
+
+#define SIZE 9
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+#ifndef PID
+#define PID 1
+#endif
+
+static int PROLBEMS[][SIZE * SIZE] = {
+    // From The Art of Computer Programming, Vol 4, Dancing Links.
+    {
+        // clang-format off
+        0, 0, 3,  0, 1, 0,  0, 0, 0,
+        4, 1, 5,  0, 0, 0,  0, 9, 0,
+        2, 0, 6,  5, 0, 0,  3, 0, 0,
+
+        5, 0, 0,  0, 8, 0,  0, 0, 9,
+        0, 7, 0,  9, 0, 0,  0, 3, 2,
+        0, 3, 8,  0, 0, 4,  0, 6, 0,
+
+        0, 0, 0,  2, 6, 0,  4, 0, 3,
+        0, 0, 0,  3, 0, 0,  0, 0, 8,
+        3, 2, 0,  0, 0, 7,  9, 5, 0,
+        // clang-format on
+    },
+    // The World's Hardest Sudoku.
+    // https://gizmodo.com/can-you-solve-the-10-hardest-logic-puzzles-ever-created-1064112665
+    {
+        // clang-format off
+        8, 0, 0,  0, 0, 0,  0, 0, 0,
+        0, 0, 3,  6, 0, 0,  0, 0, 0,
+        0, 7, 0,  0, 9, 0,  2, 0, 0,
+
+        0, 5, 0,  0, 0, 7,  0, 0, 0,
+        0, 0, 0,  0, 4, 5,  7, 0, 0,
+        0, 0, 0,  1, 0, 0,  0, 3, 0,
+
+        0, 0, 1,  0, 0, 0,  0, 6, 8,
+        0, 0, 8,  5, 0, 0,  0, 1, 0,
+        0, 9, 0,  0, 0, 0,  4, 0, 0,
+        // clang-format on
+    },
+};
 
 // -----------------------------------------------------------------------------
 // prototypes.
 // -----------------------------------------------------------------------------
+typedef struct {
+  int x;
+  int y;
+  int k;
+} option_t;
+
 static void printProblem(int* problem);
-static int  searchOptions(int* problem);
-// static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
+int         searchOptions(int* problem, vec_t(option_t) options);
+static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
 
 // -----------------------------------------------------------------------------
 // main.
 // -----------------------------------------------------------------------------
 int main() {
-  int problem[SIZE * SIZE] = {
-      // clang-format off
-      0, 0, 3,  0, 1, 0,  0, 0, 0,
-      4, 1, 5,  0, 0, 0,  0, 9, 0,
-      2, 0, 6,  5, 0, 0,  3, 0, 0,
-
-      5, 0, 0,  0, 8, 0,  0, 0, 9,
-      0, 7, 0,  9, 0, 0,  0, 3, 2,
-      0, 3, 8,  0, 0, 4,  0, 6, 0,
-
-      0, 0, 0,  2, 6, 0,  4, 0, 3,
-      0, 0, 0,  3, 0, 0,  0, 0, 8,
-      3, 2, 0,  0, 0, 7,  9, 5, 0,
-      // clang-format on
-  };
-
+  int* problem = PROLBEMS[PID];
   printProblem(problem);
-  int options_count = searchOptions(problem);
 
-  printf("options_count %d", options_count);
+  vec_t(option_t) options = vecNew();
+  vecReserve(options, 9 * 9 * 9);
+  int options_count = searchOptions(problem, options);
 
+  if (DEBUG) {
+    printf("total options count %d\n", options_count);
+    printf("top 10 options:\n");
+    for (int i = 0; i < 10 && i < options_count; i++) {
+      printf("  x %d, y %d, k %d\n", options[i].x, options[i].y, options[i].k);
+    }
+  }
+
+  dl_table_t* t = dlNew(1 + 4 * options_count + 4 * 81);
+  dlAllocateItems(t, /*num_items=*/4 * 81);
+
+  int item[4];
+  for (int x = 0; x < SIZE; x++) {
+    int offset = x * SIZE;
+    for (int y = 0; y < SIZE; y++) {
+      int num = problem[offset + y];
+      if (num == 0) continue;
+
+      getItemId(x, y, num, /*p=*/item, /*r=*/item + 1, /*c=*/item + 2,
+                /*b=*/item + 3);
+      dlCoverCol(t, item[0]);
+      dlCoverCol(t, item[1]);
+      dlCoverCol(t, item[2]);
+      dlCoverCol(t, item[3]);
+    }
+  }
+
+  {
+    for (int i = 0; i < options_count; i++) {
+      option_t* o = &options[i];
+      getItemId(o->x, o->y, o->k, /*p=*/item, /*r=*/item + 1, /*c=*/item + 2,
+                /*b=*/item + 3);
+      dlAppendOption(t, 4, item, o);
+    }
+  }
+
+  vec_t(int) sols = vecNew();
+  vecReserve(sols, 9 * 9);
+
+  if (dlSearchSolution(t, sols)) {
+    printf("found solution:\n");
+    int n = vecSize(sols);
+    for (int i = 0; i < n; i++) {
+      option_t* o                 = t->nodes[sols[i]].data;
+      problem[o->x * SIZE + o->y] = o->k;
+    }
+    printProblem(problem);
+
+  } else {
+    printf("no solution.\n");
+  }
+
+  vecFree(options);
+  vecFree(sols);
+  dlFree(t);
   return 0;
 }
 
@@ -71,9 +164,8 @@ void printProblem(int* problem) {
 #define POS(x, y) ((x)*SIZE + (y))
 
 // Seach all options that on (x,y) the digit k is allowed to be put there.
-int searchOptions(int* problem) {
+int searchOptions(int* problem, vec_t(option_t) options) {
   int total = 0;
-  if (DEBUG) printf("total the first 10 options:\n");
 
   for (int x = 0; x < SIZE; x++) {
     int offset = x * SIZE;
@@ -111,36 +203,38 @@ int searchOptions(int* problem) {
           goto not_a_option;
         }
 
+        assert(vecCap(options) >= total + 1);
+        options[total].x = x;
+        options[total].y = y;
+        options[total].k = k;
+
         total++;
-        if (DEBUG && total < 10) {
-          printf("  x %d, y %d, k %d\n", x, y, k);
-        }
       not_a_option:
         (void)0;
       }
     }
   }
-  if (DEBUG) printf("in total %d options\n", total);
+  vecSetSize(options, total);
   return total;
 }
 
-// // p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
-// //
-// // 1-based
-// void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b) {
-//   int x      = 3 * (i / 3) + (j / 3);
-//   int offset = 0;
+// p{i,j}, r{i,k} c{j,k} b{x,k}  x = 3 * floor(i/3) + floor(j/3)
 //
-//   k = k - 1;  // k is 1 based.
-//
-//   *p = i * SIZE + j + offset + 1;  // item id is 1 based.
-//   offset += SIZE * SIZE;
-//
-//   *r = i * SIZE + k + offset + 1;  // item id is 1 based.
-//   offset += SIZE * SIZE;
-//
-//   *c = j * SIZE + k + offset + 1;  // item id is 1 based.
-//   offset += SIZE * SIZE;
-//
-//   *b = x * SIZE + k + offset + 1;  // item id is 1 based.
-// }
+// for digit k (1-based) in cell (i,j)
+void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b) {
+  int x      = 3 * (i / 3) + (j / 3);
+  int offset = 0;
+
+  k = k - 1;  // k is 1 based.
+
+  *p = i * SIZE + j + offset + 1;  // item id is 1 based.
+  offset += SIZE * SIZE + 1;
+
+  *r = i * SIZE + k + offset;
+  offset += SIZE * SIZE;
+
+  *c = j * SIZE + k + offset;
+  offset += SIZE * SIZE;
+
+  *b = x * SIZE + k + offset;
+}
