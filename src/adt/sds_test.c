@@ -7,7 +7,7 @@
 static char* test_new() {
   sds_t s = sdsNew("hello");
   ASSERT_TRUE("len", sdsLen(s) == 5);
-  ASSERT_TRUE("cap", sdsCap(s) == 5);
+  ASSERT_TRUE("cap", sdsCap(s) >= 5);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
   sdsFree(s);
   return NULL;
@@ -43,7 +43,16 @@ static char* test_new_len_null() {
 static char* test_empty() {
   sds_t s = sdsEmpty();
   ASSERT_TRUE("len", sdsLen(s) == 0);
-  ASSERT_TRUE("cap", sdsCap(s) == 0);
+  ASSERT_TRUE("cap", sdsCap(s) >= 0);
+  ASSERT_TRUE("str", strcmp(s, "") == 0);
+  sdsFree(s);
+  return NULL;
+}
+
+static char* test_empty_with_reserved_space() {
+  sds_t s = sdsEmptyWithReservedSpace(10);
+  ASSERT_TRUE("len", sdsLen(s) == 0);
+  ASSERT_TRUE("cap", sdsCap(s) == 10);
   ASSERT_TRUE("str", strcmp(s, "") == 0);
   sdsFree(s);
   return NULL;
@@ -55,7 +64,7 @@ static char* test_dup() {
   sdsFree(old_s);
 
   ASSERT_TRUE("len", sdsLen(s) == 5);
-  ASSERT_TRUE("cap", sdsCap(s) == 5);
+  ASSERT_TRUE("cap", sdsCap(s) >= 5);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
   sdsFree(s);
   return NULL;
@@ -107,7 +116,7 @@ static char* test_cat_printf() {
 static char* test_reserve() {
   sds_t s = sdsNew("hello");
   ASSERT_TRUE("len", sdsLen(s) == 5);
-  ASSERT_TRUE("cap", sdsCap(s) == 5);
+  ASSERT_TRUE("cap", sdsCap(s) >= 5);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
 
   sdsReserve(&s, 10);
@@ -168,6 +177,7 @@ char* run_adt_sds_suite() {
 #endif
   RUN_TEST(test_new_len_null);
   RUN_TEST(test_empty);
+  RUN_TEST(test_empty_with_reserved_space);
   RUN_TEST(test_dup);
   RUN_TEST(test_cat_len);
   RUN_TEST(test_cat);

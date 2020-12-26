@@ -51,10 +51,12 @@ typedef struct {
 } sdshdr;
 
 sds_t sdsNew(const char *init);
-sds_t sdsNewLen(const void *init, size_t initlen);
 sds_t sdsEmpty(void);
+sds_t sdsEmptyWithReservedSpace(size_t reserve_size);
 sds_t sdsDup(const sds_t s);
 void  sdsFree(sds_t s);
+
+sds_t sdsNewLen(const void *init, size_t initlen);
 void  sdsReserve(_mut_ sds_t *s, size_t addlen);
 
 #define sdsLen(s)       _sdsLen(s)
