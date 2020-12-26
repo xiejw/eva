@@ -73,7 +73,7 @@ void printProblem(int* problem) {
 // Seach all options that on (x,y) the digit k is allowed to be put there.
 int searchOptions(int* problem) {
   int total = 0;
-  if (DEBUG) printf("total 10 options:\n");
+  if (DEBUG) printf("total the first 10 options:\n");
 
   for (int x = 0; x < SIZE; x++) {
     int offset = x * SIZE;

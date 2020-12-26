@@ -128,16 +128,18 @@ endif
 # cmds.
 # ------------------------------------------------------------------------------
 
+c: cron
+s: sudoku
 cron: compile ${BUILD}/cron
 	${EVA_EX} ${BUILD}/cron
 
 ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
 	${EVA_LD} -o $@ $^
 
-soduku: compile ${BUILD}/soduku
-	${EVA_EX} ${BUILD}/soduku
+sudoku: compile ${BUILD}/sudoku
+	${EVA_EX} ${BUILD}/sudoku
 
-${BUILD}/soduku: cmd/soduku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
+${BUILD}/sudoku: cmd/sudoku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
 	${EVA_LD} -o $@ $^
 
 test: compile ${BUILD}/test
