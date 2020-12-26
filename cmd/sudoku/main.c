@@ -68,9 +68,11 @@ static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
 // main.
 // -----------------------------------------------------------------------------
 int main() {
+  // select and print problem
   int* problem = PROLBEMS[PID];
   printProblem(problem);
 
+  // search options.
   vec_t(option_t) options = vecNew();
   vecReserve(options, 9 * 9 * 9);
   int options_count = searchOptions(problem, options);
@@ -83,34 +85,37 @@ int main() {
     }
   }
 
+  // prepare dancing links table.
   dl_table_t* t = dlNew(1 + 4 * options_count + 4 * 81);
   dlAllocateItems(t, /*num_items=*/4 * 81);
 
-  int item[4];
+  // hide all items which have been filled by the problem already.
+  int item_ids[4];
   for (int x = 0; x < SIZE; x++) {
     int offset = x * SIZE;
     for (int y = 0; y < SIZE; y++) {
       int num = problem[offset + y];
       if (num == 0) continue;
-
-      getItemId(x, y, num, /*p=*/item, /*r=*/item + 1, /*c=*/item + 2,
-                /*b=*/item + 3);
-      dlCoverCol(t, item[0]);
-      dlCoverCol(t, item[1]);
-      dlCoverCol(t, item[2]);
-      dlCoverCol(t, item[3]);
+      getItemId(x, y, num, /*p=*/item_ids, /*r=*/item_ids + 1,
+                /*c=*/item_ids + 2,
+                /*b=*/item_ids + 3);
+      dlCoverCol(t, item_ids[0]);
+      dlCoverCol(t, item_ids[1]);
+      dlCoverCol(t, item_ids[2]);
+      dlCoverCol(t, item_ids[3]);
     }
   }
 
-  {
-    for (int i = 0; i < options_count; i++) {
-      option_t* o = &options[i];
-      getItemId(o->x, o->y, o->k, /*p=*/item, /*r=*/item + 1, /*c=*/item + 2,
-                /*b=*/item + 3);
-      dlAppendOption(t, 4, item, o);
-    }
+  // append options to the dancing links table;
+  for (int i = 0; i < options_count; i++) {
+    option_t* o = &options[i];
+    getItemId(o->x, o->y, o->k, /*p=*/item_ids, /*r=*/item_ids + 1,
+              /*c=*/item_ids + 2,
+              /*b=*/item_ids + 3);
+    dlAppendOption(t, 4, item_ids, o);
   }
 
+  // search solution.
   vec_t(int) sols = vecNew();
   vecReserve(sols, 9 * 9);
 
@@ -118,7 +123,7 @@ int main() {
     printf("found solution:\n");
     int n = vecSize(sols);
     for (int i = 0; i < n; i++) {
-      option_t* o                 = t->nodes[sols[i]].data;
+      option_t* o                 = dlNodeData(t, sols[i]);
       problem[o->x * SIZE + o->y] = o->k;
     }
     printProblem(problem);
@@ -137,7 +142,7 @@ int main() {
 // helper methods.
 // -----------------------------------------------------------------------------
 
-// Prints the Soduku Problem on screen.
+// prints the Sudoku Problem on screen.
 void printProblem(int* problem) {
   // header
   printf("+-----+-----+-----+\n");
@@ -163,7 +168,7 @@ void printProblem(int* problem) {
 
 #define POS(x, y) ((x)*SIZE + (y))
 
-// Seach all options that on (x,y) the digit k is allowed to be put there.
+// seach all options that on (x,y) the digit k is allowed to be put there.
 int searchOptions(int* problem, vec_t(option_t) options) {
   int total = 0;
 
@@ -218,9 +223,13 @@ int searchOptions(int* problem, vec_t(option_t) options) {
   return total;
 }
 
-// p{i,j}, r{i,k} c{j,k} b{x,k}  x = 3 * floor(i/3) + floor(j/3)
+// for digit k (1-based) in cell (i,j), generats four item ids (1-based).
 //
-// for digit k (1-based) in cell (i,j)
+// - p{i,j} // pos
+// - r{i,k} // row with digit
+// - c{j,k} // col with digit
+// - b{x,k} // box with digit
+//   x = 3 * floor(i/3) + floor(j/3)
 void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b) {
   int x      = 3 * (i / 3) + (j / 3);
   int offset = 0;

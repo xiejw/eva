@@ -26,8 +26,10 @@ extern dl_table_t* dlNew(int reserve_n);
 extern void        dlFree(dl_table_t* h);
 
 extern void dlAllocateItems(dl_table_t* h, int n);
-extern void dlAppendOption(dl_table_t* h, int n, int* option, void* data);
+extern void dlAppendOption(dl_table_t* h, int n, int* col_ids, void* data);
 
 extern void dlCoverCol(dl_table_t* t, int c);
 extern int  dlSearchSolution(dl_table_t* h, vec_t(int) sols);
+
+#define dlNodeData(t, id) ((t)->nodes[id].data)
 #endif

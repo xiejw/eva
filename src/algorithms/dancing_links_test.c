@@ -8,7 +8,7 @@
 #define setHeads2(h, a, b)    ((h)[0] = (a), (h)[1] = (b))
 
 static char* test_matrix_cover() {
-  dl_table_t* t = dlNew(23);
+  dl_table_t* t = dlNew(1 + 23);
   // column exact cover problem
   //
   //        1 2 3 4 5 6 7
@@ -59,9 +59,9 @@ static char* test_matrix_cover() {
   ASSERT_TRUE("sol 0", 17 == sols[0]);
   ASSERT_TRUE("sol 1", 19 == sols[1]);
   ASSERT_TRUE("sol 2", 8 == sols[2]);
-  ASSERT_TRUE("sol 0", 0 == strcmp("r4", t->nodes[sols[0]].data));
-  ASSERT_TRUE("sol 1", 0 == strcmp("r5", t->nodes[sols[1]].data));
-  ASSERT_TRUE("sol 2", 0 == strcmp("r1", t->nodes[sols[2]].data));
+  ASSERT_TRUE("sol 0", 0 == strcmp("r4", dlNodeData(t, sols[0])));
+  ASSERT_TRUE("sol 1", 0 == strcmp("r5", dlNodeData(t, sols[1])));
+  ASSERT_TRUE("sol 2", 0 == strcmp("r1", dlNodeData(t, sols[2])));
 
   vecFree(sols);
   dlFree(t);

@@ -122,11 +122,11 @@ dl_table_t* dlNew(int reserve_n) {
 }
 
 void dlInit(dl_table_t* h, int reserve_n) {
-  assert(reserve_n >= 0);
+  assert(reserve_n >= 1);
   h->num_items = 0;
   h->num_nodes = 1;
   h->nodes     = NULL;
-  vecReserve(h->nodes, reserve_n + 1);
+  vecReserve(h->nodes, reserve_n);
   vecSetSize(h->nodes, 1);
   newNode(h->nodes, 0);
 }
@@ -152,8 +152,7 @@ void dlAllocateItems(dl_table_t* ph, int n) {
   ph->num_items = n;
 }
 
-#define setData(h, i, msg) (h)[(i)].data = (msg)
-void dlAppendOption(dl_table_t* ph, int n, int* option, void* data) {
+void dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data) {
   vec_t(dl_node_t) v = ph->nodes;
   // next pos.
   int n_id = vecSize(v);
@@ -161,8 +160,8 @@ void dlAppendOption(dl_table_t* ph, int n, int* option, void* data) {
   for (int i = 0; i < n; i++) {
     int id = n_id + i;
     newNode(v, id);
-    linkUD(v, option[i], id);
-    setData(v, id, data);
+    linkUD(v, col_ids[i], id);
+    v[id].data = data;
     if (i != 0) {
       linkLR(v, id - 1, id);
     }
