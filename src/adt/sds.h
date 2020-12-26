@@ -36,14 +36,13 @@
 #ifndef SDS_H_
 #define SDS_H_
 
+#include <assert.h>
 #include <stdarg.h>  // va_list
 #include <stdlib.h>
 
 #include "base/defs.h"
 
 typedef char *sds_t;
-
-extern const char *SDS_NOINIT;
 
 typedef struct {
   size_t len;
@@ -52,11 +51,10 @@ typedef struct {
 
 sds_t sdsNew(const char *init);
 sds_t sdsEmpty(void);
-sds_t sdsEmptyWithReservedSpace(size_t reserve_size);
+sds_t sdsEmptyWithCap(size_t cap);
 sds_t sdsDup(const sds_t s);
 void  sdsFree(sds_t s);
 
-sds_t sdsNewLen(const void *init, size_t initlen);
 void  sdsReserve(_mut_ sds_t *s, size_t addlen);
 
 #define sdsLen(s)       _sdsLen(s)
@@ -83,22 +81,27 @@ int sdsCmp(const sds_t s1, const sds_t s2);
 // -----------------------------------------------------------------------------
 
 #define SDS_HDR(s) ((sdshdr *)((s) - (sizeof(sdshdr))))
-static inline size_t _sdsLen(const sds_t s) { return SDS_HDR(s)->len; }
-static inline size_t _sdsCap(const sds_t s) { return SDS_HDR(s)->alloc; }
+static inline size_t _sdsLen(const sds_t s) { return s == NULL? 0:SDS_HDR(s)->len; }
+static inline size_t _sdsCap(const sds_t s) { return s == NULL? 0:SDS_HDR(s)->alloc; }
 static inline size_t _sdsAvail(const sds_t s) {
+  if (s==NULL) return 0;
   sdshdr *p = SDS_HDR(s);
   return p->alloc - p->len;
 }
 static inline void _sdsSetLen(const sds_t s, size_t newlen) {
+  assert(s!=NULL);
   SDS_HDR(s)->len = newlen;
 }
 static inline void _sdsIncLen(const sds_t s, size_t inc) {
+  assert(s!=NULL);
   SDS_HDR(s)->len += inc;
 }
 static inline void _sdsSetCap(const sds_t s, size_t newcap) {
+  assert(s!=NULL);
   SDS_HDR(s)->alloc = newcap;
 }
 static inline void _sdsClear(sds_t s) {
+  assert(s!=NULL);
   sdsSetLen(s, 0);
   s[0] = '\0';
 }

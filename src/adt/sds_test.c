@@ -13,28 +13,10 @@ static char* test_new() {
   return NULL;
 }
 
-#ifndef _ASAN
-// the following test copies extra bits beyong a string literal.
-// asan is not happy but this is the purpose of the testing.
-static char* test_new_len() {
-  sds_t s = sdsNewLen("hello", 10);
-  ASSERT_TRUE("len", sdsLen(s) == 10);
-  ASSERT_TRUE("cap", sdsCap(s) == 10);
-  ASSERT_TRUE("str", strcmp(s, "hello") == 0);
-
-  sdsSetLen(s, 5);
-  ASSERT_TRUE("len", sdsLen(s) == 5);
-  ASSERT_TRUE("cap", sdsCap(s) == 10);
-  ASSERT_TRUE("str", strcmp(s, "hello") == 0);
-  sdsFree(s);
-  return NULL;
-}
-#endif
-
-static char* test_new_len_null() {
-  sds_t s = sdsNewLen(NULL, 10);
-  ASSERT_TRUE("len", sdsLen(s) == 10);
-  ASSERT_TRUE("cap", sdsCap(s) == 10);
+static char* test_new_null() {
+  sds_t s = sdsNew(NULL);
+  ASSERT_TRUE("len", sdsLen(s) == 0);
+  ASSERT_TRUE("cap", sdsCap(s) >= 0);
   ASSERT_TRUE("str", strcmp(s, "") == 0);
   sdsFree(s);
   return NULL;
@@ -49,10 +31,10 @@ static char* test_empty() {
   return NULL;
 }
 
-static char* test_empty_with_reserved_space() {
-  sds_t s = sdsEmptyWithReservedSpace(10);
+static char* test_empty_with_cap() {
+  sds_t s = sdsEmptyWithCap(10);
   ASSERT_TRUE("len", sdsLen(s) == 0);
-  ASSERT_TRUE("cap", sdsCap(s) == 10);
+  ASSERT_TRUE("cap", sdsCap(s) >= 10);
   ASSERT_TRUE("str", strcmp(s, "") == 0);
   sdsFree(s);
   return NULL;
@@ -60,12 +42,22 @@ static char* test_empty_with_reserved_space() {
 
 static char* test_dup() {
   sds_t old_s = sdsNew("hello");
-  sds_t s     = sdsNew(old_s);
+  sds_t s     = sdsDup(old_s);
   sdsFree(old_s);
 
   ASSERT_TRUE("len", sdsLen(s) == 5);
   ASSERT_TRUE("cap", sdsCap(s) >= 5);
   ASSERT_TRUE("str", strcmp(s, "hello") == 0);
+  sdsFree(s);
+  return NULL;
+}
+
+static char* test_dup_null() {
+  sds_t s     = sdsDup(NULL);
+
+  ASSERT_TRUE("len", sdsLen(s) == 0);
+  ASSERT_TRUE("cap", sdsCap(s) >= 0);
+  ASSERT_TRUE("str", strcmp(s, "") == 0);
   sdsFree(s);
   return NULL;
 }
@@ -172,13 +164,11 @@ static char* test_cmp() {
 
 char* run_adt_sds_suite() {
   RUN_TEST(test_new);
-#ifndef _ASAN
-  RUN_TEST(test_new_len);
-#endif
-  RUN_TEST(test_new_len_null);
+  RUN_TEST(test_new_null);
   RUN_TEST(test_empty);
-  RUN_TEST(test_empty_with_reserved_space);
+  RUN_TEST(test_empty_with_cap);
   RUN_TEST(test_dup);
+  RUN_TEST(test_dup_null);
   RUN_TEST(test_cat_len);
   RUN_TEST(test_cat);
   RUN_TEST(test_cat_sds);

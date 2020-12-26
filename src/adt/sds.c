@@ -39,78 +39,44 @@
 #include <stdlib.h>
 #include <string.h>  // memcpy/memset
 
-const char* SDS_NOINIT                 = "SDS_NOINIT";
 const int   SDS_DEFAULT_ALLOCATE_SPACE = 16;
 
 // -----------------------------------------------------------------------------
 // implementation.
 // -----------------------------------------------------------------------------
 
-// Create a new sds string with the content specified by the 'init' pointer
-// and 'initlen'.
-//
-// This is a quite low-level api which is easy for mistakes. Consider to use
-// other variants.
-//
-// Special values of `init`:
-// - If NULL is used for 'init' the string is initialized with zero bytes.
-// - If SDS_NOINIT is used, the buffer is left uninitialized;
-//
-// The string is always null-termined (all the sds strings are, always) so
-// even if you create an sds string with:
-//
-//     mystring = sdsNewLen("abc",3);
-//
-// You can print the string with printf() as there is an implicit \0 at the
-// end of the string. However the string is binary safe and can contain
-// \0 characters in the middle, as the length is stored in the sds header.
-//
-// The sdsLen(s) will be `initlen` even `strlen(init)` is different (larger or
-// smaller).
-//
-// To allocate a large, uninitialized, do the following:
-//
-//     sds_t s = sdsNewLen(SDS_NOINIT, allocates_size);
-//     sdsClear(s);
+static inline sds_t _sdsRaw(const void* init, size_t len, size_t cap);
 
-// helper: len/cap is not set. `\0` has not been marked.
-static inline sds_t _sdsRaw(const void* init, size_t initlen, size_t cap);
-
-sds_t sdsNewLen(const void* init, size_t initlen) {
-  sds_t   s    = _sdsRaw(init, initlen, initlen);
-  sdshdr* phdr = SDS_HDR(s);
-  phdr->len    = initlen;
-  phdr->alloc  = initlen;
-  s[initlen]   = '\0';
-  return s;
-}
-
-sds_t sdsEmptyWithReservedSpace(size_t reserve_size) {
-  sds_t   s    = _sdsRaw(SDS_NOINIT, 0, reserve_size);
+sds_t sdsEmptyWithCap(size_t cap) {
+  sds_t   s    = _sdsRaw(NULL, 0, cap);
   sdshdr* phdr = SDS_HDR(s);
   phdr->len    = 0;
-  phdr->alloc  = reserve_size;
   s[0]         = '\0';
   return s;
 }
 
 sds_t sdsNew(const char* init) {
   size_t initlen = (init == NULL) ? 0 : strlen(init);
-  size_t cap     = initlen > SDS_DEFAULT_ALLOCATE_SPACE
-                   ? initlen
-                   : SDS_DEFAULT_ALLOCATE_SPACE;
+  size_t cap     = initlen;
 
   sds_t   s    = _sdsRaw(init, initlen, cap);
   sdshdr* phdr = SDS_HDR(s);
   phdr->len    = initlen;
-  phdr->alloc  = cap;
   s[initlen]   = '\0';
   return s;
 }
 
 sds_t sdsEmpty() { return sdsNew(""); }
 
-sds_t sdsDup(const sds_t s) { return sdsNewLen(s, sdsLen(s)); }
+sds_t sdsDup(const sds_t s) {
+  int len = sdsLen(s);
+  sds_t new_s    = _sdsRaw(s, len, sdsCap(s));
+
+  sdshdr* phdr = SDS_HDR(new_s);
+  phdr->len    = len;
+  new_s[len]   = '\0';
+  return new_s;
+}
 
 void sdsFree(sds_t s) {
   if (s == NULL) return;
@@ -229,19 +195,28 @@ int sdsCmp(const sds_t s1, const sds_t s2) {
   return cmp;
 }
 
-// allocate `cap` size but only initialize `len` size.
+// create a raw sds without filling len .
+//
+// - the space is at least as large as `cap`. cap will be set.
+// - allocate `cap` size but only initialize `len` size.
+// - the final `\0` is not set.
 sds_t _sdsRaw(const void* init, size_t len, size_t cap) {
+  cap     = cap > SDS_DEFAULT_ALLOCATE_SPACE
+    ? cap
+    : SDS_DEFAULT_ALLOCATE_SPACE;
   int   hdrlen = sizeof(sdshdr);
   void* buf    = malloc(hdrlen + cap + 1);
   if (buf == NULL) return NULL;
 
-  if (init == SDS_NOINIT) {
-    init = NULL;
-  } else if (init == NULL) {
-    memset(buf, 0, hdrlen + len + 1);
+  sds_t s = (sds_t)buf + hdrlen;
+  ((sdshdr*)buf)->alloc = cap;
+
+  if (len) {
+    if (init == NULL)
+      memset(s, 0, len);
+    else
+      memcpy(s, init, len);
   }
 
-  sds_t s = (sds_t)buf + hdrlen;
-  if (len && init) memcpy(s, init, len);
   return s;
 }
