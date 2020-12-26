@@ -2,6 +2,8 @@
 
 #include "algorithms/dancing_links.h"
 
+#include <string.h>
+
 #define setHeads3(h, a, b, c) ((h)[0] = (a), (h)[1] = (b), (h)[2] = (c))
 #define setHeads2(h, a, b)    ((h)[0] = (a), (h)[1] = (b))
 
@@ -57,6 +59,9 @@ static char* test_matrix_cover() {
   ASSERT_TRUE("sol 0", 17 == sols[0]);
   ASSERT_TRUE("sol 1", 19 == sols[1]);
   ASSERT_TRUE("sol 2", 8 == sols[2]);
+  ASSERT_TRUE("sol 0", 0 == strcmp("r4", t->nodes[sols[0]].data));
+  ASSERT_TRUE("sol 1", 0 == strcmp("r5", t->nodes[sols[1]].data));
+  ASSERT_TRUE("sol 2", 0 == strcmp("r1", t->nodes[sols[2]].data));
 
   vecFree(sols);
   dlFree(t);
