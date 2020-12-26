@@ -3,7 +3,18 @@
 
 #include "adt/vec.h"
 
-struct dl_node_t;
+struct dl_node_t {
+  int id;
+  int L;
+  int R;
+  int U;
+  int D;
+  union {
+    int C;
+    int S;
+  };
+  void* data;
+};
 
 typedef struct {
   int num_items;

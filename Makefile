@@ -61,10 +61,11 @@ FMT = docker run --rm -ti \
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-ADT_LIB = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
-BASE_LIB = ${BUILD}/base_error.o
-CRON_LIB = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-RNG_LIB = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
+ADT_LIB        = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
+ALGORITHMS_LIB = ${BUILD}/algorithms_dancing_links.o
+BASE_LIB       = ${BUILD}/base_error.o
+CRON_LIB       = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
+RNG_LIB        = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -73,6 +74,10 @@ ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
 							    ${BUILD}/adt_map_test.o
 ADT_TEST_DEP    = ${ADT_LIB} ${BASE_LIB}
 ADT_TEST        = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
+
+ALGORITHMS_TEST_SUITE = ${BUILD}/algorithms_dancing_links_test.o
+ALGORITHMS_TEST_DEP   = ${ALGORITHMS_LIB} ${BASE_LIB} ${ADT_LIB}
+ALGORITHMS_TEST       = ${ALGORITHMS_TEST_SUITE} ${ALGORITHMS_TEST_DEP}
 
 CRON_TEST_SUITE = ${BUILD}/cron_cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
@@ -85,7 +90,8 @@ RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB}
+compile: ${BUILD} ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} \
+	       ${ALGORITHMS_LIB}
 
 ${BUILD}:
 	@mkdir -p ${BUILD}
@@ -93,10 +99,13 @@ ${BUILD}:
 ${BUILD}/base_%.o: ${SRC}/base/%.c
 	${EVA_CC} -o $@ -c $<
 
-${BUILD}/cron_%.o: ${SRC}/cron/%.c
+${BUILD}/adt_%.o: ${SRC}/adt/%.c
 	${EVA_CC} -o $@ -c $<
 
-${BUILD}/adt_%.o: ${SRC}/adt/%.c
+${BUILD}/algorithms_%.o: ${SRC}/algorithms/%.c
+	${EVA_CC} -o $@ -c $<
+
+${BUILD}/cron_%.o: ${SRC}/cron/%.c
 	${EVA_CC} -o $@ -c $<
 
 ${BUILD}/rng_%.o: ${SRC}/rng/%.c
@@ -128,7 +137,8 @@ ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
 test: compile ${BUILD}/test
 	${EVA_EX} ${BUILD}/test
 
-${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST}
+${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
+	             ${ALGORITHMS_TEST}
 	${EVA_LD} -o $@ $^
 
 dl: compile ${BUILD}/dl

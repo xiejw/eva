@@ -3,18 +3,7 @@
 #include "adt/vec.h"
 #include "stdio.h"
 
-typedef struct dl_node_t {
-  int id;
-  int L;
-  int R;
-  int U;
-  int D;
-  union {
-    int C;
-    int S;
-  };
-  void* data;
-} dl_node_t;
+typedef struct dl_node_t dl_node_t;
 
 void newNode(vec_t(dl_node_t) h, int id) {
   assert(vecCap(h) >= id + 1);
@@ -182,58 +171,4 @@ void dlAppendOption(dl_table_t* ph, int n, int* option, void* data) {
   int size = n + n_id;
   vecSetSize(v, size);
   ph->num_nodes = size;
-}
-
-int main() {
-  // use set size and reserve to allocate space.
-  // pushBack is expensive.
-  dl_table_t* t      = dlNew(24);
-  vec_t(dl_node_t) h = t->nodes;
-
-  dlAllocateItems(t, 7);
-
-#define setHeads3(h, a, b, c) ((h)[0] = (a), (h)[1] = (b), (h)[2] = (c))
-#define setHeads2(h, a, b)    ((h)[0] = (a), (h)[1] = (b))
-
-  // row 1
-  int heads[3];
-  setHeads3(heads, 3, 5, 6);
-  dlAppendOption(t, 3, heads, "r1");
-
-  // row 2
-  setHeads3(heads, 1, 4, 7);
-  dlAppendOption(t, 3, heads, "r2");
-
-  // row 3
-  setHeads3(heads, 2, 3, 6);
-  dlAppendOption(t, 3, heads, "r3");
-
-  // row 4
-  setHeads2(heads, 1, 4);
-  dlAppendOption(t, 2, heads, "r4");
-
-  // row 5
-  setHeads2(heads, 2, 7);
-  dlAppendOption(t, 2, heads, "r5");
-
-  // row 6
-  setHeads3(heads, 4, 5, 7);
-  dlAppendOption(t, 3, heads, "r6");
-
-  print(h, t->num_nodes, t->num_items);
-
-  vec_t(int) sols = vecNew();
-  vecReserve(sols, 4);
-
-  if (dlSearchSolution(t, sols)) {
-    printf("found solution, printing...\n");
-    for (int i = 0; i < vecSize(sols); i++) {
-      printf("  %2d: %s\n", sols[i], t->nodes[sols[i]].data);
-    }
-  } else {
-    printf("no solution. bye!\n");
-  }
-
-  vecFree(sols);
-  dlFree(t);
 }
