@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string.h>  // memcpy/memset
 
-const int   SDS_DEFAULT_ALLOCATE_SPACE = 16;
+const int SDS_DEFAULT_ALLOCATE_SPACE = 16;
 
 // -----------------------------------------------------------------------------
 // implementation.
@@ -69,8 +69,8 @@ sds_t sdsNew(const char* init) {
 sds_t sdsEmpty() { return sdsNew(""); }
 
 sds_t sdsDup(const sds_t s) {
-  int len = sdsLen(s);
-  sds_t new_s    = _sdsRaw(s, len, sdsCap(s));
+  int   len   = sdsLen(s);
+  sds_t new_s = _sdsRaw(s, len, sdsCap(s));
 
   sdshdr* phdr = SDS_HDR(new_s);
   phdr->len    = len;
@@ -201,14 +201,12 @@ int sdsCmp(const sds_t s1, const sds_t s2) {
 // - allocate `cap` size but only initialize `len` size.
 // - the final `\0` is not set.
 sds_t _sdsRaw(const void* init, size_t len, size_t cap) {
-  cap     = cap > SDS_DEFAULT_ALLOCATE_SPACE
-    ? cap
-    : SDS_DEFAULT_ALLOCATE_SPACE;
+  cap = cap > SDS_DEFAULT_ALLOCATE_SPACE ? cap : SDS_DEFAULT_ALLOCATE_SPACE;
   int   hdrlen = sizeof(sdshdr);
   void* buf    = malloc(hdrlen + cap + 1);
   if (buf == NULL) return NULL;
 
-  sds_t s = (sds_t)buf + hdrlen;
+  sds_t s               = (sds_t)buf + hdrlen;
   ((sdshdr*)buf)->alloc = cap;
 
   if (len) {

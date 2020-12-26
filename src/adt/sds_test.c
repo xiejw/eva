@@ -53,7 +53,7 @@ static char* test_dup() {
 }
 
 static char* test_dup_null() {
-  sds_t s     = sdsDup(NULL);
+  sds_t s = sdsDup(NULL);
 
   ASSERT_TRUE("len", sdsLen(s) == 0);
   ASSERT_TRUE("cap", sdsCap(s) >= 0);

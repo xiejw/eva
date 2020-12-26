@@ -55,7 +55,7 @@ sds_t sdsEmptyWithCap(size_t cap);
 sds_t sdsDup(const sds_t s);
 void  sdsFree(sds_t s);
 
-void  sdsReserve(_mut_ sds_t *s, size_t addlen);
+void sdsReserve(_mut_ sds_t *s, size_t addlen);
 
 #define sdsLen(s)       _sdsLen(s)
 #define sdsCap(s)       _sdsCap(s)
@@ -81,27 +81,31 @@ int sdsCmp(const sds_t s1, const sds_t s2);
 // -----------------------------------------------------------------------------
 
 #define SDS_HDR(s) ((sdshdr *)((s) - (sizeof(sdshdr))))
-static inline size_t _sdsLen(const sds_t s) { return s == NULL? 0:SDS_HDR(s)->len; }
-static inline size_t _sdsCap(const sds_t s) { return s == NULL? 0:SDS_HDR(s)->alloc; }
+static inline size_t _sdsLen(const sds_t s) {
+  return s == NULL ? 0 : SDS_HDR(s)->len;
+}
+static inline size_t _sdsCap(const sds_t s) {
+  return s == NULL ? 0 : SDS_HDR(s)->alloc;
+}
 static inline size_t _sdsAvail(const sds_t s) {
-  if (s==NULL) return 0;
+  if (s == NULL) return 0;
   sdshdr *p = SDS_HDR(s);
   return p->alloc - p->len;
 }
 static inline void _sdsSetLen(const sds_t s, size_t newlen) {
-  assert(s!=NULL);
+  assert(s != NULL);
   SDS_HDR(s)->len = newlen;
 }
 static inline void _sdsIncLen(const sds_t s, size_t inc) {
-  assert(s!=NULL);
+  assert(s != NULL);
   SDS_HDR(s)->len += inc;
 }
 static inline void _sdsSetCap(const sds_t s, size_t newcap) {
-  assert(s!=NULL);
+  assert(s != NULL);
   SDS_HDR(s)->alloc = newcap;
 }
 static inline void _sdsClear(sds_t s) {
-  assert(s!=NULL);
+  assert(s != NULL);
   sdsSetLen(s, 0);
   s[0] = '\0';
 }

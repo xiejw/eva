@@ -112,7 +112,7 @@ void errNewHeader(error_t err) {
 }
 
 void errMsgAppend(const char* fmt, va_list ap) {
-  sds_t s = sdsEmptyWithCap( ERR_MSG_DEFAULT_LEN);
+  sds_t s = sdsEmptyWithCap(ERR_MSG_DEFAULT_LEN);
   sdsCatVprintf(&s, fmt, ap);
 
   err_msg_list_t* p          = malloc(sizeof(err_msg_list_t));
