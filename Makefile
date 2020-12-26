@@ -134,6 +134,12 @@ cron: compile ${BUILD}/cron
 ${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
 	${EVA_LD} -o $@ $^
 
+soduku: compile ${BUILD}/soduku
+	${EVA_EX} ${BUILD}/soduku
+
+${BUILD}/soduku: cmd/soduku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
+	${EVA_LD} -o $@ $^
+
 test: compile ${BUILD}/test
 	${EVA_EX} ${BUILD}/test
 
