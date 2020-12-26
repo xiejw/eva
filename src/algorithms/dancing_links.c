@@ -90,6 +90,7 @@ void uncover_col(vec_t(dl_node_t) h, int c) {
 void search(vec_t(dl_node_t) h, int k, vec_t(int) sols) {
   if (h[0].R == 0) {
     printf("found solution, printing...\n");
+    vecSetSize(h, k);
     for (int i = 0; i < k; i++) {
       printf("  %2d: %s\n", sols[i], h[sols[i]].data);
     }
@@ -100,9 +101,12 @@ void search(vec_t(dl_node_t) h, int k, vec_t(int) sols) {
   if (h[c].S == 0) {
     return;
   }
+  if (vecCap(sols) < k) {
+    vecReserve(sols, 2 * vecCap(sols));
+  }
+
   cover_col(h, c);
   for (int r = h[c].D; r != c; r = h[r].D) {
-    assert(vecCap(sols) >= k);
     sols[k] = r;
     for (int j = h[r].R; j != r; j = h[j].R) {
       cover_col(h, h[j].C);
