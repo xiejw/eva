@@ -235,8 +235,12 @@ int main() {
   vecSetSize(h, n);
   print(h, n, 7);
 
-  vec_t(int) sols;
+  vec_t(int) sols = vecNew();
+  printf("1\n");
+  fflush(stdout);
   vecReserve(sols, 8);
+  printf("2\n");
+  fflush(stdout);
   search(h, 0, sols);
 
   vecFree(sols);
