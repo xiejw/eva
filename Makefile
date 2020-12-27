@@ -126,8 +126,8 @@ clean:
 	rm -rf ${BUILD_BASE}* ${DOCKER}
 
 fmt:
-	${FMT} ${SRC}
-	${FMT} ${CMD}
+	find ${SRC} -iname *.h -o -iname *.c | xargs clang-format -i --style=file
+# ${FMT} ${CMD}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})
