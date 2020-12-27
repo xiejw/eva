@@ -35,6 +35,7 @@ endif
 # compact print with some colors.
 EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
+EVA_AR    = ${QUIET_AR}ar -cr
 EVA_EX    = ${QUIET_EX}
 
 CCCOLOR   = "\033[34m"
@@ -48,6 +49,8 @@ ifndef V
 QUIET_CC  = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) \
 				  $(SRCCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
 QUIET_LD  = @printf '    %b %b\n' $(LINKCOLOR)LD$(ENDCOLOR) \
+				  $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
+QUIET_AR  = @printf '    %b %b\n' $(LINKCOLOR)AR$(ENDCOLOR) \
 				  $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
 QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
 				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
@@ -66,6 +69,8 @@ ALGORITHMS_LIB = ${BUILD}/algorithms_dancing_links.o
 BASE_LIB       = ${BUILD}/base_error.o
 CRON_LIB       = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 RNG_LIB        = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
+
+ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB}
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -90,8 +95,12 @@ RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} \
-	       ${ALGORITHMS_LIB}
+compile: ${BUILD} ${ALL_LIBS}
+
+libeva: compile ${BUILD}/libeva.a
+
+${BUILD}/libeva.a: ${ALL_LIBS}
+	${EVA_AR} $@ $^
 
 ${BUILD}:
 	@mkdir -p ${BUILD}
