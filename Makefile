@@ -92,6 +92,8 @@ RNG_TEST_SUITE  = ${BUILD}/rng_srng64_test.o ${BUILD}/rng_srng64_normal_test.o
 RNG_TEST_DEP    = ${RNG_LIB}
 RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 
+ALL_TESTS       = ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
+	                ${ALGORITHMS_TEST}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
@@ -154,8 +156,7 @@ ${BUILD}/sudoku: cmd/sudoku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
 test: compile ${BUILD}/test
 	${EVA_EX} ${BUILD}/test
 
-${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
-	             ${ALGORITHMS_TEST}
+${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
 	${EVA_LD} -o $@ $^
 
 # ------------------------------------------------------------------------------
