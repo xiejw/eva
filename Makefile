@@ -13,7 +13,9 @@ CFLAGS        := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS        := ${CFLAGS} -I${SRC}
 LDFLAGS       := -lm ${LDFLAGS}
 
-FMT           = clang-format -i --style=file
+CLANG_EXTS    = -iname *.h -o -iname *.c
+CLANG_FMT     = clang-format -i --style=file
+FMT           = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
 FMT_FOLDERS   = ${SRC} ${CMD}
 
 # enable POSIX
@@ -42,7 +44,7 @@ EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR    = ${QUIET_AR}ar -cr
 EVA_EX    = ${QUIET_EX}
-EVA_FM    = ${QUIET_FM}
+EVA_FM    = ${QUIET_FM}${FMT}
 
 CCCOLOR   = "\033[34m"
 LINKCOLOR = "\033[34;1m"
@@ -100,6 +102,7 @@ ALL_TESTS       = ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
+
 compile: ${BUILD} ${ALL_LIBS}
 
 libeva: compile ${BUILD}/libeva.a
@@ -129,7 +132,7 @@ clean:
 	rm -rf ${BUILD_BASE}* ${DOCKER}
 
 fmt:
-	${EVA_FM} find ${FMT_FOLDERS} -iname *.h -o -iname *.c | xargs ${FMT}
+	${EVA_FM} ${FMT_FOLDERS}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})
@@ -140,8 +143,11 @@ endif
 # ------------------------------------------------------------------------------
 # cmds.
 # ------------------------------------------------------------------------------
+
+# alias
 c: cron
 s: sudoku
+
 cron: compile ${BUILD}/cron
 	${EVA_EX} ${BUILD}/cron
 
@@ -163,6 +169,7 @@ ${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
 # ------------------------------------------------------------------------------
 # docker.
 # ------------------------------------------------------------------------------
+
 docker:
 ifeq ($(UNAME), Linux)
 	make RELEASE=1 -C . clean compile ${BUILD_RELEASE}/cron && \
