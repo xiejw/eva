@@ -35,7 +35,9 @@ ifdef RELEASE
 compile: check_release_folder
 endif
 
-# compact print with some colors.
+# ------------------------------------------------------------------------------
+#  # color printing.
+# ------------------------------------------------------------------------------
 EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR    = ${QUIET_AR}ar -cr
@@ -162,6 +164,7 @@ ${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
 # ------------------------------------------------------------------------------
 # docker.
 # ------------------------------------------------------------------------------
+
 docker:
 ifeq ($(UNAME), Linux)
 	make RELEASE=1 -C . clean compile ${BUILD_RELEASE}/cron && \
