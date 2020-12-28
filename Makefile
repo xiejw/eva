@@ -13,6 +13,9 @@ CFLAGS        := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS        := ${CFLAGS} -I${SRC}
 LDFLAGS       := -lm ${LDFLAGS}
 
+FMT           = clang-format -i --style=file
+FMT_FOLDERS   = ${SRC} ${CMD}
+
 # enable POSIX
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
@@ -37,6 +40,7 @@ EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR    = ${QUIET_AR}ar -cr
 EVA_EX    = ${QUIET_EX}
+EVA_FM    = ${QUIET_FM}
 
 CCCOLOR   = "\033[34m"
 LINKCOLOR = "\033[34;1m"
@@ -54,12 +58,9 @@ QUIET_AR  = @printf '    %b %b\n' $(LINKCOLOR)AR$(ENDCOLOR) \
 				  $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
 QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
 				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
+QUIET_FM  = @printf '    %b %b\n' $(LINKCOLOR)FM$(ENDCOLOR) \
+					$(BINCOLOR)"$(FMT_FOLDERS)"$(ENDCOLOR) 1>&2;
 endif
-
-FMT = docker run --rm -ti \
-    --user `id -u ${USER}`:`id -g ${USER}` \
-    -v `pwd`:/workdir xiejw/clang-format \
-    /clang-format.sh
 
 # ------------------------------------------------------------------------------
 # libs.
@@ -126,8 +127,7 @@ clean:
 	rm -rf ${BUILD_BASE}* ${DOCKER}
 
 fmt:
-	find ${SRC} -iname *.h -o -iname *.c | xargs clang-format -i --style=file
-# ${FMT} ${CMD}
+	${EVA_FM} find ${FMT_FOLDERS} -iname *.h -o -iname *.c | xargs ${FMT}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})
