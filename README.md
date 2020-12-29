@@ -1,5 +1,11 @@
 # My Core C Library
 
+Configurations
+```
+platform: amd64 (Linux, FreeBSD, macOS/Darwin), armv7 (Raspberry Pi OS/Linux)
+compiler: clang (+ lld on Linux)
+```
+
 ## Compile
 
 ```
