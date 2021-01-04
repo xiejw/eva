@@ -33,7 +33,7 @@ extern void    errFree();
 extern error_t errNum();
 extern void    errDump(char*);
 
-extern void errFatalAndExit(const char* fmt, ...);
+extern error_t errFatalAndExit(const char* fmt, ...);
 
 // helper methods.
 #define errMalloc() \

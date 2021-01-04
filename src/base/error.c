@@ -88,7 +88,7 @@ void errDump(char* title) {
   }
 }
 
-void errFatalAndExit(const char* fmt, ...) {
+error_t errFatalAndExit(const char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
@@ -96,6 +96,7 @@ void errFatalAndExit(const char* fmt, ...) {
   fprintf(stderr, "\n");
   fflush(stderr);
   exit(1);
+  return ERROR;
 }
 
 // -----------------------------------------------------------------------------
