@@ -64,66 +64,76 @@ static uint64_t sprng64_mix56(uint64_t z);
 // implementation.
 // -----------------------------------------------------------------------------
 
-srng64_t* srng64New(uint64_t seed) {
-  return srng64NewWithGamma(seed, /*gamma_seed=*/0L);
+srng64_t* srng64New(uint64_t seed)
+{
+        return srng64NewWithGamma(seed, /*gamma_seed=*/0L);
 }
 
-srng64_t* srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed) {
-  srng64_t* prng;
+srng64_t* srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed)
+{
+        srng64_t* prng;
 
-  assert(gamma_seed < gamma_prime_);
-  prng = malloc(sizeof(srng64_t));
+        assert(gamma_seed < gamma_prime_);
+        prng = malloc(sizeof(srng64_t));
 
-  prng->seed_ = seed;
-  gamma_seed += gamma_gamma_;
-  if (gamma_seed >= gamma_prime_) gamma_seed -= gamma_prime_;
-  prng->gamma_           = sprng64_mix56(gamma_seed) + 13;
-  prng->next_gamma_seed_ = gamma_seed;
-  return prng;
+        prng->seed_ = seed;
+        gamma_seed += gamma_gamma_;
+        if (gamma_seed >= gamma_prime_) gamma_seed -= gamma_prime_;
+        prng->gamma_           = sprng64_mix56(gamma_seed) + 13;
+        prng->next_gamma_seed_ = gamma_seed;
+        return prng;
 }
 
-srng64_t* srng64Split(srng64_t* prng) {
-  uint64_t seed       = sprng64_advance_seed(prng);
-  uint64_t gamma_seed = prng->next_gamma_seed_;
-  return srng64NewWithGamma(seed, gamma_seed);
+srng64_t* srng64Split(srng64_t* prng)
+{
+        uint64_t seed       = sprng64_advance_seed(prng);
+        uint64_t gamma_seed = prng->next_gamma_seed_;
+        return srng64NewWithGamma(seed, gamma_seed);
 }
 
 void srng64Free(srng64_t* prng) { free(prng); }
 
-uint64_t srng64NextUint64(srng64_t* prng) {
-  return sprng64_mix64(sprng64_advance_seed(prng));
+uint64_t srng64NextUint64(srng64_t* prng)
+{
+        return sprng64_mix64(sprng64_advance_seed(prng));
 }
 
-uint32_t srng64NextUint32(srng64_t* prng) {
-  return (uint32_t)(srng64NextUint64(prng));
+uint32_t srng64NextUint32(srng64_t* prng)
+{
+        return (uint32_t)(srng64NextUint64(prng));
 }
 
-double srng64NextDouble(srng64_t* prng) {
-  return (srng64NextUint64(prng) >> 11) * double_ulp_;
+double srng64NextDouble(srng64_t* prng)
+{
+        return (srng64NextUint64(prng) >> 11) * double_ulp_;
 }
 
 // -----------------------------------------------------------------------------
 // helper methods implementation.
 // -----------------------------------------------------------------------------
 
-uint64_t sprng64_update(uint64_t seed, uint64_t gamma) {
-  uint64_t p = seed + gamma;
-  return (p >= seed) ? p : (p >= 13L) ? p - 13L : (p - 13L) + gamma;
+uint64_t sprng64_update(uint64_t seed, uint64_t gamma)
+{
+        uint64_t p = seed + gamma;
+        return (p >= seed) ? p : (p >= 13L) ? p - 13L : (p - 13L) + gamma;
 }
 
-uint64_t sprng64_mix64(uint64_t z) {
-  z = ((z ^ (z >> 33)) * 0xff51afd7ed558ccdL);
-  z = ((z ^ (z >> 33)) * 0xc4ceb9fe1a85ec53L);
-  return z ^ (z >> 33);
+uint64_t sprng64_mix64(uint64_t z)
+{
+        z = ((z ^ (z >> 33)) * 0xff51afd7ed558ccdL);
+        z = ((z ^ (z >> 33)) * 0xc4ceb9fe1a85ec53L);
+        return z ^ (z >> 33);
 }
 
-uint64_t sprng64_advance_seed(srng64_t* prng) {
-  /* Advance one more coefficient at current level. */
-  return (prng->seed_ = sprng64_update(prng->seed_, prng->gamma_));
+uint64_t sprng64_advance_seed(srng64_t* prng)
+{
+        /* Advance one more coefficient at current level. */
+        return (prng->seed_ = sprng64_update(prng->seed_, prng->gamma_));
 }
 
-uint64_t sprng64_mix56(uint64_t z) {
-  z = ((z ^ (z >> 33)) * 0xff51afd7ed558ccdL) & 0x00FFFFFFFFFFFFFFL;
-  z = ((z ^ (z >> 33)) * 0xc4ceb9fe1a85ec53L) & 0x00FFFFFFFFFFFFFFL;
-  return z ^ (z >> 33);
+uint64_t sprng64_mix56(uint64_t z)
+{
+        z = ((z ^ (z >> 33)) * 0xff51afd7ed558ccdL) & 0x00FFFFFFFFFFFFFFL;
+        z = ((z ^ (z >> 33)) * 0xc4ceb9fe1a85ec53L) & 0x00FFFFFFFFFFFFFFL;
+        return z ^ (z >> 33);
 }

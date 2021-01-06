@@ -59,36 +59,37 @@
 // private prototype.
 // -----------------------------------------------------------------------------
 
-#define _VEC_FREE_IMPL(vec)             \
-  do {                                  \
-    if (vec) free(&((size_t*)vec)[-2]); \
-  } while (0)
+#define _VEC_FREE_IMPL(vec)                         \
+        do {                                        \
+                if (vec) free(&((size_t*)vec)[-2]); \
+        } while (0)
 
 #define _VEC_SET_SIZE_IMPL(vec, new_s) \
-  ((vec) ? (((size_t*)vec)[-2] = (new_s), OK) : ENOTEXIST)
+        ((vec) ? (((size_t*)vec)[-2] = (new_s), OK) : ENOTEXIST)
 
 #define _VEC_RESERVE_IMPL(vec, count) \
-  _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
+        _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
 
-#define _VEC_PUSH_BACK_IMPL(vec, v)                \
-  (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
-   (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
+#define _VEC_PUSH_BACK_IMPL(vec, v)                      \
+        (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
+         (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
 
 #define VEC_INIT_BUF_SIZE 16
 
 extern error_t _vecReserve(_mut_ size_t** vec, size_t new_cap,
                            size_t unit_size);
 
-static inline error_t _vecGrow(_mut_ size_t** vec, size_t unit_size) {
-  if (!*vec) {
-    return _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);
-  }
+static inline error_t _vecGrow(_mut_ size_t** vec, size_t unit_size)
+{
+        if (!*vec) {
+                return _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);
+        }
 
-  const size_t cap  = (*vec)[-1];
-  const size_t size = (*vec)[-2];
-  assert(size <= cap);
-  if (cap != size) return OK;
-  return _vecReserve(vec, 2 * cap, unit_size);
+        const size_t cap  = (*vec)[-1];
+        const size_t size = (*vec)[-2];
+        assert(size <= cap);
+        if (cap != size) return OK;
+        return _vecReserve(vec, 2 * cap, unit_size);
 }
 
 #endif

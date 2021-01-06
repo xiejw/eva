@@ -37,6 +37,6 @@ extern error_t errFatalAndExit(const char* fmt, ...);
 
 // helper methods.
 #define errMalloc() \
-  errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
+        errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
 
 #endif

@@ -44,25 +44,25 @@ extern int tests_run;
 
 #define RUN_TEST(test) RUN_TEST_IMPL(test, #test)
 
-#define RUN_TEST_IMPL(test, name)  \
-  do {                             \
-    char *msg;                     \
-    printf("  Running: %s", name); \
-    msg = (test)();                \
-    tests_run++;                   \
-    if (msg != NULL) {             \
-      printf("...Failed.\n");      \
-      return msg;                  \
-    } else {                       \
-      printf(".\n");               \
-    }                              \
-  } while (0)
+#define RUN_TEST_IMPL(test, name)               \
+        do {                                    \
+                char *msg;                      \
+                printf("  Running: %s", name);  \
+                msg = (test)();                 \
+                tests_run++;                    \
+                if (msg != NULL) {              \
+                        printf("...Failed.\n"); \
+                        return msg;             \
+                } else {                        \
+                        printf(".\n");          \
+                }                               \
+        } while (0)
 
-#define RUN_SUITE(test)          \
-  do {                           \
-    char *msg = (test)();        \
-    if (msg != NULL) return msg; \
-  } while (0)
+#define RUN_SUITE(test)                      \
+        do {                                 \
+                char *msg = (test)();        \
+                if (msg != NULL) return msg; \
+        } while (0)
 
 // -----------------------------------------------------------------------------
 // Assertion
@@ -70,32 +70,35 @@ extern int tests_run;
 
 #define ASSERT_TRUE(msg, test) ASSERT_TRUE_IMPL(msg, test, __FILE__, __LINE__)
 
-#define ASSERT_TRUE_IMPL(msg, test, file, lineno) \
-  do {                                            \
-    if (!(test)) {                                \
-      ASSERT_PRINT_LOC(file, lineno);             \
-      return msg;                                 \
-    }                                             \
-  } while (0)
+#define ASSERT_TRUE_IMPL(msg, test, file, lineno)       \
+        do {                                            \
+                if (!(test)) {                          \
+                        ASSERT_PRINT_LOC(file, lineno); \
+                        return msg;                     \
+                }                                       \
+        } while (0)
 
-#define ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol) \
-  ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, __FILE__, __LINE__)
+#define ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol)                \
+        ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, __FILE__, \
+                                __LINE__)
 
-#define ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, file, lineno) \
-  do {                                                                       \
-    int i;                                                                   \
-    for (i = 0; i < size; i++) {                                             \
-      if (fabs(expected[i] - got[i]) >= tol) {                               \
-        ASSERT_PRINT_LOC(file, lineno);                                      \
-        printf("\n-> at element %d\n-> expected %f\n-> got %f\n", i,         \
-               expected[i], got[i]);                                         \
-        return msg;                                                          \
-      }                                                                      \
-    }                                                                        \
-  } while (0)
+#define ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, file, lineno)  \
+        do {                                                                  \
+                int i;                                                        \
+                for (i = 0; i < size; i++) {                                  \
+                        if (fabs(expected[i] - got[i]) >= tol) {              \
+                                ASSERT_PRINT_LOC(file, lineno);               \
+                                printf(                                       \
+                                    "\n-> at element %d\n-> expected %f\n-> " \
+                                    "got %f\n",                               \
+                                    i, expected[i], got[i]);                  \
+                                return msg;                                   \
+                        }                                                     \
+                }                                                             \
+        } while (0)
 
 /* Prints the location in two lines with yellow color. */
 #define ASSERT_PRINT_LOC(file, lineno) \
-  printf("\n\033[1;33m-> File: %s\n-> Line %d\033[0m\n", file, lineno)
+        printf("\n\033[1;33m-> File: %s\n-> Line %d\033[0m\n", file, lineno)
 
 #endif

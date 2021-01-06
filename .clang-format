@@ -31,7 +31,9 @@ BraceWrapping:
   AfterClass:      false
   AfterControlStatement: false
   AfterEnum:       false
-  AfterFunction:   false
+# BEGIN xiejw Changed
+  AfterFunction:   true
+# End xiejw Changed
   AfterNamespace:  false
   AfterObjCDeclaration: false
   AfterStruct:     false
@@ -44,7 +46,9 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Attach
+# BEGIN xiejw Changed
+BreakBeforeBraces: Custom
+# End xiejw Changed
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
@@ -82,7 +86,9 @@ IncludeCategories:
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IndentCaseLabels: true
 IndentPPDirectives: None
-IndentWidth:     2
+# BEGIN xiejw Changed
+IndentWidth:     8
+# END xiejw Changed
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true

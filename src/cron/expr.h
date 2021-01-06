@@ -7,11 +7,11 @@
 #include "cron/field.h"
 
 typedef struct {
-  cron_field_t minute;
-  cron_field_t hour;
-  cron_field_t day;
-  cron_field_t month;
-  cron_field_t day_of_week;
+        cron_field_t minute;
+        cron_field_t hour;
+        cron_field_t day;
+        cron_field_t month;
+        cron_field_t day_of_week;
 } cron_expr_t;
 
 extern void    cronExprInit(cron_expr_t* expr);

@@ -6,9 +6,9 @@
 // The implementation is based on "Fast Splittable Pseudorandom Number
 // Generators.
 typedef struct {
-  uint64_t seed_;
-  uint64_t gamma_;
-  uint64_t next_gamma_seed_;
+        uint64_t seed_;
+        uint64_t gamma_;
+        uint64_t next_gamma_seed_;
 } srng64_t;
 
 extern srng64_t* srng64New(uint64_t seed);
