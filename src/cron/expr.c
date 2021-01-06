@@ -79,24 +79,24 @@ mainLoop:
                      comp < cron_final_component_marker; comp++) {
                         cron_field_t* field = NULL;
                         switch (comp) {
-                                case cron_minute:
-                                        field = &expr->minute;
-                                        break;
-                                case cron_hour:
-                                        field = &expr->hour;
-                                        break;
-                                case cron_day:
-                                        field = &expr->day;
-                                        break;
-                                case cron_day_of_week:
-                                        field = &expr->day_of_week;
-                                        break;
-                                case cron_month:
-                                        field = &expr->month;
-                                        break;
-                                default:
-                                        errFatalAndExit(
-                                            "unexpected component: %d", comp);
+                        case cron_minute:
+                                field = &expr->minute;
+                                break;
+                        case cron_hour:
+                                field = &expr->hour;
+                                break;
+                        case cron_day:
+                                field = &expr->day;
+                                break;
+                        case cron_day_of_week:
+                                field = &expr->day_of_week;
+                                break;
+                        case cron_month:
+                                field = &expr->month;
+                                break;
+                        default:
+                                errFatalAndExit("unexpected component: %d",
+                                                comp);
                         }
 
                         int changed;
@@ -125,22 +125,22 @@ mainLoop:
 void rewind(tm_t* candidate, cron_comp_t up_to)
 {
         switch (up_to) {
-                case cron_month:
-                        candidate->tm_mday = 1;
-                        // fallthrough
-                case cron_day_of_week:
-                        // fallthrough
-                case cron_day:
-                        candidate->tm_hour = 0;
-                        // fallthrough
-                case cron_hour:
-                        candidate->tm_min = 0;
-                        break;
-                case cron_minute:
-                        // no-op
-                        break;
-                default:
-                        errFatalAndExit("unexpected component: %d", up_to);
+        case cron_month:
+                candidate->tm_mday = 1;
+                // fallthrough
+        case cron_day_of_week:
+                // fallthrough
+        case cron_day:
+                candidate->tm_hour = 0;
+                // fallthrough
+        case cron_hour:
+                candidate->tm_min = 0;
+                break;
+        case cron_minute:
+                // no-op
+                break;
+        default:
+                errFatalAndExit("unexpected component: %d", up_to);
         }
 }
 
@@ -154,20 +154,20 @@ error_t validate(tm_t* candidate, tm_t* start_time)
 int value(tm_t* time_tm, cron_comp_t comp)
 {
         switch (comp) {
-                case cron_minute:
-                        return time_tm->tm_min;
-                case cron_hour:
-                        return time_tm->tm_hour;
-                case cron_day:
-                        return time_tm->tm_mday;
-                case cron_day_of_week:
-                        return time_tm->tm_wday;
-                case cron_month:
-                        // Month starts with 0 in `tm_t`.
-                        return time_tm->tm_mon + 1;
-                default:
-                        errFatalAndExit("unexpected component: %d", comp);
-                        return 0;
+        case cron_minute:
+                return time_tm->tm_min;
+        case cron_hour:
+                return time_tm->tm_hour;
+        case cron_day:
+                return time_tm->tm_mday;
+        case cron_day_of_week:
+                return time_tm->tm_wday;
+        case cron_month:
+                // Month starts with 0 in `tm_t`.
+                return time_tm->tm_mon + 1;
+        default:
+                errFatalAndExit("unexpected component: %d", comp);
+                return 0;
         }
 }
 
@@ -179,23 +179,23 @@ int value(tm_t* time_tm, cron_comp_t comp)
 void increase(tm_t* time_tm, cron_comp_t comp)
 {
         switch (comp) {
-                case cron_minute:
-                        time_tm->tm_min += 1;
-                        break;
-                case cron_hour:
-                        time_tm->tm_hour += 1;
-                        break;
-                case cron_day:
-                        time_tm->tm_mday += 1;
-                        break;
-                case cron_day_of_week:
-                        time_tm->tm_mday += 1;
-                        break;
-                case cron_month:
-                        time_tm->tm_mon += 1;
-                        break;
-                default:
-                        errFatalAndExit("unexpected component: %d", comp);
+        case cron_minute:
+                time_tm->tm_min += 1;
+                break;
+        case cron_hour:
+                time_tm->tm_hour += 1;
+                break;
+        case cron_day:
+                time_tm->tm_mday += 1;
+                break;
+        case cron_day_of_week:
+                time_tm->tm_mday += 1;
+                break;
+        case cron_month:
+                time_tm->tm_mon += 1;
+                break;
+        default:
+                errFatalAndExit("unexpected component: %d", comp);
         }
         mktime(time_tm);
 }

@@ -84,7 +84,9 @@ IncludeCategories:
   - Regex:           '.*'
     Priority:        3
 IncludeIsMainRegex: '([-_](test|unittest))?$'
-IndentCaseLabels: true
+# BEGIN xiejw Changed
+IndentCaseLabels: false
+# END xiejw Changed
 IndentPPDirectives: None
 # BEGIN xiejw Changed
 IndentWidth:     8
