@@ -88,6 +88,12 @@ sudoku: compile ${BUILD}/sudoku
 ${BUILD}/sudoku: cmd/sudoku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
 	${EVA_LD} -o $@ $^
 
+test: compile ${BUILD}/test
+	${EVA_EX} ${BUILD}/test
+
+${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
+	${EVA_LD} -o $@ $^
+
 # ------------------------------------------------------------------------------
 # docker.
 # ------------------------------------------------------------------------------
@@ -106,4 +112,5 @@ endif
 
 push_docker:
 	docker push xiejw/cron
+
 

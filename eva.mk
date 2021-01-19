@@ -19,9 +19,12 @@ CLANG_EXTS    = -iname *.h -o -iname *.c
 CLANG_FMT     = clang-format -i --style=file
 FMT           = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
 
-# enable POSIX
+MK            = make
+
+# enable POSIX and LLD
 ifeq ($(UNAME), Linux)
-        CFLAGS += -D_POSIX_C_SOURCE=201410L
+        CFLAGS  += -D_POSIX_C_SOURCE=201410L
+	LDFLAGS += -fuse-ld=lld
 endif
 
 # enable asan by `make ASAN=1`
@@ -36,6 +39,10 @@ ifdef RELEASE
   BUILD  := ${BUILD}_release
 
 compile: check_release_folder
+endif
+
+ifeq ($(UNAME), FreeBSD)
+        MK = gmake
 endif
 
 # ------------------------------------------------------------------------------
@@ -85,14 +92,3 @@ ifneq (${BUILD}, ${BUILD_RELEASE})
 	@echo "release mode cannot mix with other modes, e.g., asan."
 	@exit 1
 endif
-
-# ------------------------------------------------------------------------------
-# common cmds.
-# ------------------------------------------------------------------------------
-
-test: compile ${BUILD}/test
-	${EVA_EX} ${BUILD}/test
-
-${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
-	${EVA_LD} -o $@ $^
-
