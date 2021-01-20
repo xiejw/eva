@@ -6,20 +6,20 @@
 # CMD           =  <user_provide>
 # FMT_FOLDERS   =  <user_provide>
 
-BUILD_BASE    = .build
-BUILD         = ${BUILD_BASE}
-BUILD_RELEASE = ${BUILD_BASE}_release
-UNAME         = $(shell uname)
+BUILD_BASE      = .build
+BUILD           = ${BUILD_BASE}
+BUILD_RELEASE   = ${BUILD_BASE}_release
+UNAME           = $(shell uname)
 
-CFLAGS        += -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions
-CFLAGS        += -I${SRC}
-LDFLAGS       += -lm
+CFLAGS          += -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions
+CFLAGS          += -I${SRC}
+LDFLAGS         += -lm
 
-CLANG_EXTS    = -iname *.h -o -iname *.c
-CLANG_FMT     = clang-format -i --style=file
-FMT           = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
+CLANG_EXTS      = -iname *.h -o -iname *.c
+CLANG_FMT       = clang-format -i --style=file
+FMT             = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
 
-MK            = make
+MK              = make
 
 # enable POSIX and LLD
 ifeq ($(UNAME), Linux)
@@ -29,36 +29,36 @@ endif
 
 # enable asan by `make ASAN=1`
 ifdef ASAN
-	CFLAGS += -g -fsanitize=address -D_ASAN=1
-	BUILD  := ${BUILD}_asan
+	CFLAGS  += -g -fsanitize=address -D_ASAN=1
+	BUILD   := ${BUILD}_asan
 endif
 
 # enable release by `make RELEASE=1`
 ifdef RELEASE
-  CFLAGS += -DNDEBUG -O2
-  BUILD  := ${BUILD}_release
+        CFLAGS  += -DNDEBUG -O2
+        BUILD   := ${BUILD}_release
 
 compile: check_release_folder
 endif
 
 ifeq ($(UNAME), FreeBSD)
-        MK = gmake
+        MK      = gmake
 endif
 
 # ------------------------------------------------------------------------------
 # color printing.
 # ------------------------------------------------------------------------------
-EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
-EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
-EVA_AR    = ${QUIET_AR}ar -cr
-EVA_EX    = ${QUIET_EX}
-EVA_FM    = ${QUIET_FM}${FMT}
+EVA_CC          = ${QUIET_CC}${CC} ${CFLAGS}
+EVA_LD          = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
+EVA_AR          = ${QUIET_AR}ar -cr
+EVA_EX          = ${QUIET_EX}
+EVA_FM          = ${QUIET_FM}${FMT}
 
-CCCOLOR   = "\033[34m"
-LINKCOLOR = "\033[34;1m"
-SRCCOLOR  = "\033[33m"
-BINCOLOR  = "\033[36;1m"
-ENDCOLOR  = "\033[0m"
+CCCOLOR         = "\033[34m"
+LINKCOLOR       = "\033[34;1m"
+SRCCOLOR        = "\033[33m"
+BINCOLOR        = "\033[36;1m"
+ENDCOLOR        = "\033[0m"
 
 # enable verbose cmd by `make V=1`
 ifndef V
@@ -71,7 +71,7 @@ QUIET_AR  = @printf '    %b %b\n' $(LINKCOLOR)AR$(ENDCOLOR) \
 QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
 				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
 QUIET_FM  = @printf '    %b %b\n' $(LINKCOLOR)FM$(ENDCOLOR) \
-					$(BINCOLOR)"$(FMT_FOLDERS)"$(ENDCOLOR) 1>&2;
+	                          $(BINCOLOR)"$(FMT_FOLDERS)"$(ENDCOLOR) 1>&2;
 endif
 
 # ------------------------------------------------------------------------------
