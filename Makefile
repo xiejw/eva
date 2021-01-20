@@ -3,18 +3,18 @@ include eva.mk
 # ------------------------------------------------------------------------------
 # configurations, required by eva.mk
 # ------------------------------------------------------------------------------
-SRC           = src
-CMD           = cmd
-FMT_FOLDERS   = ${SRC} ${CMD}
+SRC             = src
+CMD             = cmd
+FMT_FOLDERS     = ${SRC} ${CMD}
 
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-ADT_LIB        = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
-ALGORITHMS_LIB = ${BUILD}/algorithms_dancing_links.o
-BASE_LIB       = ${BUILD}/base_error.o
-CRON_LIB       = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
-RNG_LIB        = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
+ADT_LIB         = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
+ALGORITHMS_LIB  = ${BUILD}/algorithms_dancing_links.o
+BASE_LIB        = ${BUILD}/base_error.o
+CRON_LIB        = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
+RNG_LIB         = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
 
 ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB}
 
@@ -22,13 +22,13 @@ ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB}
 # tests.
 # ------------------------------------------------------------------------------
 ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
-							    ${BUILD}/adt_map_test.o
+		  ${BUILD}/adt_map_test.o
 ADT_TEST_DEP    = ${ADT_LIB} ${BASE_LIB}
 ADT_TEST        = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 
-ALGORITHMS_TEST_SUITE = ${BUILD}/algorithms_dancing_links_test.o
-ALGORITHMS_TEST_DEP   = ${ALGORITHMS_LIB} ${BASE_LIB} ${ADT_LIB}
-ALGORITHMS_TEST       = ${ALGORITHMS_TEST_SUITE} ${ALGORITHMS_TEST_DEP}
+ALGORITHMS_TEST_SUITE   = ${BUILD}/algorithms_dancing_links_test.o
+ALGORITHMS_TEST_DEP     = ${ALGORITHMS_LIB} ${BASE_LIB} ${ADT_LIB}
+ALGORITHMS_TEST         = ${ALGORITHMS_TEST_SUITE} ${ALGORITHMS_TEST_DEP}
 
 CRON_TEST_SUITE = ${BUILD}/cron_cron_test.o
 CRON_TEST_DEP   = ${CRON_LIB}
@@ -39,12 +39,12 @@ RNG_TEST_DEP    = ${RNG_LIB}
 RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 
 ALL_TESTS       = ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
-	                ${ALGORITHMS_TEST}
+		  ${ALGORITHMS_TEST}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
 
-.DEFAULT_GOAL = compile
+.DEFAULT_GOAL   = compile
 
 compile: ${BUILD} ${ALL_LIBS}
 
@@ -112,5 +112,3 @@ endif
 
 push_docker:
 	docker push xiejw/cron
-
-
