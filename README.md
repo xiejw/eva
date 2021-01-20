@@ -9,9 +9,10 @@ compiler: clang (+ lld on Linux)
 ## Compile
 
 ```
-make             # debug mode.
-make RELEASE=1   # release mode.
-make ASAN=1 test # asan test mode.
+make                    # debug mode.
+make RELEASE=1          # release mode.
+make test               # test
+make ASAN=1 test        # asan test mode.
 ```
 
 # Binaries
