@@ -22,6 +22,5 @@ vec
 map
         Similarly, map is also a (very) simple strong-type container.
 
-                It auto grows and supports iterations.
-
-                Ownership is on user's side.
+                It auto grows and supports iterations. rvalue is safe and the
+                type follows C converstion rule. Ownership is on user's side.
