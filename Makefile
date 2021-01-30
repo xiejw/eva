@@ -105,7 +105,7 @@ ifeq ($(UNAME), Linux)
 	make RELEASE=1 -C . clean compile ${BUILD_RELEASE}/cron && \
 	mkdir -p ${DOCKER} && \
 		cp ${BUILD_RELEASE}/cron ${DOCKER} && \
- 		docker build -t xiejw/cron -f dockerfiles/Dockerfile.cron ${DOCKER}
+ 		docker build -t xiejw/cron -f data/Dockerfile.cron ${DOCKER}
 else
 	@echo "building docker is supported on linux only."
 endif
