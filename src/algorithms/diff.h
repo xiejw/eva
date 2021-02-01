@@ -11,6 +11,7 @@ struct diff_item_t {
         size_t lhs_size;
         size_t rhs_size;
         int (*is_eql)(void* lhs, void* rhs, size_t i, size_t j);
+        size_t d;  // result
 };
 
 extern error_t diffItems(struct diff_item_t*);

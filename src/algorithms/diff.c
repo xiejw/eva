@@ -1,6 +1,8 @@
 #include "diff.h"
 
+#include <stddef.h>  // ptrdiff_t
 #include <stdio.h>
+#include <string.h>
 
 #include "adt/vec.h"
 
@@ -9,24 +11,26 @@ typedef int (*eql_fn_t)(void* lhs, void* rhs, size_t i, size_t j);
 // github.com/golang/tools/blob/master/internal/lsp/diff/myers/diff.go
 error_t diffItems(struct diff_item_t* info)
 {
-        error_t err    = OK;
-        size_t  m      = info->lhs_size;
-        size_t  n      = info->rhs_size;
-        size_t  offset = m + n;
-        void*   lhs    = info->lhs;
-        void*   rhs    = info->rhs;
+        error_t   err    = OK;
+        size_t    m      = info->lhs_size;
+        size_t    n      = info->rhs_size;
+        ptrdiff_t offset = m + n;
+        void*     lhs    = info->lhs;
+        void*     rhs    = info->rhs;
 
         vec_t(size_t) v = vecNew();
-        vecReserve(v, 2 * (m + n) + 1);
+        size_t buf_size = 2 * (m + n) + 1;
+        vecReserve(v, buf_size);
+        memset(v, 0, buf_size * sizeof(size_t));
 
         eql_fn_t eql_fn = info->is_eql;
 
         // Iterate through the maximum possible length of the SES (N+M).
-        for (size_t d = 0; d <= m + n; d++) {
+        for (ptrdiff_t d = 0; d <= m + n; d++) {
                 // k lines are represented by the equation y = x - k. We move
                 // in increments of 2 because end points for even d are on even
                 // k lines.
-                for (size_t k = -d; k <= d; k += 2) {
+                for (ptrdiff_t k = -d; k <= d; k += 2) {
                         // At each point, we either go down or to the right. We
                         // go down if k == -d, and we go to the right if k ==
                         // d. We also prioritize the maximum x value, because
@@ -54,7 +58,7 @@ error_t diffItems(struct diff_item_t* info)
                                 // Makes sure to save the state of the array
                                 // before returning. copy(copyV, V) trace[d] =
                                 // copyV
-                                printf("done: %zu\n", offset);
+                                info->d = d;
                                 goto exit;
                         }
                 }
