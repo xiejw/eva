@@ -11,7 +11,8 @@ FMT_FOLDERS     = ${SRC} ${CMD}
 # libs.
 # ------------------------------------------------------------------------------
 ADT_LIB         = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
-ALGORITHMS_LIB  = ${BUILD}/algorithms_dancing_links.o
+ALGORITHMS_LIB  = ${BUILD}/algorithms_dancing_links.o \
+		  ${BUILD}/algorithms_diff.o
 BASE_LIB        = ${BUILD}/base_error.o
 CRON_LIB        = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 RNG_LIB         = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
