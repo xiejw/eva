@@ -59,6 +59,7 @@ error_t diffItems(struct diff_item_t* info)
                         }
                 }
         }
+        err = errNew("should not be reached.");
 
 exit:
         vecFree(v);

@@ -42,6 +42,7 @@ int main()
         ADD_SUITE(rng_srng64_normal);  // rng/srng64_normal_test.c
         ADD_SUITE(
             algorithrms_dancing_links);  // algorithrms/dancing_links_test.c
+        ADD_SUITE(algorithrms_diff);     // algorithrms/diff.c
 
         // ---------------------------------------------------------------------------
         // Runs all suites and reports.

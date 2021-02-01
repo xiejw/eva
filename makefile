@@ -27,7 +27,8 @@ ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
 ADT_TEST_DEP    = ${ADT_LIB} ${BASE_LIB}
 ADT_TEST        = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
 
-ALGORITHMS_TEST_SUITE   = ${BUILD}/algorithms_dancing_links_test.o
+ALGORITHMS_TEST_SUITE   = ${BUILD}/algorithms_dancing_links_test.o \
+                          ${BUILD}/algorithms_diff_test.o
 ALGORITHMS_TEST_DEP     = ${ALGORITHMS_LIB} ${BASE_LIB} ${ADT_LIB}
 ALGORITHMS_TEST         = ${ALGORITHMS_TEST_SUITE} ${ALGORITHMS_TEST_DEP}
 
