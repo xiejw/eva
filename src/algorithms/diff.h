@@ -3,6 +3,7 @@
 
 #include <stdlib.h>  // size_t
 
+#include "adt/vec.h"
 #include "base/error.h"
 
 struct diff_item_t {
@@ -15,8 +16,10 @@ struct diff_item_t {
 
         // filled with results.
         size_t d;
+        vec_t(vec_t(size_t)) trace;
 };
 
 extern error_t diffItems(struct diff_item_t*);
+extern void    diffFree(struct diff_item_t*);
 
 #endif

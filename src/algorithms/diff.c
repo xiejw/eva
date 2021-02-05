@@ -18,10 +18,27 @@ error_t diffItems(struct diff_item_t* info)
         void*     lhs    = info->lhs;
         void*     rhs    = info->rhs;
 
+        // macro to alloc a v with enough zeros.
+#define prepareV(v)                                        \
+        do {                                               \
+                size_t buf_size = 2 * (m + n) + 1;         \
+                vecReserve((v), buf_size);                 \
+                memset((v), 0, buf_size * sizeof(size_t)); \
+        } while (0)
+
+        // prepare the v.
         vec_t(size_t) v = vecNew();
-        size_t buf_size = 2 * (m + n) + 1;
-        vecReserve(v, buf_size);
-        memset(v, 0, buf_size * sizeof(size_t));
+        prepareV(v);
+
+        // prepare the trace
+        vec_t(vec_t(size_t)) trace = vecNew();
+        vecReserve(trace, n + m + 1);
+        for (size_t i = 0; i < n + m + 1; i++) {
+                trace[i] = vecNew();
+                prepareV(trace[i]);
+        }
+        vecSetSize(trace, n + m + 1);
+        info->trace = trace;
 
         eql_fn_t eql_fn = info->is_eql;
 
@@ -68,4 +85,17 @@ error_t diffItems(struct diff_item_t* info)
 exit:
         vecFree(v);
         return err;
+}
+
+void diffFree(struct diff_item_t* info)
+{
+        if (info->trace == NULL) {
+                return;
+        }
+
+        size_t len = vecSize(info->trace);
+        for (size_t i = 0; i < len; i++) {
+                vecFree(info->trace[i]);
+        }
+        vecFree(info->trace);
 }
