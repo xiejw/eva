@@ -18,6 +18,7 @@ static char* test_diff_eq()
 
         ASSERT_TRUE("expect ok", OK == diffItems(&item));
         ASSERT_TRUE("d is 0", 0 == item.d);
+        diffFree(&item);
         return NULL;
 }
 
@@ -32,6 +33,7 @@ static char* test_diff_lhs_1()
 
         ASSERT_TRUE("expect ok", OK == diffItems(&item));
         ASSERT_TRUE("d is 1", 1 == item.d);
+        diffFree(&item);
         return NULL;
 }
 
@@ -60,6 +62,7 @@ static char* test_diff_complicated()
 
         ASSERT_TRUE("expect ok", OK == diffItems(&item));
         ASSERT_TRUE("d is 1", 7 == item.d);
+        diffFree(&item);
         return NULL;
 }
 
