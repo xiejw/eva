@@ -55,7 +55,7 @@ static char* test_diff_complicated()
 {
         struct diff_item_t item;
         item.lhs      = (int[]){2, 10, 3, 23, 3};
-        item.rhs      = (int[]){-290, -49, 2, 3, -1, 3, -23 - 1};
+        item.rhs      = (int[]){-290, -49, 2, 3, -1, 3, -23, -1};
         item.lhs_size = 5;
         item.rhs_size = 8;
         item.is_eql   = is_eql;
