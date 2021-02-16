@@ -33,10 +33,13 @@ extern void    errFree();
 extern error_t errNum();
 extern void    errDump(char*);
 
-extern error_t errFatalAndExit(const char* fmt, ...);
+#define errFatalAndExit(fmt, ...) \
+        errFatalAndExit_(__FILE__, __LINE__, fmt, __VA_ARGS__)
 
 // helper methods.
 #define errMalloc() \
         errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
+
+extern error_t errFatalAndExit_(char* file, int line_no, const char* fmt, ...);
 
 #endif
