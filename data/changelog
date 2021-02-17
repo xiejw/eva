@@ -4,6 +4,8 @@ redis module/neural eng.
 redis raft
 skiplist
 bloom filter
+range search
+persistence
 
 2021-01-18 added eva.mk for reusing purpose (mlvm).
 2020-12-23 added compact color makefile printing.
