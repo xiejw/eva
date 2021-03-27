@@ -2,8 +2,6 @@
 # configurations.
 # ------------------------------------------------------------------------------
 
-# SRC           =  <user_provide>
-# CMD           =  <user_provide>
 # FMT_FOLDERS   =  <user_provide>
 
 BUILD_BASE      = .build
@@ -12,7 +10,6 @@ BUILD_RELEASE   = ${BUILD_BASE}_release
 UNAME           = $(shell uname)
 
 CFLAGS          += -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions
-CFLAGS          += -I${SRC}
 LDFLAGS         += -lm
 
 CLANG_EXTS      = -iname *.h -o -iname *.c
