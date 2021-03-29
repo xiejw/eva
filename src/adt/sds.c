@@ -132,6 +132,27 @@ void sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
         char    staticbuf[1024], *buf = staticbuf;
         size_t  buflen = strlen(fmt) * 2;
 
+        assert(buflen >= 2);
+        // fast path first. Use the remaining area if possible for speed.
+        {
+                size_t avail = sdsAvail(*s);
+                if (buflen <= avail) {
+                        size_t cur_len = sdsLen(*s);
+
+                        buf             = (*s) + cur_len;
+                        buf[buflen - 2] = '\0';
+                        va_copy(cpy, ap);
+                        vsnprintf(buf, buflen, fmt, cpy);
+                        va_end(cpy);
+                        if (buf[buflen - 2] == '\0') {
+                                size_t inc_len = strlen(buf);
+                                sdsSetLen(*s, cur_len + inc_len);
+                                return;
+                        }
+                        // fall through
+                }
+        }
+
         /* We try to start using a static buffer for speed.
          * If not possible we revert to heap allocation. */
         if (buflen > sizeof(staticbuf)) {

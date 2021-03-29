@@ -106,11 +106,27 @@ static char* test_cat_sds()
 static char* test_cat_printf()
 {
         sds_t s = sdsNew("hello");
-        sdsCatPrintf(&s, " %s %d", "mlvm", 123);
+        sdsReserve(&s, 14);
+        size_t cap = sdsCap(s);
+        sdsCatPrintf(&s, " %d", 123);
 
-        ASSERT_TRUE("len", sdsLen(s) == 14);
-        ASSERT_TRUE("cap", sdsCap(s) >= 14);
-        ASSERT_TRUE("str", strcmp(s, "hello mlvm 123") == 0);
+        ASSERT_TRUE("len", sdsLen(s) == 9);
+        ASSERT_TRUE("cap", sdsCap(s) >= cap);
+        ASSERT_TRUE("str", strcmp(s, "hello 123") == 0);
+        sdsFree(s);
+        return NULL;
+}
+
+static char* test_cat_printf_long()
+{
+        sds_t s = sdsNew("hello");
+        ASSERT_TRUE("cap", sdsCap(s) <= 20);
+        sdsCatPrintf(&s, " super super super super long %s %d", "mlvm", 123);
+
+        ASSERT_TRUE("cap", sdsCap(s) > 20);
+        ASSERT_TRUE(
+            "str",
+            strcmp(s, "hello super super super super long mlvm 123") == 0);
         sdsFree(s);
         return NULL;
 }
@@ -189,6 +205,7 @@ char* run_adt_sds_suite()
         RUN_TEST(test_cat);
         RUN_TEST(test_cat_sds);
         RUN_TEST(test_cat_printf);
+        RUN_TEST(test_cat_printf_long);
         RUN_TEST(test_reserve);
         RUN_TEST(test_cpy);
         RUN_TEST(test_cpy_len);
