@@ -139,7 +139,7 @@ void sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
                 if (buflen <= avail) {
                         size_t cur_len = sdsLen(*s);
 
-                        buf             = (*s) + cur_len;
+                        char* buf       = (*s) + cur_len;
                         buf[buflen - 2] = '\0';
                         va_copy(cpy, ap);
                         vsnprintf(buf, buflen, fmt, cpy);
