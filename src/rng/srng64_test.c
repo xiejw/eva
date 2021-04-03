@@ -4,7 +4,7 @@
 
 static char* test_uint64()
 {
-        srng64_t* rng = srng64New(456L);
+        struct srng64_t* rng = srng64New(456L);
         ASSERT_TRUE("rng_uint64", 1843008821991917904 == srng64NextUint64(rng));
         srng64Free(rng);
         return NULL;

@@ -6,7 +6,7 @@
 
 static char* test_normal()
 {
-        srng64_t* rng = srng64New(456L);
+        struct srng64_t* rng = srng64New(456L);
 
         double expected[] = {1.348183, -1.670144, 1.431032, 0.632074};
         double got[SIZE];

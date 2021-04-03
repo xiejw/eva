@@ -5,6 +5,6 @@
 
 #include "rng/srng64.h"
 
-extern void srng64StdNormal(srng64_t* rng, size_t size, double* buffer);
+extern void srng64StdNormal(struct srng64_t* rng, size_t size, double* buffer);
 
 #endif
