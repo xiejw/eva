@@ -31,7 +31,7 @@ extern error_t errEmitNote(const char* fmt, ...);
 extern void    errFree();
 
 extern error_t errNum();
-extern void    errDump(char*);
+extern void    errDump(const char*, ...);
 
 #define errFatalAndExit(fmt, ...) \
         errFatalAndExit_(__FILE__, __LINE__, fmt, __VA_ARGS__)

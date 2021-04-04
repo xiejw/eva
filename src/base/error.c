@@ -83,10 +83,13 @@ void errFree()
 }
 
 // prints to stderr for all messages with leading title `msg`.
-void errDump(char* title)
+void errDump(const char* fmt, ...)
 {
         assert(err_msg_header != NULL);
-        fprintf(stderr, "%s:\n", title);
+        va_list args;
+        va_start(args, fmt);
+        vfprintf(stderr, fmt, args);
+        va_end(args);
         err_msg_list_t* p = err_msg_header->prev;
         while (p != err_msg_header) {
                 fprintf(stderr, "  > %s\n", p->msg);
