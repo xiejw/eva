@@ -61,15 +61,15 @@ static int run_all_suites()
 #define ADD_SUITE(suite_name) \
         ADD_SUITE_NAME_AND_FN(#suite_name, run_##suite_name##_suite)
 
-#define ADD_SUITE_NAME_AND_FN(suite_name, func)                                  \
-        char* func();                                                            \
-        if (test_suite_cap <= test_suite_count) {                                \
-                test_suite_cap = test_suite_cap ? 2 * test_suite_cap             \
-                                                : TEST_SUITES_INIT_SIZE;         \
-                test_suites    = realloc(test_suites,                            \
+#define ADD_SUITE_NAME_AND_FN(suite_name, func)                               \
+        char* func();                                                         \
+        if (test_suite_cap <= test_suite_count) {                             \
+                test_suite_cap = test_suite_cap ? 2 * test_suite_cap          \
+                                                : TEST_SUITES_INIT_SIZE;      \
+                test_suites = realloc(test_suites,                            \
                                       test_suite_cap * sizeof(test_suite_t)); \
-        }                                                                        \
-        test_suites[test_suite_count].name = suite_name;                         \
+        }                                                                     \
+        test_suites[test_suite_count].name = suite_name;                      \
         test_suites[test_suite_count++].fn = func;
 
 #endif
