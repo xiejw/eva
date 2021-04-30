@@ -18,7 +18,8 @@ static const float two_pi_f_     = 2.0 * 3.141592653589793238;
  * For each pair of [0, 1) uniform rn, a pair of independent, standard,
  * normally distributed rn are generated.
  */
-void srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
+void
+srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
 {
         size_t  i;
         size_t  num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
@@ -49,7 +50,8 @@ void srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
         free(uniforms);
 }
 
-void srng64StdNormalF(struct srng64_t* rng64, size_t size, float* buffer)
+void
+srng64StdNormalF(struct srng64_t* rng64, size_t size, float* buffer)
 {
         size_t i;
         size_t num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */

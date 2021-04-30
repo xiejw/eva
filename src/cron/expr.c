@@ -27,7 +27,8 @@ static error_t searchNextMatching(tm_t* start_time, cron_field_t* field,
 // implementation.
 // -----------------------------------------------------------------------------
 
-void cronExprInit(cron_expr_t* expr)
+void
+cronExprInit(cron_expr_t* expr)
 {
         assert(expr != NULL);
         cronFieldSetAsAny(&expr->minute);
@@ -37,7 +38,8 @@ void cronExprInit(cron_expr_t* expr)
         cronFieldSetAsAny(&expr->day_of_week);
 }
 
-int cronExprMatch(cron_expr_t* expr, time_t time)
+int
+cronExprMatch(cron_expr_t* expr, time_t time)
 {
         tm_t time_tm;
         localtime_r(&time, &time_tm);
@@ -62,7 +64,8 @@ int cronExprMatch(cron_expr_t* expr, time_t time)
 // Step 4:   Search day until match. If day changed, reset lower components
 //           (hour and minute in this case) and jump to `mainLoop`.
 // Step 5-6: Search month and year. Same rule as step 3 and 4.
-error_t cronExprNext(cron_expr_t* expr, time_t start_time, time_t* next_time)
+error_t
+cronExprNext(cron_expr_t* expr, time_t start_time, time_t* next_time)
 {
         tm_t candidate;
         localtime_r(&start_time, &candidate);
@@ -122,7 +125,8 @@ mainLoop:
 
 // Rewinds all components in the candidate up to `up_to`. For example, if
 // `up_to` is `day`, then `hour`, `minute` are rewinded to `zero`.
-void rewind(tm_t* candidate, cron_comp_t up_to)
+void
+rewind(tm_t* candidate, cron_comp_t up_to)
 {
         switch (up_to) {
         case cron_month:
@@ -145,13 +149,15 @@ void rewind(tm_t* candidate, cron_comp_t up_to)
 }
 
 // Validates the candidate. We only search up to 5 years.
-error_t validate(tm_t* candidate, tm_t* start_time)
+error_t
+validate(tm_t* candidate, tm_t* start_time)
 {
         return candidate->tm_year - start_time->tm_year > 5;
 }
 
 // Retrieves the component from the time.
-int value(tm_t* time_tm, cron_comp_t comp)
+int
+value(tm_t* time_tm, cron_comp_t comp)
 {
         switch (comp) {
         case cron_minute:
@@ -176,7 +182,8 @@ int value(tm_t* time_tm, cron_comp_t comp)
 //
 // For example: if the minute reaches 60, minute will be reset as 0 and hour
 // will be increaesed.
-void increase(tm_t* time_tm, cron_comp_t comp)
+void
+increase(tm_t* time_tm, cron_comp_t comp)
 {
         switch (comp) {
         case cron_minute:
@@ -203,8 +210,9 @@ void increase(tm_t* time_tm, cron_comp_t comp)
 // Focusing only on the comp inside the `candidate`, searching the next
 // value, by keeping increasing it, until matching the `field` of the
 // expression.
-error_t searchNextMatching(tm_t* start_time, cron_field_t* field,
-                           cron_comp_t comp, tm_t* candidate, int* changed)
+error_t
+searchNextMatching(tm_t* start_time, cron_field_t* field, cron_comp_t comp,
+                   tm_t* candidate, int* changed)
 {
         int initial_value = value(candidate, comp);
         if (cronFieldMatch(field, initial_value)) {

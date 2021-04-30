@@ -2,12 +2,14 @@
 
 #include "diff.h"
 
-static int is_eql(void* lhs, void* rhs, size_t i, size_t j)
+static int
+is_eql(void* lhs, void* rhs, size_t i, size_t j)
 {
         return *(i + ((int*)lhs)) == *(j + ((int*)rhs));
 }
 
-static char* test_diff_eq()
+static char*
+test_diff_eq()
 {
         struct diff_item_t item;
         item.lhs      = (int[]){2, 3};
@@ -22,7 +24,8 @@ static char* test_diff_eq()
         return NULL;
 }
 
-static char* test_diff_lhs_1()
+static char*
+test_diff_lhs_1()
 {
         struct diff_item_t item;
         item.lhs      = (int[]){2, 3, 3};
@@ -37,7 +40,8 @@ static char* test_diff_lhs_1()
         return NULL;
 }
 
-static char* test_diff_rhs_1()
+static char*
+test_diff_rhs_1()
 {
         struct diff_item_t item;
         item.lhs      = (int[]){2, 3, 3};
@@ -52,7 +56,8 @@ static char* test_diff_rhs_1()
         return NULL;
 }
 
-static char* test_diff_complicated()
+static char*
+test_diff_complicated()
 {
         struct diff_item_t item;
         item.lhs      = (int[]){2, 10, 3, 23, 3};
@@ -67,7 +72,8 @@ static char* test_diff_complicated()
         return NULL;
 }
 
-char* run_algorithrms_diff_suite()
+char*
+run_algorithrms_diff_suite()
 {
         RUN_TEST(test_diff_eq);
         RUN_TEST(test_diff_lhs_1);

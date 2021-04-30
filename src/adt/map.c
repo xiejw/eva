@@ -56,13 +56,15 @@ static map_node_t **map_getref(map_base_t *m, const char *key);
 // implementation.
 // -----------------------------------------------------------------------------
 
-void *_mapGet(map_base_t *m, const char *key)
+void *
+_mapGet(map_base_t *m, const char *key)
 {
         map_node_t **next = map_getref(m, key);
         return next ? (*next)->pvalue : NULL;
 }
 
-error_t _mapSet(map_base_t *m, const char *key, void *value, int vsize)
+error_t
+_mapSet(map_base_t *m, const char *key, void *value, int vsize)
 {
         // find and replace existing node.
         map_node_t **next = map_getref(m, key);
@@ -87,7 +89,8 @@ error_t _mapSet(map_base_t *m, const char *key, void *value, int vsize)
         return OK;
 }
 
-void _mapFree(map_base_t *m)
+void
+_mapFree(map_base_t *m)
 {
         if (m == NULL) return;
 
@@ -107,7 +110,8 @@ void _mapFree(map_base_t *m)
         free(m);
 }
 
-int _mapNext(void *m, map_iter_t *iter, const char **pk, void **pv)
+int
+_mapNext(void *m, map_iter_t *iter, const char **pk, void **pv)
 {
         if (m == NULL) return 0;
 
@@ -135,14 +139,16 @@ int _mapNext(void *m, map_iter_t *iter, const char **pk, void **pv)
 // helper methods implementation.
 // -----------------------------------------------------------------------------
 
-unsigned map_hash(const char *str)
+unsigned
+map_hash(const char *str)
 {
         unsigned hash = 5381;
         while (*str) hash = ((hash << 5) + hash) ^ *str++;
         return hash;
 }
 
-map_node_t *map_newnode(const char *key, void *value, int vsize)
+map_node_t *
+map_newnode(const char *key, void *value, int vsize)
 {
         // calculate the offset of the address for `value`.
         // - `voffset` considers the padding of the `key`.
@@ -161,21 +167,24 @@ map_node_t *map_newnode(const char *key, void *value, int vsize)
 }
 
 // map `hash` to bucket idx.
-int map_bucketidx(map_base_t *m, unsigned hash)
+int
+map_bucketidx(map_base_t *m, unsigned hash)
 {
         // If the implementation is changed to allow a non-power-of-2 bucket
         // count, the line below should be changed to use mod instead of AND.
         return hash & (m->nbuckets - 1);
 }
 
-void map_addnode(map_base_t *m, map_node_t *node)
+void
+map_addnode(map_base_t *m, map_node_t *node)
 {
         int n         = map_bucketidx(m, node->hash);
         node->next    = m->buckets[n];
         m->buckets[n] = node;
 }
 
-map_node_t **map_getref(map_base_t *m, const char *key)
+map_node_t **
+map_getref(map_base_t *m, const char *key)
 {
         unsigned     hash = map_hash(key);
         map_node_t **next;
@@ -192,7 +201,8 @@ map_node_t **map_getref(map_base_t *m, const char *key)
         return NULL;
 }
 
-error_t _mapResize(map_base_t *m, int nbuckets)
+error_t
+_mapResize(map_base_t *m, int nbuckets)
 {
         map_node_t * nodes, *node, *next;
         map_node_t **buckets;

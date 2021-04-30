@@ -6,7 +6,8 @@
 
 #define ASSERT_NO_ERR(expr) ASSERT_TRUE("no error.", 0 == (expr))
 
-static char* test_minute()
+static char*
+test_minute()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
         time_t      current_time = 1553711518;
@@ -20,7 +21,8 @@ static char* test_minute()
         return NULL;
 }
 
-static char* test_hour()
+static char*
+test_hour()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
         time_t      current_time = 1553711518;
@@ -34,7 +36,8 @@ static char* test_hour()
         return NULL;
 }
 
-static char* test_hour_in_next_day()
+static char*
+test_hour_in_next_day()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
         time_t      current_time = 1553711518;
@@ -48,7 +51,8 @@ static char* test_hour_in_next_day()
         return NULL;
 }
 
-static char* test_end_to_end()
+static char*
+test_end_to_end()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
         time_t      current_time = 1553711518;
@@ -63,7 +67,8 @@ static char* test_end_to_end()
         return NULL;
 }
 
-char* run_cron_suite()
+char*
+run_cron_suite()
 {
         char* tz_value = getenv("TZ");
         setenv("TZ", "America/Los_Angeles", /*overwrite = */ 1);

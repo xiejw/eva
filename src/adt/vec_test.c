@@ -2,7 +2,8 @@
 
 #include "vec.h"
 
-static char* test_vec_init()
+static char*
+test_vec_init()
 {
         vec_t(int) v = vecNew();
         ASSERT_TRUE("size is 0", vecSize(v) == 0);
@@ -11,7 +12,8 @@ static char* test_vec_init()
         return NULL;
 }
 
-static char* test_vec_push_back()
+static char*
+test_vec_push_back()
 {
         vec_t(int) v = vecNew();
         ASSERT_TRUE("no err", OK == vecPushBack(v, 123));
@@ -22,7 +24,8 @@ static char* test_vec_push_back()
         return NULL;
 }
 
-static char* test_vec_reserve()
+static char*
+test_vec_reserve()
 {
         vec_t(int) v = vecNew();
         vecReserve(v, 100);
@@ -32,7 +35,8 @@ static char* test_vec_reserve()
         return NULL;
 }
 
-static char* test_vec_grow()
+static char*
+test_vec_grow()
 {
         vec_t(int) v = vecNew();
         ASSERT_TRUE("no err", OK == vecReserve(v, 2));
@@ -58,7 +62,8 @@ static char* test_vec_grow()
         return NULL;
 }
 
-char* run_adt_vec_suite()
+char*
+run_adt_vec_suite()
 {
         RUN_TEST(test_vec_init);
         RUN_TEST(test_vec_push_back);

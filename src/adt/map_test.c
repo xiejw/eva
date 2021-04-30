@@ -4,7 +4,8 @@
 
 #define ASSERT_NO_ERR(v) ASSERT_TRUE("no err", OK == (v))
 
-static char* test_map_new()
+static char*
+test_map_new()
 {
         map_t(int) m = mapNew();
         ASSERT_TRUE("size", 0 == mapSize(m));
@@ -13,7 +14,8 @@ static char* test_map_new()
         return NULL;
 }
 
-static char* test_map_get_set()
+static char*
+test_map_get_set()
 {
         map_t(int) m = mapNew();
         ASSERT_TRUE("size", 0 == mapSize(m));
@@ -28,7 +30,8 @@ static char* test_map_get_set()
         return NULL;
 }
 
-static char* test_map_reserve()
+static char*
+test_map_reserve()
 {
         map_t(int) m = mapNew();
         ASSERT_TRUE("size", 0 == mapSize(m));
@@ -45,7 +48,8 @@ static char* test_map_reserve()
         return NULL;
 }
 
-static char* test_map_foreach()
+static char*
+test_map_foreach()
 {
         map_t(int) m = mapNew();
         ASSERT_TRUE("size", 0 == mapSize(m));
@@ -92,7 +96,8 @@ static char* test_map_foreach()
         return NULL;
 }
 
-char* run_adt_map_suite()
+char*
+run_adt_map_suite()
 {
         RUN_TEST(test_map_new);
         RUN_TEST(test_map_get_set);

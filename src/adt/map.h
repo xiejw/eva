@@ -83,7 +83,8 @@ extern void*   _mapGet(map_base_t* m, const char* key);
 extern error_t _mapResize(map_base_t* m, int nbuckets);
 extern int     _mapNext(void*, map_iter_t*, const char**, void**);
 
-static inline error_t _mapInit(_mut_ void** m, int vsize)
+static inline error_t
+_mapInit(_mut_ void** m, int vsize)
 {
         if (*m == NULL) {
                 void* p = malloc(vsize);
@@ -94,7 +95,8 @@ static inline error_t _mapInit(_mut_ void** m, int vsize)
         return OK;
 }
 
-static inline int power_ceiling(int x)
+static inline int
+power_ceiling(int x)
 {
         if (x > 1) {
                 int power = 2;

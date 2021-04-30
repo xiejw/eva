@@ -20,7 +20,8 @@ static int         search(vec_t(dl_node_t) h, int k, vec_t(int) sols);
 // implementation.
 // -----------------------------------------------------------------------------
 
-dl_table_t* dlNew(int reserve_n)
+dl_table_t*
+dlNew(int reserve_n)
 {
         assert(reserve_n >= 1);
         dl_table_t* h = malloc(sizeof(dl_table_t));
@@ -33,14 +34,16 @@ dl_table_t* dlNew(int reserve_n)
         return h;
 }
 
-void dlFree(dl_table_t* h)
+void
+dlFree(dl_table_t* h)
 {
         if (h == NULL) return;
         vecFree(h->nodes);
         free(h);
 }
 
-void dlAllocateItems(dl_table_t* ph, int n)
+void
+dlAllocateItems(dl_table_t* ph, int n)
 {
         vec_t(dl_node_t) v = ph->nodes;
         assert(vecSize(v) == 1);
@@ -56,7 +59,8 @@ void dlAllocateItems(dl_table_t* ph, int n)
         ph->num_items = n;
 }
 
-void dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data)
+void
+dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data)
 {
         vec_t(dl_node_t) v = ph->nodes;
         int n_id           = vecSize(v);
@@ -76,9 +80,14 @@ void dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data)
         ph->num_nodes = size;
 }
 
-void dlCoverCol(dl_table_t* t, int c) { cover_col(t->nodes, c); }
+void
+dlCoverCol(dl_table_t* t, int c)
+{
+        cover_col(t->nodes, c);
+}
 
-int dlSearchSolution(dl_table_t* t, vec_t(int) sols)
+int
+dlSearchSolution(dl_table_t* t, vec_t(int) sols)
 {
         vecSetSize(sols, 0);
         return search(t->nodes, 0, sols);
@@ -88,7 +97,8 @@ int dlSearchSolution(dl_table_t* t, vec_t(int) sols)
 // helper methods implementation.
 // -----------------------------------------------------------------------------
 
-void newNode(vec_t(dl_node_t) h, int id)
+void
+newNode(vec_t(dl_node_t) h, int id)
 {
         assert(vecCap(h) >= id + 1);
         dl_node_t* p = &h[id];
@@ -101,7 +111,8 @@ void newNode(vec_t(dl_node_t) h, int id)
 }
 
 // link the `id` into table after node `end` (horizantal double link)
-void linkLR(vec_t(dl_node_t) h, int end, int id)
+void
+linkLR(vec_t(dl_node_t) h, int end, int id)
 {
         dl_node_t* p = &h[id];
         p->L         = end;
@@ -111,7 +122,8 @@ void linkLR(vec_t(dl_node_t) h, int end, int id)
 }
 
 // link the `id` into table with column head `id_c` (vertical double link)
-void linkUD(vec_t(dl_node_t) h, int id_c, int id)
+void
+linkUD(vec_t(dl_node_t) h, int id_c, int id)
 {
         dl_node_t* c = &h[id_c];
         dl_node_t* p = &h[id];
@@ -126,7 +138,8 @@ void linkUD(vec_t(dl_node_t) h, int id_c, int id)
         p->U        = id_end;
 }
 
-void print(vec_t(dl_node_t) h, int n, int num_items)
+void
+print(vec_t(dl_node_t) h, int n, int num_items)
 {
         for (int i = 0; i < n; i++) {
                 dl_node_t* p = &h[i];
@@ -139,7 +152,8 @@ void print(vec_t(dl_node_t) h, int n, int num_items)
         }
 }
 
-void cover_col(vec_t(dl_node_t) h, int c)
+void
+cover_col(vec_t(dl_node_t) h, int c)
 {
         h[h[c].R].L = h[c].L;
         h[h[c].L].R = h[c].R;
@@ -152,7 +166,8 @@ void cover_col(vec_t(dl_node_t) h, int c)
         }
 }
 
-void uncover_col(vec_t(dl_node_t) h, int c)
+void
+uncover_col(vec_t(dl_node_t) h, int c)
 {
         for (int i = h[c].U; i != c; i = h[i].U) {
                 for (int j = h[i].L; j != i; j = h[j].L) {
@@ -165,7 +180,8 @@ void uncover_col(vec_t(dl_node_t) h, int c)
         h[h[c].L].R = c;
 }
 
-int search(vec_t(dl_node_t) h, int k, vec_t(int) sols)
+int
+search(vec_t(dl_node_t) h, int k, vec_t(int) sols)
 {
         if (h[0].R == 0) {
                 vecSetSize(sols, k);

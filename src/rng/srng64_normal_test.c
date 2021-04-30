@@ -4,7 +4,8 @@
 
 #define SIZE 4
 
-static char* test_normal()
+static char*
+test_normal()
 {
         struct srng64_t* rng = srng64New(456L);
 
@@ -18,7 +19,8 @@ static char* test_normal()
         return NULL;
 }
 
-static char* test_normal_f()
+static char*
+test_normal_f()
 {
         struct srng64_t* rng = srng64New(456L);
 
@@ -32,7 +34,8 @@ static char* test_normal_f()
         return NULL;
 }
 
-char* run_rng_srng64_normal_suite()
+char*
+run_rng_srng64_normal_suite()
 {
         RUN_TEST(test_normal);
         RUN_TEST(test_normal_f);

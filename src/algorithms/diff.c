@@ -9,7 +9,8 @@
 typedef int (*eql_fn_t)(void* lhs, void* rhs, size_t i, size_t j);
 
 // github.com/golang/tools/blob/master/internal/lsp/diff/myers/diff.go
-error_t diffItems(struct diff_item_t* info)
+error_t
+diffItems(struct diff_item_t* info)
 {
         error_t   err    = OK;
         size_t    m      = info->lhs_size;
@@ -87,7 +88,8 @@ exit:
         return err;
 }
 
-void diffFree(struct diff_item_t* info)
+void
+diffFree(struct diff_item_t* info)
 {
         if (info->trace == NULL) {
                 return;

@@ -31,7 +31,8 @@ static error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap);
 // -----------------------------------------------------------------------------
 
 // emit a new note and return the errro code stored.
-error_t errEmitNote(const char* fmt, ...)
+error_t
+errEmitNote(const char* fmt, ...)
 {
         assert(err_msg_header != NULL);
         va_list ap;
@@ -41,7 +42,8 @@ error_t errEmitNote(const char* fmt, ...)
         return err_msg_header->err;
 }
 
-error_t errNewWithNote(error_t err, const char* fmt, ...)
+error_t
+errNewWithNote(error_t err, const char* fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -51,7 +53,8 @@ error_t errNewWithNote(error_t err, const char* fmt, ...)
 }
 
 // Same as errNewWithNote(ERROR, fmt, ...)
-error_t errNew(const char* fmt, ...)
+error_t
+errNew(const char* fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -61,14 +64,16 @@ error_t errNew(const char* fmt, ...)
 }
 
 // current error code.
-error_t errNum()
+error_t
+errNum()
 {
         assert(err_msg_header != NULL);
         return err_msg_header->err;
 }
 
 // clears all allocated objs for error messages. no-op if no error.
-void errFree()
+void
+errFree()
 {
         if (err_msg_header == NULL) return;
 
@@ -83,7 +88,8 @@ void errFree()
 }
 
 // prints to stderr for all messages with leading title `msg`.
-void errDump(const char* fmt, ...)
+void
+errDump(const char* fmt, ...)
 {
         assert(err_msg_header != NULL);
         va_list args;
@@ -97,7 +103,8 @@ void errDump(const char* fmt, ...)
         }
 }
 
-error_t errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
+error_t
+errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
 {
         fprintf(stderr, "fatal error: at %s line %d:\n", file, line_no);
         va_list args;
@@ -114,7 +121,8 @@ error_t errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
 // helper methods. implementation.
 // -----------------------------------------------------------------------------
 
-void errNewHeader(error_t err)
+void
+errNewHeader(error_t err)
 {
         assert(err_msg_header == NULL);
         err_msg_list_t* p = malloc(sizeof(err_msg_list_t));
@@ -124,7 +132,8 @@ void errNewHeader(error_t err)
         err_msg_header    = p;
 }
 
-void errMsgAppend(const char* fmt, va_list ap)
+void
+errMsgAppend(const char* fmt, va_list ap)
 {
         sds_t s = sdsEmptyWithCap(ERR_MSG_DEFAULT_LEN);
         sdsCatVprintf(&s, fmt, ap);
@@ -137,7 +146,8 @@ void errMsgAppend(const char* fmt, va_list ap)
         err_msg_header->prev       = p;
 }
 
-error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap)
+error_t
+errWrapNoteVprintf(error_t err, const char* fmt, va_list ap)
 {
         assert(err_msg_header == NULL);
         assert(err != OK);

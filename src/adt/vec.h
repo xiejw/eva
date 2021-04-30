@@ -79,7 +79,8 @@
 extern error_t _vecReserve(_mut_ size_t** vec, size_t new_cap,
                            size_t unit_size);
 
-static inline error_t _vecGrow(_mut_ size_t** vec, size_t unit_size)
+static inline error_t
+_vecGrow(_mut_ size_t** vec, size_t unit_size)
 {
         if (!*vec) {
                 return _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);

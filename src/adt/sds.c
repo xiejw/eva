@@ -47,7 +47,8 @@ const int SDS_DEFAULT_ALLOCATE_SPACE = 16;
 
 static inline sds_t _sdsRaw(const void* init, size_t len, size_t cap);
 
-sds_t sdsEmptyWithCap(size_t cap)
+sds_t
+sdsEmptyWithCap(size_t cap)
 {
         sds_t   s    = _sdsRaw(NULL, 0, cap);
         sdshdr* phdr = SDS_HDR(s);
@@ -56,7 +57,8 @@ sds_t sdsEmptyWithCap(size_t cap)
         return s;
 }
 
-sds_t sdsNew(const char* init)
+sds_t
+sdsNew(const char* init)
 {
         size_t initlen = (init == NULL) ? 0 : strlen(init);
         size_t cap     = initlen;
@@ -68,9 +70,14 @@ sds_t sdsNew(const char* init)
         return s;
 }
 
-sds_t sdsEmpty() { return sdsNew(""); }
+sds_t
+sdsEmpty()
+{
+        return sdsNew("");
+}
 
-sds_t sdsDup(const sds_t s)
+sds_t
+sdsDup(const sds_t s)
 {
         int   len   = sdsLen(s);
         sds_t new_s = _sdsRaw(s, len, sdsCap(s));
@@ -81,13 +88,15 @@ sds_t sdsDup(const sds_t s)
         return new_s;
 }
 
-void sdsFree(sds_t s)
+void
+sdsFree(sds_t s)
 {
         if (s == NULL) return;
         free((void*)SDS_HDR(s));
 }
 
-void sdsReserve(sds_t* s, size_t new_len)
+void
+sdsReserve(sds_t* s, size_t new_len)
 {
         size_t cap = sdsCap(*s);
         if (cap >= new_len) return;
@@ -105,7 +114,8 @@ void sdsReserve(sds_t* s, size_t new_len)
         sdsSetCap(*s, new_len);
 }
 
-void sdsCatLen(sds_t* s, const void* t, size_t len)
+void
+sdsCatLen(sds_t* s, const void* t, size_t len)
 {
         size_t curlen = sdsLen(*s);
         size_t newlen = curlen + len;
@@ -116,9 +126,18 @@ void sdsCatLen(sds_t* s, const void* t, size_t len)
         (*s)[newlen] = '\0';
 }
 
-void sdsCat(sds_t* s, const char* t) { sdsCatLen(s, t, strlen(t)); }
-void sdsCatSds(sds_t* s, const sds_t t) { sdsCatLen(s, t, sdsLen(t)); }
-void sdsCatPrintf(sds_t* s, const char* fmt, ...)
+void
+sdsCat(sds_t* s, const char* t)
+{
+        sdsCatLen(s, t, strlen(t));
+}
+void
+sdsCatSds(sds_t* s, const sds_t t)
+{
+        sdsCatLen(s, t, sdsLen(t));
+}
+void
+sdsCatPrintf(sds_t* s, const char* fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -126,7 +145,8 @@ void sdsCatPrintf(sds_t* s, const char* fmt, ...)
         va_end(ap);
 }
 
-void sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
+void
+sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
 {
         va_list cpy;
         char    staticbuf[1024], *buf = staticbuf;
@@ -191,7 +211,8 @@ void sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
         if (buf != staticbuf) free(buf);
 }
 
-void sdsCpyLen(sds_t* s, const char* t, size_t len)
+void
+sdsCpyLen(sds_t* s, const char* t, size_t len)
 {
         sdsReserve(s, len);
         if (*s == NULL) return;
@@ -200,7 +221,11 @@ void sdsCpyLen(sds_t* s, const char* t, size_t len)
         sdsSetLen(*s, len);
         return;
 }
-void sdsCpy(sds_t* s, const char* t) { sdsCpyLen(s, t, strlen(t)); }
+void
+sdsCpy(sds_t* s, const char* t)
+{
+        sdsCpyLen(s, t, strlen(t));
+}
 
 // Compare two sds strings s1 and s2 with memcmp().
 //
@@ -214,7 +239,8 @@ void sdsCpy(sds_t* s, const char* t) { sdsCpyLen(s, t, strlen(t)); }
 // additional characters, the longer string is considered to be greater than
 // the smaller one.
 //
-int sdsCmp(const sds_t s1, const sds_t s2)
+int
+sdsCmp(const sds_t s1, const sds_t s2)
 {
         size_t l1, l2, minlen;
         int    cmp;
@@ -232,7 +258,8 @@ int sdsCmp(const sds_t s1, const sds_t s2)
 // - the space is at least as large as `cap`. cap will be set.
 // - allocate `cap` size but only initialize `len` size.
 // - the final `\0` is not set.
-sds_t _sdsRaw(const void* init, size_t len, size_t cap)
+sds_t
+_sdsRaw(const void* init, size_t len, size_t cap)
 {
         cap =
             cap > SDS_DEFAULT_ALLOCATE_SPACE ? cap : SDS_DEFAULT_ALLOCATE_SPACE;

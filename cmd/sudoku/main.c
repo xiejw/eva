@@ -67,7 +67,8 @@ static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
 // -----------------------------------------------------------------------------
 // main.
 // -----------------------------------------------------------------------------
-int main()
+int
+main()
 {
         // select and print problem
         int* problem = PROLBEMS[PID];
@@ -145,7 +146,8 @@ int main()
 // -----------------------------------------------------------------------------
 
 // prints the Sudoku Problem on screen.
-void printProblem(int* problem)
+void
+printProblem(int* problem)
 {
         // header
         printf("+-----+-----+-----+\n");
@@ -172,7 +174,8 @@ void printProblem(int* problem)
 #define POS(x, y) ((x)*SIZE + (y))
 
 // seach all options that on (x,y) the digit k is allowed to be put there.
-int searchOptions(int* problem, vec_t(option_t) options)
+int
+searchOptions(int* problem, vec_t(option_t) options)
 {
         int total = 0;
 
@@ -234,7 +237,8 @@ int searchOptions(int* problem, vec_t(option_t) options)
 // - c{j,k} // col with digit
 // - b{x,k} // box with digit
 //   x = 3 * floor(i/3) + floor(j/3)
-void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b)
+void
+getItemId(int i, int j, int k, int* p, int* r, int* c, int* b)
 {
         int x      = 3 * (i / 3) + (j / 3);
         int offset = 0;

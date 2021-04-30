@@ -26,7 +26,8 @@
 
 int tests_run = 0;  // declared in testing/testing.h
 
-int main()
+int
+main()
 {
         // ---------------------------------------------------------------------------
         // Adds all suites.

@@ -4,7 +4,8 @@
 
 #include "string.h"
 
-static char* test_new()
+static char*
+test_new()
 {
         sds_t s = sdsNew("hello");
         ASSERT_TRUE("len", sdsLen(s) == 5);
@@ -14,7 +15,8 @@ static char* test_new()
         return NULL;
 }
 
-static char* test_new_null()
+static char*
+test_new_null()
 {
         sds_t s = sdsNew(NULL);
         ASSERT_TRUE("len", sdsLen(s) == 0);
@@ -24,7 +26,8 @@ static char* test_new_null()
         return NULL;
 }
 
-static char* test_empty()
+static char*
+test_empty()
 {
         sds_t s = sdsEmpty();
         ASSERT_TRUE("len", sdsLen(s) == 0);
@@ -34,7 +37,8 @@ static char* test_empty()
         return NULL;
 }
 
-static char* test_empty_with_cap()
+static char*
+test_empty_with_cap()
 {
         sds_t s = sdsEmptyWithCap(10);
         ASSERT_TRUE("len", sdsLen(s) == 0);
@@ -44,7 +48,8 @@ static char* test_empty_with_cap()
         return NULL;
 }
 
-static char* test_dup()
+static char*
+test_dup()
 {
         sds_t old_s = sdsNew("hello");
         sds_t s     = sdsDup(old_s);
@@ -57,7 +62,8 @@ static char* test_dup()
         return NULL;
 }
 
-static char* test_dup_null()
+static char*
+test_dup_null()
 {
         sds_t s = sdsDup(NULL);
 
@@ -68,7 +74,8 @@ static char* test_dup_null()
         return NULL;
 }
 
-static char* test_cat_len()
+static char*
+test_cat_len()
 {
         sds_t s = sdsNew("hello");
         sdsCatLen(&s, " mlvm", 5);
@@ -79,7 +86,8 @@ static char* test_cat_len()
         return NULL;
 }
 
-static char* test_cat()
+static char*
+test_cat()
 {
         sds_t s = sdsNew("hello");
         sdsCat(&s, " mlvm");
@@ -90,7 +98,8 @@ static char* test_cat()
         return NULL;
 }
 
-static char* test_cat_sds()
+static char*
+test_cat_sds()
 {
         sds_t s = sdsNew("hello");
         sds_t t = sdsNew(" mlvm");
@@ -103,7 +112,8 @@ static char* test_cat_sds()
         return NULL;
 }
 
-static char* test_cat_printf()
+static char*
+test_cat_printf()
 {
         sds_t s = sdsNew("hello");
         sdsReserve(&s, 14);
@@ -117,7 +127,8 @@ static char* test_cat_printf()
         return NULL;
 }
 
-static char* test_cat_printf_long()
+static char*
+test_cat_printf_long()
 {
         sds_t s = sdsNew("hello");
         ASSERT_TRUE("cap", sdsCap(s) <= 20);
@@ -131,7 +142,8 @@ static char* test_cat_printf_long()
         return NULL;
 }
 
-static char* test_reserve()
+static char*
+test_reserve()
 {
         sds_t s = sdsNew("hello");
         ASSERT_TRUE("len", sdsLen(s) == 5);
@@ -155,7 +167,8 @@ static char* test_reserve()
         return NULL;
 }
 
-static char* test_cpy()
+static char*
+test_cpy()
 {
         sds_t s = sdsNew("");
         ASSERT_TRUE("len", sdsLen(s) == 0);
@@ -166,7 +179,8 @@ static char* test_cpy()
         return NULL;
 }
 
-static char* test_cpy_len()
+static char*
+test_cpy_len()
 {
         sds_t s = sdsNew("");
         ASSERT_TRUE("len", sdsLen(s) == 0);
@@ -177,7 +191,8 @@ static char* test_cpy_len()
         return NULL;
 }
 
-static char* test_cmp()
+static char*
+test_cmp()
 {
         sds_t s1 = sdsNew("hello");
         sds_t s2 = sdsNew("hello");
@@ -193,7 +208,8 @@ static char* test_cmp()
         return NULL;
 }
 
-char* run_adt_sds_suite()
+char*
+run_adt_sds_suite()
 {
         RUN_TEST(test_new);
         RUN_TEST(test_new_null);

@@ -18,7 +18,8 @@ static error_t parsePosInt(char* str, int* v);
 // -----------------------------------------------------------------------------
 
 // print the number of seconds from `now` to the next time cron expression.
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
         cron_expr_t expr;
         cronExprInit(&expr);
@@ -45,7 +46,8 @@ static struct option longopts[] = {{"hour", required_argument, NULL, 'h'},
                                    {"minute", required_argument, NULL, 'm'},
                                    {NULL, 0, NULL, 0}};
 
-error_t parseOptions(cron_expr_t* expr, int argc, char** argv)
+error_t
+parseOptions(cron_expr_t* expr, int argc, char** argv)
 {
         int ch;
         int v;
@@ -72,7 +74,8 @@ error_t parseOptions(cron_expr_t* expr, int argc, char** argv)
         return OK;
 }
 
-error_t parsePosInt(char* str, int* v)
+error_t
+parsePosInt(char* str, int* v)
 {
         if (*str == '\0') return errNew("int argument cannot be empty string");
         char* end_p;
