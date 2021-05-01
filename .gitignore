@@ -1,10 +1,9 @@
-# Vim
+# vim
 *.swp
 *.swo
 
-# outputs
+# output
 .build*
 
-# Docker context
+# docker
 .docker
-
