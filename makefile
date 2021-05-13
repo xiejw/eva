@@ -1,19 +1,19 @@
 include eva.mk
 
 # ------------------------------------------------------------------------------
-# configurations
+# Configurations
 # ------------------------------------------------------------------------------
 SRC             = src
 CMD             = cmd
 CFLAGS          += -I${SRC}
 
 # ------------------------------------------------------------------------------
-# configurations, required by eva.mk
+# Configurations, required by eva.mk
 # ------------------------------------------------------------------------------
 FMT_FOLDERS     = ${SRC} ${CMD}
 
 # ------------------------------------------------------------------------------
-# libs.
+# Libs.
 # ------------------------------------------------------------------------------
 ADT_LIB         = ${BUILD}/adt_vec.o ${BUILD}/adt_sds.o ${BUILD}/adt_map.o
 ALGORITHMS_LIB  = ${BUILD}/algorithms_dancing_links.o \
@@ -25,7 +25,7 @@ RNG_LIB         = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
 ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB}
 
 # ------------------------------------------------------------------------------
-# tests.
+# Tests.
 # ------------------------------------------------------------------------------
 ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
 		  ${BUILD}/adt_map_test.o
@@ -48,10 +48,10 @@ RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 ALL_TESTS       = ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
 		  ${ALGORITHMS_TEST}
 # ------------------------------------------------------------------------------
-# actions.
+# Actions.
 # ------------------------------------------------------------------------------
 
-.DEFAULT_GOAL   = compile
+.DEFAULT_GOAL = compile
 
 compile: ${BUILD} ${ALL_LIBS}
 
@@ -76,33 +76,21 @@ ${BUILD}/rng_%.o: ${SRC}/rng/%.c
 	${EVA_CC} -o $@ -c $<
 
 # ------------------------------------------------------------------------------
-# cmds.
+# Cmds.
 # ------------------------------------------------------------------------------
 
 # alias
 c: cron
 s: sudoku
 
-cron: compile ${BUILD}/cron
-	${EVA_EX} ${BUILD}/cron
+compile: $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
 
-${BUILD}/cron: cmd/cron/main.c ${BASE_LIB} ${ADT_LIB} ${CRON_LIB}
-	${EVA_LD} -o $@ $^
-
-sudoku: compile ${BUILD}/sudoku
-	${EVA_EX} ${BUILD}/sudoku
-
-${BUILD}/sudoku: cmd/sudoku/main.c ${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}
-	${EVA_LD} -o $@ $^
-
-test: compile ${BUILD}/test
-	${EVA_EX} ${BUILD}/test
-
-${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
-	${EVA_LD} -o $@ $^
+$(eval $(call objs,cron,$(BUILD),${BASE_LIB} ${ADT_LIB} ${CRON_LIB}))
+$(eval $(call objs,sudoku,$(BUILD),${BASE_LIB} ${ADT_LIB} ${ALGORITHMS_LIB}))
+$(eval $(call objs,test,$(BUILD),${ALL_TESTS}))
 
 # ------------------------------------------------------------------------------
-# docker.
+# Docker.
 # ------------------------------------------------------------------------------
 
 DOCKER        = .docker
