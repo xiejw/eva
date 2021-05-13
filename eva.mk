@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# configurations.
+# Configurations.
 # ------------------------------------------------------------------------------
 
 # FMT_FOLDERS   =  <user_provide>
@@ -43,7 +43,7 @@ ifeq ($(UNAME), FreeBSD)
 endif
 
 # ------------------------------------------------------------------------------
-# color printing.
+# Color printing.
 # ------------------------------------------------------------------------------
 EVA_CC          = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD          = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
@@ -72,7 +72,7 @@ QUIET_FM  = @printf '    %b %b\n' $(LINKCOLOR)FM$(ENDCOLOR) \
 endif
 
 # ------------------------------------------------------------------------------
-# common actions.
+# Common actions.
 # ------------------------------------------------------------------------------
 
 ${BUILD}:
@@ -89,3 +89,21 @@ ifneq (${BUILD}, ${BUILD_RELEASE})
 	@echo "release mode cannot mix with other modes, e.g., asan."
 	@exit 1
 endif
+
+# ------------------------------------------------------------------------------
+# Template to generate CC binary rules.
+# ------------------------------------------------------------------------------
+
+# The convention is for cmd <binary> the main file is cmd/<binary>/main.c.
+# $(2) is output dir, $(1) is binary name, and $(3) is library dep.
+define objs
+
+.PHONY: $(1)
+
+$(1): compile $(2)/$(1)
+	$$(EVA_EX) $(2)/$(1)
+
+$(2)/$(1): cmd/$(1)/main.c $(3)
+	$$(EVA_LD) -o $$@ $$^
+
+endef
