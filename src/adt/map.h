@@ -30,9 +30,9 @@
 // -----------------------------------------------------------------------------
 // Onwership.
 //
-// 1. container `vec` does not own the ownership of each elements. So caller
+// 1. container `map` does not own the ownership of each elements. So caller
 //    should free them.
-// 2. Must call vecFree to release the memory, used by vec, on heap.
+// 2. Must call mapFree to release the memory, used by map, on heap.
 //
 // -----------------------------------------------------------------------------
 // data structure.
