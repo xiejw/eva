@@ -19,7 +19,7 @@ static const float two_pi_f_     = 2.0 * 3.141592653589793238;
  * normally distributed rn are generated.
  */
 void
-srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
+rng64StdNormalD(struct rng64_t* rng64, size_t size, double* buffer)
 {
         size_t  i;
         size_t  num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
@@ -28,7 +28,7 @@ srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
         assert(size > 0);
 
         for (i = 0; i < num_seeds;) {
-                uint64_t seed = srng64NextUint64(rng64);
+                uint64_t seed = rng64NextUint64(rng64);
                 double   u    = (seed >> 11) * double_ulp_;
                 /* The first rn in each pair is used by log, so cannot be zero.
                  */
@@ -51,7 +51,7 @@ srng64StdNormalD(struct srng64_t* rng64, size_t size, double* buffer)
 }
 
 void
-srng64StdNormalF(struct srng64_t* rng64, size_t size, float* buffer)
+rng64StdNormalF(struct rng64_t* rng64, size_t size, float* buffer)
 {
         size_t i;
         size_t num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
@@ -60,7 +60,7 @@ srng64StdNormalF(struct srng64_t* rng64, size_t size, float* buffer)
         assert(size > 0);
 
         for (i = 0; i < num_seeds;) {
-                uint64_t seed = srng64NextUint64(rng64);
+                uint64_t seed = rng64NextUint64(rng64);
                 float    u    = (seed >> 11) * double_ulp_f_;
                 /* The first rn in each pair is used by log, so cannot be zero.
                  */
