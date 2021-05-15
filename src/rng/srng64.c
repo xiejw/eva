@@ -24,7 +24,7 @@
 //
 //
 // 2. To avoid a fixed-size coefficient table.
-// The coefficient to generate prng for coefficient.
+// The coefficient to generate rng for coefficient.
 //
 //
 // Generating random coefficient.
@@ -54,10 +54,11 @@
 static const uint64_t gamma_prime_ = (((uint64_t)1L) << 56) - 5; /* Percy. */
 static const uint64_t gamma_gamma_ = 0x00281E2DBA6606F3L;
 static const double   double_ulp_  = 1.0 / (((uint64_t)1L) << 53);
+static const float    float_ulp_   = 1.0 / (((uint64_t)1L) << 53);
 
 static uint64_t rng64_update(uint64_t seed, uint64_t gamma);
 static uint64_t rng64_mix64(uint64_t z);
-static uint64_t rng64_advance_seed(struct rng64_t* prng);
+static uint64_t rng64_advance_seed(struct rng64_t* rng);
 static uint64_t rng64_mix56(uint64_t z);
 
 // -----------------------------------------------------------------------------
@@ -73,43 +74,49 @@ srng64New(uint64_t seed)
 struct srng64_t*
 srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed)
 {
-        struct srng64_t* prng;
+        struct srng64_t* rng;
 
         assert(gamma_seed < gamma_prime_);
-        prng = malloc(sizeof(struct srng64_t));
+        rng = malloc(sizeof(struct srng64_t));
 
-        prng->seed_ = seed;
+        rng->seed_ = seed;
         gamma_seed += gamma_gamma_;
         if (gamma_seed >= gamma_prime_) gamma_seed -= gamma_prime_;
-        prng->gamma_           = rng64_mix56(gamma_seed) + 13;
-        prng->next_gamma_seed_ = gamma_seed;
-        return prng;
+        rng->gamma_           = rng64_mix56(gamma_seed) + 13;
+        rng->next_gamma_seed_ = gamma_seed;
+        return rng;
 }
 
 struct srng64_t*
-srng64Split(struct srng64_t* prng)
+srng64Split(struct srng64_t* rng)
 {
-        uint64_t seed       = rng64_advance_seed((struct rng64_t*)prng);
-        uint64_t gamma_seed = prng->next_gamma_seed_;
+        uint64_t seed       = rng64_advance_seed((struct rng64_t*)rng);
+        uint64_t gamma_seed = rng->next_gamma_seed_;
         return srng64NewWithGamma(seed, gamma_seed);
 }
 
 uint64_t
-rng64NextUint64(struct rng64_t* prng)
+rng64NextUint64(struct rng64_t* rng)
 {
-        return rng64_mix64(rng64_advance_seed(prng));
+        return rng64_mix64(rng64_advance_seed(rng));
 }
 
 uint32_t
-srng64NextUint32(struct rng64_t* prng)
+rng64NextUint32(struct rng64_t* rng)
 {
-        return (uint32_t)(rng64NextUint64(prng));
+        return (uint32_t)(rng64NextUint64(rng));
 }
 
 double
-srng64NextDouble(struct rng64_t* prng)
+rng64NextDouble(struct rng64_t* rng)
 {
-        return (rng64NextUint64(prng) >> 11) * double_ulp_;
+        return (rng64NextUint64(rng) >> 11) * double_ulp_;
+}
+
+float
+rng64NextFloat(struct rng64_t* rng)
+{
+        return (rng64NextUint64(rng) >> 11) * float_ulp_;
 }
 
 // -----------------------------------------------------------------------------
@@ -132,10 +139,10 @@ rng64_mix64(uint64_t z)
 }
 
 uint64_t
-rng64_advance_seed(struct rng64_t* prng)
+rng64_advance_seed(struct rng64_t* rng)
 {
         /* Advance one more coefficient at current level. */
-        return (prng->seed_ = rng64_update(prng->seed_, prng->gamma_));
+        return (rng->seed_ = rng64_update(rng->seed_, rng->gamma_));
 }
 
 uint64_t
