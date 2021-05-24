@@ -25,9 +25,17 @@ ifeq ($(UNAME), Linux)
 endif
 
 # enable asan by `make ASAN=1`
+#
+# note memory leak is enabled by default on linux but needs ASAN_OPTIONS for
+# macOS.
+#
+# https://clang.llvm.org/docs/AddressSanitizer.html
 ifdef ASAN
 	CFLAGS  += -g -fsanitize=address -D_ASAN=1
 	BUILD   := ${BUILD}_asan
+ifeq ($(UNAME), Darwin)
+	EX      = ASAN_OPTIONS=detect_leaks=1
+endif
 endif
 
 # enable release by `make RELEASE=1`
@@ -48,7 +56,7 @@ endif
 EVA_CC          = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD          = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR          = ${QUIET_AR}ar -cr
-EVA_EX          = ${QUIET_EX}
+EVA_EX          = ${QUIET_EX}${EX}
 EVA_FM          = ${QUIET_FM}${FMT}
 
 CCCOLOR         = "\033[34m"
