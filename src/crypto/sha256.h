@@ -3,14 +3,16 @@
 
 #include <stdint.h>
 
+// mlvm
 #include "adt/sds.h"
 
-#define SHA224_256_BLOCK_SIZE (512 / 8)  // 64
+#define SHA224_256_BLOCK_SIZE (512 / 8)  // 64 bytes
 
 struct sha256_t {
-        unsigned char block[SHA224_256_BLOCK_SIZE];
+        // All internal fields.
+        unsigned char block[SHA224_256_BLOCK_SIZE];  // Unprocessed bytes.
         uint64_t      len;        // Unprocessed bytes stored in block.
-        uint64_t      total_len;  // Total of bytes processed.
+        uint64_t      total_len;  // Total of bytes processed in history.
         uint32_t      h[8];
         int           finalized;
 };

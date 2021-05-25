@@ -7,7 +7,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
+// mlvm
 #include "base/error.h"
+
+// -----------------------------------------------------------------------------
+// helpers prototype
+// -----------------------------------------------------------------------------
 
 #define DIGEST_SIZE (256 / 8)
 
@@ -50,46 +55,13 @@ static const uint32_t sha256_k[64] = {
     0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-static void
-sha256Transform(struct sha256_t* s, const unsigned char* message,
-                unsigned int num_chunks)
-{
-        uint32_t             w[64];
-        uint32_t             wv[8];
-        uint32_t             t1, t2;
-        const unsigned char* sub_block;
-        int                  i;
-        int                  j;
-        for (i = 0; i < (int)num_chunks; i++) {
-                sub_block = message + (i << 6);
-                for (j = 0; j < 16; j++) {
-                        SHA2_PACK32(&sub_block[j << 2], &w[j]);
-                }
-                for (j = 16; j < 64; j++) {
-                        w[j] = SHA256_F4(w[j - 2]) + w[j - 7] +
-                               SHA256_F3(w[j - 15]) + w[j - 16];
-                }
-                for (j = 0; j < 8; j++) {
-                        wv[j] = s->h[j];
-                }
-                for (j = 0; j < 64; j++) {
-                        t1 = wv[7] + SHA256_F2(wv[4]) +
-                             SHA2_CH(wv[4], wv[5], wv[6]) + sha256_k[j] + w[j];
-                        t2 = SHA256_F1(wv[0]) + SHA2_MAJ(wv[0], wv[1], wv[2]);
-                        wv[7] = wv[6];
-                        wv[6] = wv[5];
-                        wv[5] = wv[4];
-                        wv[4] = wv[3] + t1;
-                        wv[3] = wv[2];
-                        wv[2] = wv[1];
-                        wv[1] = wv[0];
-                        wv[0] = t1 + t2;
-                }
-                for (j = 0; j < 8; j++) {
-                        s->h[j] += wv[j];
-                }
-        }
-}
+static void sha256Transform(struct sha256_t* s, const unsigned char* message,
+                            unsigned int num_chunks);
+static void sha256Finalize(struct sha256_t* s, unsigned char* digest);
+
+// -----------------------------------------------------------------------------
+// implementation
+// -----------------------------------------------------------------------------
 
 void
 sha256Reset(struct sha256_t* s)
@@ -146,68 +118,6 @@ sha256Update(struct sha256_t* s, const unsigned char* message, uint64_t len)
         s->len = current_len;
         s->total_len += (num_chunks + 1) << 6;
         return OK;
-}
-
-static void
-sha256Finalize(struct sha256_t* s, unsigned char* digest)
-{
-        // Need 2 blocks for padding.
-        unsigned char block[2 * SHA224_256_BLOCK_SIZE];
-
-        s->finalized = 1;
-
-        // Algorithrm of Pre-processing (Padding):
-        //
-        // - Begin with the original message of length L bits
-        // - Append a single '1' bit
-        // - Append K '0' bits, where K is the minimum number >= 0 such that L +
-        //   1 + K + 64 is a multiple of 512
-        // - Append L as a 64-bit big-endian integer, making the total
-        //   post-processed length a multiple of 512 bits
-
-        // Calculates the number of padding bytes.
-        //
-        // - We need to reserve 64 + 8 = 72 bits for the padding, so 9 bytes.
-        // - So, if we do not have sufficient space, we need to allocate one
-        //   more chunk.
-
-        assert(s->len <= SHA224_256_BLOCK_SIZE);
-        uint64_t num_chunks = 1 + (s->len + 9 > SHA224_256_BLOCK_SIZE);
-
-        // Number of bits after padding. chunk size is 64bits.
-        uint64_t pm_len = num_chunks << 6;
-
-        // Copy the data to the local 2-block size block as the s->block is
-        // 1-block size.
-        memcpy(block, s->block, s->len);
-
-        // Zeros the paddings. The first bit should be 1.
-        memset(block + s->len, 0, pm_len - s->len);
-        block[s->len] = 0x80;
-
-        // Converts from total number of bytes to total number of bits.
-        uint64_t total_bits = (s->total_len + s->len) << 3;
-
-        // Append total bits as a 64-bit big-endian integer.  As total_bits is
-        // 64 bit, we will unpack different parts of it separatedly.
-        {
-                // First part.
-                uint32_t first_half = (total_bits >> 32) & 0xFFFFFFFFul;
-                SHA2_UNPACK32(first_half, block + pm_len - 8);
-        }
-        {
-                // Second part.
-                uint32_t second_half = (total_bits & 0xFFFFFFFFul);
-                SHA2_UNPACK32(second_half, block + pm_len - 4);
-        }
-
-        // Process the final `num_chunks` chunks.
-        sha256Transform(s, block, num_chunks);
-
-        // Unpack the value into `digest`.
-        for (int i = 0; i < 8; i++) {
-                SHA2_UNPACK32(s->h[i], &digest[i << 2]);
-        }
 }
 
 sds_t
@@ -274,3 +184,110 @@ sha256DigestStr(const char* msg)
 // }
 //
 // }  // namespace eva::crypto
+
+// -----------------------------------------------------------------------------
+// helpers implementation
+// -----------------------------------------------------------------------------
+
+void
+sha256Transform(struct sha256_t* s, const unsigned char* message,
+                unsigned int num_chunks)
+{
+        uint32_t             w[64];
+        uint32_t             wv[8];
+        uint32_t             t1, t2;
+        const unsigned char* sub_block;
+        int                  i;
+        int                  j;
+        for (i = 0; i < (int)num_chunks; i++) {
+                sub_block = message + (i << 6);
+                for (j = 0; j < 16; j++) {
+                        SHA2_PACK32(&sub_block[j << 2], &w[j]);
+                }
+                for (j = 16; j < 64; j++) {
+                        w[j] = SHA256_F4(w[j - 2]) + w[j - 7] +
+                               SHA256_F3(w[j - 15]) + w[j - 16];
+                }
+                for (j = 0; j < 8; j++) {
+                        wv[j] = s->h[j];
+                }
+                for (j = 0; j < 64; j++) {
+                        t1 = wv[7] + SHA256_F2(wv[4]) +
+                             SHA2_CH(wv[4], wv[5], wv[6]) + sha256_k[j] + w[j];
+                        t2 = SHA256_F1(wv[0]) + SHA2_MAJ(wv[0], wv[1], wv[2]);
+                        wv[7] = wv[6];
+                        wv[6] = wv[5];
+                        wv[5] = wv[4];
+                        wv[4] = wv[3] + t1;
+                        wv[3] = wv[2];
+                        wv[2] = wv[1];
+                        wv[1] = wv[0];
+                        wv[0] = t1 + t2;
+                }
+                for (j = 0; j < 8; j++) {
+                        s->h[j] += wv[j];
+                }
+        }
+}
+
+void
+sha256Finalize(struct sha256_t* s, unsigned char* digest)
+{
+        // Need 2 blocks for padding.
+        unsigned char block[2 * SHA224_256_BLOCK_SIZE];
+
+        s->finalized = 1;
+
+        // Algorithrm of Pre-processing (Padding):
+        //
+        // - Begin with the original message of length L bits
+        // - Append a single '1' bit
+        // - Append K '0' bits, where K is the minimum number >= 0 such that L +
+        //   1 + K + 64 is a multiple of 512
+        // - Append L as a 64-bit big-endian integer, making the total
+        //   post-processed length a multiple of 512 bits
+
+        // Calculates the number of padding bytes.
+        //
+        // - We need to reserve 64 + 8 = 72 bits for the padding, so 9 bytes.
+        // - So, if we do not have sufficient space, we need to allocate one
+        //   more chunk.
+
+        assert(s->len <= SHA224_256_BLOCK_SIZE);
+        uint64_t num_chunks = 1 + (s->len + 9 > SHA224_256_BLOCK_SIZE);
+
+        // Number of bits after padding. chunk size is 64bits.
+        uint64_t pm_len = num_chunks << 6;
+
+        // Copy the data to the local 2-block size block as the s->block is
+        // 1-block size.
+        memcpy(block, s->block, s->len);
+
+        // Zeros the paddings. The first bit should be 1.
+        memset(block + s->len, 0, pm_len - s->len);
+        block[s->len] = 0x80;
+
+        // Converts from total number of bytes to total number of bits.
+        uint64_t total_bits = (s->total_len + s->len) << 3;
+
+        // Append total bits as a 64-bit big-endian integer.  As total_bits is
+        // 64 bit, we will unpack different parts of it separatedly.
+        {
+                // First part.
+                uint32_t first_half = (total_bits >> 32) & 0xFFFFFFFFul;
+                SHA2_UNPACK32(first_half, block + pm_len - 8);
+        }
+        {
+                // Second part.
+                uint32_t second_half = (total_bits & 0xFFFFFFFFul);
+                SHA2_UNPACK32(second_half, block + pm_len - 4);
+        }
+
+        // Process the final `num_chunks` chunks.
+        sha256Transform(s, block, num_chunks);
+
+        // Unpack the value into `digest`.
+        for (int i = 0; i < 8; i++) {
+                SHA2_UNPACK32(s->h[i], &digest[i << 2]);
+        }
+}
