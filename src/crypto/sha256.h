@@ -3,16 +3,14 @@
 
 #include "adt/sds.h"
 
-#define SHA224_256_BLOCK_SIZE (512 / 8)  // 32
+#define SHA224_256_BLOCK_SIZE (512 / 8)  // 64
 
 struct sha256_t {
-        uint64_t total_len;  // Total of bytes processed.
-        unsigned char
-            block[2 * SHA224_256_BLOCK_SIZE];  // Stores the unprocessed content
-                                               // with `m_len_` bytes.
-        uint64_t len;
-        uint32_t h[8];
-        int      finalized;
+        unsigned char block[SHA224_256_BLOCK_SIZE];
+        uint64_t      len;        // Unprocessed bytes stored in block.
+        uint64_t      total_len;  // Total of bytes processed.
+        uint32_t      h[8];
+        int           finalized;
 };
 
 extern void    sha256Reset(struct sha256_t*);
