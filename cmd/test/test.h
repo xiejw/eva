@@ -68,7 +68,7 @@ run_all_suites()
                 test_suite_cap = test_suite_cap ? 2 * test_suite_cap             \
                                                 : TEST_SUITES_INIT_SIZE;         \
                 test_suites    = realloc(test_suites,                            \
-                                         test_suite_cap * sizeof(test_suite_t)); \
+                                      test_suite_cap * sizeof(test_suite_t)); \
         }                                                                        \
         test_suites[test_suite_count].name = suite_name;                         \
         test_suites[test_suite_count++].fn = func;

@@ -21,8 +21,10 @@ ALGORITHMS_LIB  = ${BUILD}/algorithms_dancing_links.o \
 BASE_LIB        = ${BUILD}/base_error.o
 CRON_LIB        = ${BUILD}/cron_field.o ${BUILD}/cron_expr.o
 RNG_LIB         = ${BUILD}/rng_srng64.o ${BUILD}/rng_srng64_normal.o
+CRYPTO_LIB      = ${BUILD}/crypto_sha256.o
 
-ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB}
+ALL_LIBS = ${ADT_LIB} ${BASE_LIB} ${CRON_LIB} ${RNG_LIB} ${ALGORITHMS_LIB} \
+	   ${CRYPTO_LIB}
 
 # ------------------------------------------------------------------------------
 # Tests.
@@ -73,6 +75,9 @@ ${BUILD}/cron_%.o: ${SRC}/cron/%.c
 	${EVA_CC} -o $@ -c $<
 
 ${BUILD}/rng_%.o: ${SRC}/rng/%.c
+	${EVA_CC} -o $@ -c $<
+
+${BUILD}/crypto_%.o: ${SRC}/crypto/%.c
 	${EVA_CC} -o $@ -c $<
 
 # ------------------------------------------------------------------------------
