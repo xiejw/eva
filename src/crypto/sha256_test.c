@@ -26,10 +26,37 @@ test_str()
         return NULL;
 }
 
+static char*
+test_long_str()
+{
+        sds_t sds = sha256DigestStr(
+            "Vanilla Policy Gradient is the most basic, entry-level algorithm "
+            "in the deep RL space because it completely predates the advent of "
+            "deep RL altogether. The core elements of VPG go all the way back "
+            "to the late 80s / early 90s. It started a trail of research which "
+            "ultimately led to stronger algorithms such as TRPO and then PPO "
+            "soon after.\n\nA key feature of this line of work is that all of "
+            "these algorithms are on-policy: that is, they don’t use old data, "
+            "which makes them weaker on sample efficiency. But this is for a "
+            "good reason: these algorithms directly optimize the objective you "
+            "care about—policy performance—and it works out mathematically "
+            "that you need on-policy data to calculate the updates. So, this "
+            "family of algorithms trades off sample efficiency in favor of "
+            "stability—but you can see the progression of techniques (from VPG "
+            "to TRPO to PPO) working to make up the deficit on sample "
+            "efficiency.");
+        ASSERT_TRUE("digest", 0 == strcmp("2c2ca89ccbfa44169a32172be34361b85050"
+                                          "0b0dd8121a1ef52d4bb43b767266",
+                                          sds));
+        sdsFree(sds);
+        return NULL;
+}
+
 char*
 run_crypto_sha256_suite()
 {
         RUN_TEST(test_empty_str);
         RUN_TEST(test_str);
+        RUN_TEST(test_long_str);
         return NULL;
 }
