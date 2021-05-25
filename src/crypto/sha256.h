@@ -1,6 +1,8 @@
 #ifndef SHA256_H_
 #define SHA256_H_
 
+#include <stdint.h>
+
 #include "adt/sds.h"
 
 #define SHA224_256_BLOCK_SIZE (512 / 8)  // 64
