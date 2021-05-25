@@ -27,6 +27,26 @@ test_str()
 }
 
 static char*
+test_str_padding_one_more()
+{
+        // prepare a message with size as 64-9 < size < 64. so we need to pad
+        // one more chunk (see sha256Finalize).
+        sds_t msg = sdsEmptyWithCap(64);
+        memset(msg, 1, 60);
+        sdsSetLen(msg, 60);
+        msg[60] = 0;
+        ASSERT_TRUE("msg len", 60 == strlen(msg));
+
+        sds_t sds = sha256DigestStr(msg);
+        ASSERT_TRUE("digest", 0 == strcmp("5e4084eff2f37d637e6502bf9472b0029755"
+                                          "bbd130ebb52c8c33bb8148c31fd2",
+                                          sds));
+        sdsFree(sds);
+        sdsFree(msg);
+        return NULL;
+}
+
+static char*
 test_long_str()
 {
         sds_t sds = sha256DigestStr(
@@ -76,6 +96,7 @@ run_crypto_sha256_suite()
 {
         RUN_TEST(test_empty_str);
         RUN_TEST(test_str);
+        RUN_TEST(test_str_padding_one_more);
         RUN_TEST(test_long_str);
         RUN_TEST(test_stream);
         return NULL;
