@@ -18,7 +18,6 @@ struct sha256_t {
 extern void    sha256Reset(struct sha256_t*);
 extern error_t sha256Update(struct sha256_t*, const unsigned char*, uint64_t);
 extern sds_t   sha256Digest(struct sha256_t*);
-extern void    sha256Finalize(struct sha256_t* s, unsigned char* digest);
 
 extern sds_t sha256DigestStr(const char*);
 

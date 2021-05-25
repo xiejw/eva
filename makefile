@@ -47,8 +47,12 @@ RNG_TEST_SUITE  = ${BUILD}/rng_srng64_test.o ${BUILD}/rng_srng64_normal_test.o
 RNG_TEST_DEP    = ${RNG_LIB}
 RNG_TEST        = ${RNG_TEST_SUITE} ${RNG_TEST_DEP}
 
+CRYPTO_TEST_SUITE  = ${BUILD}/crypto_sha256_test.o
+CRYPTO_TEST_DEP    = ${CRYPTO_LIB} ${ADT_LIB}
+CRYPTO_TEST        = ${CRYPTO_TEST_SUITE} ${CRYPTO_TEST_DEP}
+
 ALL_TESTS       = ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
-		  ${ALGORITHMS_TEST}
+		  ${ALGORITHMS_TEST} ${CRYPTO_TEST}
 # ------------------------------------------------------------------------------
 # Actions.
 # ------------------------------------------------------------------------------

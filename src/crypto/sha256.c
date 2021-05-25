@@ -148,7 +148,7 @@ sha256Update(struct sha256_t* s, const unsigned char* message, uint64_t len)
         return OK;
 }
 
-void
+static void
 sha256Finalize(struct sha256_t* s, unsigned char* digest)
 {
         s->finalized = 1;

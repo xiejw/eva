@@ -44,6 +44,7 @@ main()
         ADD_SUITE(
             algorithrms_dancing_links);  // algorithrms/dancing_links_test.c
         ADD_SUITE(algorithrms_diff);     // algorithrms/diff.c
+        ADD_SUITE(crypto_sha256);        // crypto/sha256_test.c
 
         // ---------------------------------------------------------------------------
         // Runs all suites and reports.
