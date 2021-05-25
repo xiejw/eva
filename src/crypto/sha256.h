@@ -13,7 +13,7 @@ struct sha256_t {
         unsigned char block[SHA224_256_BLOCK_SIZE];  // Unprocessed bytes.
         uint64_t      len;        // Unprocessed bytes stored in block.
         uint64_t      total_len;  // Total of bytes processed in history.
-        uint32_t      h[8];
+        uint32_t      h[8];       // Hash values.
         int           finalized;
 };
 
