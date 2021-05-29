@@ -101,6 +101,12 @@ srng64Free(struct srng64_t* rng)
         free(rng);
 }
 
+void
+rng64Free(struct rng64_t* rng)
+{
+        free(rng);
+}
+
 uint64_t
 rng64NextUint64(struct rng64_t* rng)
 {

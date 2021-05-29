@@ -25,5 +25,6 @@ extern uint64_t rng64NextUint64(struct rng64_t* rng);
 extern uint32_t rng64NextUint32(struct rng64_t* rng);
 extern double   rng64NextDouble(struct rng64_t* rng);
 extern float    rng64NextFloat(struct rng64_t* rng);
+extern void     rng64Free(struct rng64_t* rng);
 
 #endif

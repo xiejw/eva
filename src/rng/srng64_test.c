@@ -10,7 +10,7 @@ test_uint64()
         struct srng64_t* rng = srng64New(456L);
         ASSERT_TRUE("rng_uint64", 1843008821991917904 ==
                                       rng64NextUint64((struct rng64_t*)rng));
-        free(rng);
+        srng64Free(rng);
         return NULL;
 }
 

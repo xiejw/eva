@@ -16,7 +16,7 @@ test_normal()
         rng64StdNormalD(rng, SIZE, got);
 
         ASSERT_ARRAY_CLOSE("result", expected, got, SIZE, 1e-5);
-        free(rng);
+        rng64Free(rng);
 
         return NULL;
 }
@@ -31,7 +31,7 @@ test_normal_f()
         rng64StdNormalF(rng, SIZE, got);
 
         ASSERT_ARRAY_CLOSE("result", expected, got, SIZE, 1e-5);
-        free(rng);
+        rng64Free(rng);
 
         return NULL;
 }
