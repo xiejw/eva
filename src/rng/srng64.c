@@ -95,6 +95,12 @@ srng64Split(struct srng64_t* rng)
         return srng64NewWithGamma(seed, gamma_seed);
 }
 
+void
+srng64Free(struct srng64_t* rng)
+{
+        free(rng);
+}
+
 uint64_t
 rng64NextUint64(struct rng64_t* rng)
 {

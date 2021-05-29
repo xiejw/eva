@@ -18,7 +18,8 @@ struct rng64_t {
 
 extern struct srng64_t* srng64New(uint64_t seed);
 extern struct srng64_t* srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed);
-extern struct srng64_t* srng64Split(struct srng64_t* prng);
+extern struct srng64_t* srng64Split(struct srng64_t* srng);
+extern void             srng64Free(struct srng64_t* srng);
 
 extern uint64_t rng64NextUint64(struct rng64_t* rng);
 extern uint32_t rng64NextUint32(struct rng64_t* rng);
