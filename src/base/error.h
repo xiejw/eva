@@ -12,7 +12,11 @@
 //   - if the calling API is not error_t type, use errNewWithNote, or emitNew.
 //   - if the calling API is error_t type
 //     - use errEmitNote to propagate the error to upstream.
-//     - use errFree to free all resources if not ropagating any further.
+//     - use errFree to free all resources if not propagate any further.
+//
+// - Call errDump to print the correct error message stack to stderr. Call
+//   errFatalAndExit to quit the application (error message stack will be
+//   printed also.)
 
 typedef int error_t;
 
@@ -23,7 +27,9 @@ typedef int error_t;
 #define ENOTEXIST -3
 #define ENOTIMPL  -4
 
+// -----------------------------------------------------------------------------
 // APis for error handling.
+// -----------------------------------------------------------------------------
 
 extern error_t errNew(const char* fmt, ...);
 extern error_t errNewWithNote(error_t err, const char* fmt, ...);
@@ -36,10 +42,16 @@ extern void    errDump(const char*, ...);
 #define errFatalAndExit(fmt, ...) \
         errFatalAndExit_(__FILE__, __LINE__, fmt, __VA_ARGS__)
 
-// helper methods.
-#define errMalloc() \
-        errNewWithNote(EMALLOC, "malloc file: %s, loc: $d", __FILE__, __LINE__)
+// -----------------------------------------------------------------------------
+// Helper macro.
+// -----------------------------------------------------------------------------
+#define errMalloc()                                                        \
+        errNewWithNote(EMALLOC, "malloc err. file: %s, loc: %d", __FILE__, \
+                       __LINE__)
 
+// -----------------------------------------------------------------------------
+// Private prototype.
+// -----------------------------------------------------------------------------
 extern error_t errFatalAndExit_(char* file, int line_no, const char* fmt, ...);
 
 #endif

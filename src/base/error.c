@@ -2,7 +2,9 @@
 
 #include "assert.h"
 #include "stdio.h"
+#include "string.h"
 
+// eva
 #include "adt/sds.h"
 
 #define ERR_MSG_DEFAULT_LEN 128
@@ -87,7 +89,8 @@ errFree()
         err_msg_header = NULL;
 }
 
-// prints to stderr for all messages with leading title `msg`.
+// print to stderr for all messages with leading title `msg` (a new line will
+// be appended after the msg if absent).
 void
 errDump(const char* fmt, ...)
 {
@@ -96,6 +99,10 @@ errDump(const char* fmt, ...)
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);
         va_end(args);
+
+        if (fmt[strlen(fmt) - 1] != '\n')
+                fprintf(stderr, "\n");  // force a new line if absent.
+
         err_msg_list_t* p = err_msg_header->prev;
         while (p != err_msg_header) {
                 fprintf(stderr, "  > %s\n", p->msg);
@@ -103,6 +110,8 @@ errDump(const char* fmt, ...)
         }
 }
 
+// print an error message and quit immediately. If there is an error already,
+// also print erro stack by calling errDump.
 error_t
 errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
 {
@@ -112,6 +121,11 @@ errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
         vfprintf(stderr, fmt, args);
         va_end(args);
         fprintf(stderr, "\n");
+
+        if (err_msg_header != NULL) {
+                errDump("\nfound existing error as follows:");
+        }
+
         fflush(stderr);
         exit(1);
         return ERROR;
