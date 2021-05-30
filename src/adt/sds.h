@@ -33,6 +33,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+// -----------------------------------------------------------------------------
+// Design.
+//
+// +----+------+------
+// |len |alloc |buf
+// +----+------+------
+//             |
+//  -2   -1     `-- sds_t
+//
+// - Fast assessing. sds_t is basically the c string ('\0' terminated).
+// - Dynamic growth. If the space is not enough, buf will be expanded to hold
+//   more elements in future.
+// - Fast CatPrintf. Use remaing space to printf whenever possible.
+//
+// Invariance:
+//
+//     strlen(sds) = sdsLen(sds) <= sdsCap(sds).
+//
+//   - So to use sdsSetLen or sdsIncLen, caller must set the \0' correctly.
+
 #ifndef SDS_H_
 #define SDS_H_
 
