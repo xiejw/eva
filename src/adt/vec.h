@@ -83,7 +83,8 @@
         (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
          (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
 
-#define _VEC_POP_BACK_IMPL(vec) (*((vec) + --(((size_t*)(vec))[-2])))
+#define _VEC_POP_BACK_IMPL(vec) \
+        (assert((vec) != NULL), *((vec) + --(((size_t*)(vec))[-2])))
 
 #define VEC_INIT_BUF_SIZE 16
 
