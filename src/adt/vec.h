@@ -37,6 +37,8 @@
 //
 // 1. As the buf might be re-allocated (for growth), pass &vec for
 //    modificaitons.
+// 2. When use vecSize, ensure the new values are initialized or old values are
+//    freed properly.
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
@@ -47,13 +49,14 @@
 #define vecNew()     NULL
 #define vecFree(vec) _VEC_FREE_IMPL(vec)
 
-#define vecSize(vec)  ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
-#define vecCap(vec)   ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
-#define vecEmpty(vec) (vecSize(v) == 0)
+#define vecSize(vec)    ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
+#define vecCap(vec)     ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
+#define vecIsEmpty(vec) (vecSize(v) == 0)
 
 #define vecSetSize(vec, new_s) _VEC_SET_SIZE_IMPL(vec, new_s)  // return error_t
 #define vecReserve(vec, count) _VEC_RESERVE_IMPL(vec, count)   // return error_t
 #define vecPushBack(vec, v)    _VEC_PUSH_BACK_IMPL(vec, v)     // return error_t
+#define vecPopBack(vec)        _VEC_POP_BACK_IMPL(vec)
 
 // -----------------------------------------------------------------------------
 // private prototype.
@@ -73,6 +76,8 @@
 #define _VEC_PUSH_BACK_IMPL(vec, v)                      \
         (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
          (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
+
+#define _VEC_POP_BACK_IMPL(vec) (*((vec) + --(((size_t*)(vec))[-2])))
 
 #define VEC_INIT_BUF_SIZE 16
 

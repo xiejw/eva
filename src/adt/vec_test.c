@@ -25,6 +25,20 @@ test_vec_push_back()
 }
 
 static char*
+test_vec_pop_back()
+{
+        vec_t(int) v = vecNew();
+        ASSERT_TRUE("no err", OK == vecPushBack(v, 123));
+        size_t old_cap = vecCap(v);
+
+        ASSERT_TRUE("pop back", 123 == vecPopBack(v));
+        ASSERT_TRUE("size is 0", vecSize(v) == 0);
+        ASSERT_TRUE("cap", old_cap == vecCap(v));
+        vecFree(v);
+        return NULL;
+}
+
+static char*
 test_vec_reserve()
 {
         vec_t(int) v = vecNew();
@@ -66,6 +80,7 @@ char*
 run_adt_vec_suite()
 {
         RUN_TEST(test_vec_init);
+        RUN_TEST(test_vec_pop_back);
         RUN_TEST(test_vec_push_back);
         RUN_TEST(test_vec_reserve);
         RUN_TEST(test_vec_grow);
