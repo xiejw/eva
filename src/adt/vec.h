@@ -3,6 +3,7 @@
 
 #include <assert.h>  // assert
 #include <stdlib.h>  // free
+#include <string.h>  // memcpy
 
 #include "base/defs.h"
 
@@ -42,7 +43,7 @@
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
-// public macros.
+// Public macros.
 // -----------------------------------------------------------------------------
 
 #define vec_t(type)  type*
@@ -53,13 +54,14 @@
 #define vecCap(vec)     ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
 #define vecIsEmpty(vec) (vecSize(v) == 0)
 
-#define vecSetSize(vec, new_s) _VEC_SET_SIZE_IMPL(vec, new_s)  // return error_t
-#define vecReserve(vec, count) _VEC_RESERVE_IMPL(vec, count)   // return error_t
-#define vecPushBack(vec, v)    _VEC_PUSH_BACK_IMPL(vec, v)     // return error_t
-#define vecPopBack(vec)        _VEC_POP_BACK_IMPL(vec)
+#define vecSetSize(vec, new_s) _VEC_SET_SIZE_IMPL(vec, new_s)  // ret error_t
+#define vecReserve(vec, count) _VEC_RESERVE_IMPL(vec, count)   // ret error_t
+#define vecPushBack(vec, v)    _VEC_PUSH_BACK_IMPL(vec, v)     // ret error_t
+#define vecPopBack(vec)        _VEC_POP_BACK_IMPL(vec)         // ret last item
+#define vecExtend(dst, src)    _VEC_EXTEND_IMPL(dst, src)      // ret error_t
 
 // -----------------------------------------------------------------------------
-// private prototype.
+// Private prototype.
 // -----------------------------------------------------------------------------
 
 #define _VEC_FREE_IMPL(vec)                         \
@@ -72,6 +74,10 @@
 
 #define _VEC_RESERVE_IMPL(vec, count) \
         _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
+
+#define _VEC_EXTEND_IMPL(dst, src)                                     \
+        _vecExtend((size_t**)(&(dst)), vecSize((dst)), sizeof(*(dst)), \
+                   (size_t*)(src), vecSize((src)))
 
 #define _VEC_PUSH_BACK_IMPL(vec, v)                      \
         (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
@@ -96,6 +102,19 @@ _vecGrow(_mut_ size_t** vec, size_t unit_size)
         assert(size <= cap);
         if (cap != size) return OK;
         return _vecReserve(vec, 2 * cap, unit_size);
+}
+
+static inline error_t
+_vecExtend(_mut_ size_t** pdst, size_t dst_size, size_t unit_size, size_t* src,
+           size_t src_size)
+{
+        const size_t new_size = dst_size + src_size;
+        error_t      err      = _vecReserve(pdst, new_size, unit_size);
+        if (err) return err;
+        memcpy(((char*)(*pdst)) + unit_size * dst_size, src,
+               unit_size * src_size);
+        (*pdst)[-2] = new_size;
+        return OK;
 }
 
 #endif

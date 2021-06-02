@@ -39,6 +39,48 @@ test_vec_pop_back()
 }
 
 static char*
+test_vec_extend()
+{
+        vec_t(int) v1 = vecNew();
+        vec_t(int) v2 = vecNew();
+        vecPushBack(v1, 789);
+        vecPushBack(v2, 123);
+        vecPushBack(v2, 456);
+
+        ASSERT_TRUE("no err", OK == vecExtend(v1, v2));
+
+        ASSERT_TRUE("size is 3", 3 == vecSize(v1));
+        ASSERT_TRUE("cap", 3 <= vecCap(v1));
+        ASSERT_TRUE("ele[0]", 789 == v1[0]);
+        ASSERT_TRUE("ele[1]", 123 == v1[1]);
+        ASSERT_TRUE("ele[2]", 456 == v1[2]);
+
+        vecFree(v1);
+        vecFree(v2);
+        return NULL;
+}
+
+static char*
+test_vec_extend_null()
+{
+        vec_t(int) v1 = vecNew();
+        vec_t(int) v2 = vecNew();
+        vecPushBack(v2, 123);
+        vecPushBack(v2, 456);
+
+        ASSERT_TRUE("no err", OK == vecExtend(v1, v2));
+
+        ASSERT_TRUE("size is 2", 2 == vecSize(v1));
+        ASSERT_TRUE("cap", 2 <= vecCap(v1));
+        ASSERT_TRUE("ele[0]", 123 == v1[0]);
+        ASSERT_TRUE("ele[1]", 456 == v1[1]);
+
+        vecFree(v1);
+        vecFree(v2);
+        return NULL;
+}
+
+static char*
 test_vec_reserve()
 {
         vec_t(int) v = vecNew();
@@ -82,6 +124,8 @@ run_adt_vec_suite()
         RUN_TEST(test_vec_init);
         RUN_TEST(test_vec_pop_back);
         RUN_TEST(test_vec_push_back);
+        RUN_TEST(test_vec_extend);
+        RUN_TEST(test_vec_extend_null);
         RUN_TEST(test_vec_reserve);
         RUN_TEST(test_vec_grow);
         return NULL;
