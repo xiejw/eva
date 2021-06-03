@@ -51,6 +51,15 @@ ifeq ($(UNAME), FreeBSD)
 endif
 
 # ------------------------------------------------------------------------------
+# Blis.
+# ------------------------------------------------------------------------------
+ifdef BLIS
+BLIS_CONFIG  = $(shell grep ^CONFIG_NAME ../blis/config.mk  | awk '{print $$3}')
+CFLAGS  += -DBLIS=1 -I../blis/include/${BLIS_CONFIG}/ -Wno-unused-function
+LDFLAGS += ../blis/lib/${BLIS_CONFIG}/libblis.a -pthread
+endif
+
+# ------------------------------------------------------------------------------
 # Color printing.
 # ------------------------------------------------------------------------------
 EVA_CC          = ${QUIET_CC}${CC} ${CFLAGS}
