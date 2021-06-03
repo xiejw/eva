@@ -4,5 +4,6 @@
 #include "base/error.h"
 
 #define _mut_
+#define _out_
 
 #endif
