@@ -6,15 +6,7 @@ _dictReset(struct dict_table_t *ht)
         ht->table    = NULL;
         ht->size     = 0;
         ht->sizemask = 0;
-}
-
-error_t
-_dictInit(dict_t *d, struct dict_ty_t *type, void *privDataPtr)
-{
-        _dictReset(&d->ht);
-        d->type     = type;
-        d->privdata = privDataPtr;
-        return OK;
+        ht->used     = 0;
 }
 
 /* Create a new hash table */
@@ -22,7 +14,10 @@ dict_t *
 dictNew(struct dict_ty_t *type, void *privDataPtr)
 {
         dict_t *d = malloc(sizeof(*d));
-        _dictInit(d, type, privDataPtr);
+
+        _dictReset(&d->ht);
+        d->type     = type;
+        d->privdata = privDataPtr;
         return d;
 }
 
@@ -45,12 +40,14 @@ _dictExpand(dict_t *d, unsigned long size)
         struct dict_table_t n; /* the new hash table */
         unsigned long       realsize = _dictNextPower(size);
 
+        if (d->ht.used > size) return errNew("expand should cover used items.");
         if (realsize == d->ht.size) return OK;
 
         /* Allocate the new hash table and initialize all pointers to NULL */
         n.size     = realsize;
         n.sizemask = realsize - 1;
         n.table    = calloc(realsize, sizeof(struct dict_entry_t *));
+        n.used     = 0;
 
         /* Is this the first initialization? If so it's not really a rehashing
          * we just set the first hash table so that it can accept keys. */
@@ -158,6 +155,7 @@ dictAddRaw(dict_t *d, void *key, struct dict_entry_t **existing)
         entry            = malloc(sizeof(*entry));
         entry->next      = ht->table[index];
         ht->table[index] = entry;
+        ht->used++;
 
         /* Set the hash entry fields. */
         dictSetKey(d, entry, key);
@@ -227,7 +225,7 @@ _dictClear(dict_t *d, struct dict_table_t *ht)
         unsigned long i;
 
         /* Free all the elements */
-        for (i = 0; i<ht->size> 0; i++) {
+        for (i = 0; i < ht->size && ht->used > 0; i++) {
                 struct dict_entry_t *he, *nextHe;
 
                 if ((he = ht->table[i]) == NULL) continue;
@@ -237,6 +235,7 @@ _dictClear(dict_t *d, struct dict_table_t *ht)
                         dictFreeKey(d, he);
                         dictFreeVal(d, he);
                         free(he);
+                        ht->used--;
                         he = nextHe;
                 }
         }

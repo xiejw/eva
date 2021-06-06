@@ -67,6 +67,7 @@ struct dict_table_t {
         struct dict_entry_t **table;
         unsigned long         size;
         unsigned long         sizemask;
+        unsigned long         used;
 };
 
 typedef struct {

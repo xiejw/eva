@@ -31,7 +31,7 @@ struct dict_ty_t ty = {
 static char *
 test_init()
 {
-        struct dict_t *t = dictNew(&ty, NULL);
+        dict_t *t = dictNew(&ty, NULL);
         dictFree(t);
         return NULL;
 }
@@ -39,7 +39,7 @@ test_init()
 static char *
 test_add_and_find()
 {
-        struct dict_t *t = dictNew(&ty, NULL);
+        dict_t *t = dictNew(&ty, NULL);
 
         struct dict_entry_t *en = dictAddOrFind(t, "abc");
         dictSetUIntVal(en, 123);
