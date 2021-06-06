@@ -50,7 +50,7 @@ _dictExpand(struct dict_t *d, unsigned long size)
         /* Allocate the new hash table and initialize all pointers to NULL */
         n.size     = realsize;
         n.sizemask = realsize - 1;
-        n.table    = malloc(realsize * sizeof(struct dict_entry_t *));
+        n.table    = calloc(realsize, sizeof(struct dict_entry_t *));
 
         /* Is this the first initialization? If so it's not really a rehashing
          * we just set the first hash table so that it can accept keys. */
