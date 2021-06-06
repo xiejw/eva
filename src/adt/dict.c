@@ -9,7 +9,7 @@ _dictReset(struct dict_table_t *ht)
 }
 
 error_t
-_dictInit(struct dict_t *d, struct dict_ty_t *type, void *privDataPtr)
+_dictInit(dict_t *d, struct dict_ty_t *type, void *privDataPtr)
 {
         _dictReset(&d->ht);
         d->type     = type;
@@ -18,10 +18,10 @@ _dictInit(struct dict_t *d, struct dict_ty_t *type, void *privDataPtr)
 }
 
 /* Create a new hash table */
-struct dict_t *
+dict_t *
 dictNew(struct dict_ty_t *type, void *privDataPtr)
 {
-        struct dict_t *d = malloc(sizeof(*d));
+        dict_t *d = malloc(sizeof(*d));
         _dictInit(d, type, privDataPtr);
         return d;
 }
@@ -40,7 +40,7 @@ _dictNextPower(unsigned long size)
 }
 
 error_t
-_dictExpand(struct dict_t *d, unsigned long size)
+_dictExpand(dict_t *d, unsigned long size)
 {
         struct dict_table_t n; /* the new hash table */
         unsigned long       realsize = _dictNextPower(size);
@@ -60,14 +60,14 @@ _dictExpand(struct dict_t *d, unsigned long size)
 
 /* return DICT_ERR if expand was not performed */
 error_t
-dictExpand(struct dict_t *d, unsigned long size)
+dictExpand(dict_t *d, unsigned long size)
 {
         return _dictExpand(d, size);
 }
 
 /* Expand the hash table if needed */
 static error_t
-_dictExpandIfNeeded(struct dict_t *d)
+_dictExpandIfNeeded(dict_t *d)
 {
         /* If the hash table is empty expand it to the initial size. */
         if (d->ht.size == 0) return dictExpand(d, DICT_HT_INITIAL_SIZE);
@@ -94,7 +94,7 @@ _dictExpandIfNeeded(struct dict_t *d)
  * and the optional output parameter may be filled.
  */
 static long
-_dictKeyIndex(struct dict_t *d, const void *key, uint64_t hash,
+_dictKeyIndex(dict_t *d, const void *key, uint64_t hash,
               struct dict_entry_t **existing)
 {
         unsigned long        idx;
@@ -139,7 +139,7 @@ _dictKeyIndex(struct dict_t *d, const void *key, uint64_t hash,
  * If key was added, the hash entry is returned to be manipulated by the caller.
  */
 struct dict_entry_t *
-dictAddRaw(struct dict_t *d, void *key, struct dict_entry_t **existing)
+dictAddRaw(dict_t *d, void *key, struct dict_entry_t **existing)
 {
         long                 index;
         struct dict_entry_t *entry;
@@ -165,7 +165,7 @@ dictAddRaw(struct dict_t *d, void *key, struct dict_entry_t **existing)
 }
 
 error_t
-dictAdd(struct dict_t *d, void *key, void *val)
+dictAdd(dict_t *d, void *key, void *val)
 {
         struct dict_entry_t *entry = dictAddRaw(d, key, NULL);
 
@@ -182,7 +182,7 @@ dictAdd(struct dict_t *d, void *key, void *val)
  * element with such key and dictReplace() just performed a value update
  * operation. */
 int
-dictReplace(struct dict_t *d, void *key, void *val)
+dictReplace(dict_t *d, void *key, void *val)
 {
         struct dict_entry_t *entry, *existing, auxentry;
 
@@ -213,7 +213,7 @@ dictReplace(struct dict_t *d, void *key, void *val)
  *
  * See dictAddRaw() for more information. */
 struct dict_entry_t *
-dictAddOrFind(struct dict_t *d, void *key)
+dictAddOrFind(dict_t *d, void *key)
 {
         struct dict_entry_t *entry, *existing;
         entry = dictAddRaw(d, key, &existing);
@@ -222,7 +222,7 @@ dictAddOrFind(struct dict_t *d, void *key)
 
 /* Destroy an entire dictionary */
 error_t
-_dictClear(struct dict_t *d, struct dict_table_t *ht)
+_dictClear(dict_t *d, struct dict_table_t *ht)
 {
         unsigned long i;
 
@@ -247,7 +247,7 @@ _dictClear(struct dict_t *d, struct dict_table_t *ht)
 
 /* Clear & Release the hash table */
 void
-dictFree(struct dict_t *d)
+dictFree(dict_t *d)
 {
         if (d == NULL) return;
         _dictClear(d, &d->ht);
@@ -255,7 +255,7 @@ dictFree(struct dict_t *d)
 }
 
 struct dict_entry_t *
-dictFind(struct dict_t *d, const void *key)
+dictFind(dict_t *d, const void *key)
 {
         struct dict_entry_t *he;
         uint64_t             h, idx;

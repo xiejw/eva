@@ -69,24 +69,24 @@ struct dict_table_t {
         unsigned long         sizemask;
 };
 
-struct dict_t {
+typedef struct {
         struct dict_ty_t *  type;
         void *              privdata;
         struct dict_table_t ht;
-};
+} dict_t;
 
-struct dict_t *dictNew(struct dict_ty_t *type, void *privDataPtr);
-void           dictFree(struct dict_t *d);
+dict_t *dictNew(struct dict_ty_t *type, void *privDataPtr);
+void    dictFree(dict_t *d);
 
-error_t dictExpand(struct dict_t *d, unsigned long size);
+error_t dictExpand(dict_t *d, unsigned long size);
 
-struct dict_entry_t *dictFind(struct dict_t *d, const void *key);
+struct dict_entry_t *dictFind(dict_t *d, const void *key);
 
-struct dict_entry_t *dictAddRaw(struct dict_t *d, void *key,
+struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                                 struct dict_entry_t **existing);
-error_t              dictAdd(struct dict_t *d, void *key, void *val);
-int                  dictReplace(struct dict_t *d, void *key, void *val);
-struct dict_entry_t *dictAddOrFind(struct dict_t *d, void *key);
+error_t              dictAdd(dict_t *d, void *key, void *val);
+int                  dictReplace(dict_t *d, void *key, void *val);
+struct dict_entry_t *dictAddOrFind(dict_t *d, void *key);
 
 #define dictGetKey(he)     ((he)->key)
 #define dictGetVal(he)     ((he)->v.val)
