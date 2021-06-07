@@ -1,6 +1,9 @@
 #include "dict.h"
 
-static void _dictRehash(dict_t *d, struct dict_table_t *new_ht);
+static unsigned int dict_force_resize_ratio = 5;
+
+static void    _dictRehash(dict_t *d, struct dict_table_t *new_ht);
+static error_t _dictExpandIfNeeded(dict_t *d);
 
 static void
 _dictReset(struct dict_table_t *ht)
@@ -66,29 +69,6 @@ error_t
 dictExpand(dict_t *d, unsigned long size)
 {
         return _dictExpand(d, size);
-}
-
-/* Expand the hash table if needed */
-static error_t
-_dictExpandIfNeeded(dict_t *d)
-{
-        /* If the hash table is empty expand it to the initial size. */
-        if (d->ht.size == 0) return dictExpand(d, DICT_HT_INITIAL_SIZE);
-
-        // TODO
-        //
-        // /* If we reached the 1:1 ratio, and we are allowed to resize the hash
-        //  * table (global setting) or we should avoid it but the ratio between
-        //  * elements/buckets is over the "safe" threshold, we resize doubling
-        //  * the number of buckets. */
-        // if (d->ht[0].used >= d->ht[0].size &&
-        //     (dict_can_resize ||
-        //      d->ht[0].used/d->ht[0].size > dict_force_resize_ratio) &&
-        //     dictTypeExpandAllowed(d))
-        // {
-        //     return dictExpand(d, d->ht[0].used + 1);
-        // }
-        return OK;
 }
 
 /* Returns the index of a free slot that can be populated with
@@ -310,4 +290,22 @@ _dictRehash(dict_t *d, struct dict_table_t *new_ht)
         // clean up the old table.
         free(d->ht.table);
         d->ht = *new_ht;
+}
+
+// Expand the hash table if needed.
+static error_t
+_dictExpandIfNeeded(dict_t *d)
+{
+        /* If the hash table is empty expand it to the initial size. */
+        if (d->ht.size == 0) return dictExpand(d, DICT_HT_INITIAL_SIZE);
+
+        /* If we reached the 1:1 ratio, and we are allowed to resize the hash
+         * table (global setting) or we should avoid it but the ratio between
+         * elements/buckets is over the "safe" threshold, we resize doubling
+         * the number of buckets. */
+        if (d->ht.used >= d->ht.size &&
+            d->ht.used / d->ht.size > dict_force_resize_ratio) {
+                return dictExpand(d, d->ht.used + 1);
+        }
+        return OK;
 }
