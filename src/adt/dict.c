@@ -1,5 +1,7 @@
 #include "dict.h"
 
+static void _dictRehash(dict_t *d, struct dict_table_t *new_ht);
+
 static void
 _dictReset(struct dict_table_t *ht)
 {
@@ -51,7 +53,11 @@ _dictExpand(dict_t *d, unsigned long size)
 
         /* Is this the first initialization? If so it's not really a rehashing
          * we just set the first hash table so that it can accept keys. */
-        d->ht = n;
+        if (d->ht.table == NULL) {
+                d->ht = n;
+        } else {
+                _dictRehash(d, &n);
+        }
         return OK;
 }
 
@@ -268,4 +274,40 @@ dictFind(dict_t *d, const void *key)
                 he = he->next;
         }
         return NULL;
+}
+
+// --- impl
+
+void
+_dictRehash(dict_t *d, struct dict_table_t *new_ht)
+{
+        struct dict_table_t *ht         = &d->ht;
+        size_t               table_size = ht->size;
+
+        for (size_t i = 0; i < table_size && ht->used > 0; i++) {
+                struct dict_entry_t *de, *nextde;
+                de = d->ht.table[i];
+                if (de == NULL) continue;
+
+                // Move all the keys in this bucket from the old to the new hash
+                // table, new_ht.
+                while (de) {
+                        uint64_t h;
+
+                        nextde = de->next;
+                        /* Get the index in the new hash table */
+                        h        = dictHashKey(d, de->key) & new_ht->sizemask;
+                        de->next = new_ht->table[h];
+                        new_ht->table[h] = de;
+                        new_ht->used++;
+
+                        d->ht.used--;
+                        de = nextde;
+                }
+                d->ht.table[i] = NULL;
+        }
+
+        // clean up the old table.
+        free(d->ht.table);
+        d->ht = *new_ht;
 }

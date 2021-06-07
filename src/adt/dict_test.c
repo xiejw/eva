@@ -50,10 +50,30 @@ test_add_and_find()
         return NULL;
 }
 
+static char *
+test_expand()
+{
+        dict_t *t = dictNew(&ty, NULL);
+
+        struct dict_entry_t *en = dictAddOrFind(t, "abc");
+        dictSetUIntVal(en, 123);
+        ASSERT_TRUE("val", dictGetUIntVal(dictFind(t, "abc")) == 123);
+        size_t size = t->ht.size;
+
+        dictExpand(t, 1024);
+        ASSERT_TRUE("new size", t->ht.size > size);
+        ASSERT_TRUE("val after hash",
+                    dictGetUIntVal(dictFind(t, "abc")) == 123);
+
+        dictFree(t);
+        return NULL;
+}
+
 char *
 run_adt_dict_suite()
 {
         RUN_TEST(test_init);
         RUN_TEST(test_add_and_find);
+        RUN_TEST(test_expand);
         return NULL;
 }
