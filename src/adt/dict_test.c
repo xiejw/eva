@@ -16,7 +16,7 @@ hashFn(const void *key)
 int
 keyCmp(void *privdata, const void *key1, const void *key2)
 {
-        return strcmp((char *)key1, (char *)key2);
+        return 0 == strcmp((char *)key1, (char *)key2);
 }
 
 struct dict_ty_t ty = {
