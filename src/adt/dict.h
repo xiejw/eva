@@ -46,7 +46,7 @@
 struct dict_entry_t {
         void *key;
         union {
-                void *   val;
+                void    *val;
                 uint64_t u64;
                 int64_t  s64;
                 double   d;
@@ -71,8 +71,8 @@ struct dict_table_t {
 };
 
 typedef struct {
-        struct dict_ty_t *  type;
-        void *              privdata;
+        struct dict_ty_t   *type;
+        void               *privdata;
         struct dict_table_t ht;
 } dict_t;
 
@@ -87,7 +87,7 @@ struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                                 struct dict_entry_t **existing);
 error_t              dictAdd(dict_t *d, void *key, void *val);
 int                  dictReplace(dict_t *d, void *key, void *val);
-struct dict_entry_t *dictAddOrFind(dict_t *d, void *key);
+struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
 
 #define dictGetKey(he)     ((he)->key)
 #define dictGetVal(he)     ((he)->v.val)

@@ -197,10 +197,11 @@ dictReplace(dict_t *d, void *key, void *val)
  *
  * See dictAddRaw() for more information. */
 struct dict_entry_t *
-dictAddOrFind(dict_t *d, void *key)
+dictAddOrFind(dict_t *d, void *key, int *existed)
 {
         struct dict_entry_t *entry, *existing;
         entry = dictAddRaw(d, key, &existing);
+        if (existed != NULL) *existed = entry == NULL;
         return entry ? entry : existing;
 }
 

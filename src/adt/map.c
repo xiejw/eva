@@ -36,7 +36,7 @@
 //      \-> pointer header
 typedef struct map_node_t {
         unsigned hash;    // hash value. see `map_hash`.
-        void *   pvalue;  // point to the address of content of value.
+        void    *pvalue;  // point to the address of content of value.
         struct map_node_t
             *next;  // next map node.
                     // other fields allocated by malloc after here.
@@ -47,7 +47,7 @@ typedef struct map_node_t {
 // -----------------------------------------------------------------------------
 
 static unsigned     map_hash(const char *str);
-static map_node_t * map_newnode(const char *key, void *value, int vsize);
+static map_node_t  *map_newnode(const char *key, void *value, int vsize);
 static int          map_bucketidx(map_base_t *m, unsigned hash);
 static void         map_addnode(map_base_t *m, map_node_t *node);
 static map_node_t **map_getref(map_base_t *m, const char *key);
@@ -204,7 +204,7 @@ map_getref(map_base_t *m, const char *key)
 error_t
 _mapResize(map_base_t *m, int nbuckets)
 {
-        map_node_t * nodes, *node, *next;
+        map_node_t  *nodes, *node, *next;
         map_node_t **buckets;
         int          i;
 

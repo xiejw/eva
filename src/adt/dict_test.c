@@ -41,7 +41,7 @@ test_add_and_find()
 {
         dict_t *t = dictNew(&ty, NULL);
 
-        struct dict_entry_t *en = dictAddOrFind(t, "abc");
+        struct dict_entry_t *en = dictAddOrFind(t, "abc", NULL);
         dictSetUIntVal(en, 123);
         ASSERT_TRUE("val", dictGetUIntVal(dictFind(t, "abc")) == 123);
         ASSERT_TRUE("val null", NULL == dictFind(t, "bc"));
@@ -51,11 +51,29 @@ test_add_and_find()
 }
 
 static char *
+test_add_and_find_existed()
+{
+        int     existed;
+        dict_t *t = dictNew(&ty, NULL);
+
+        struct dict_entry_t *en = dictAddOrFind(t, "abc", &existed);
+        ASSERT_TRUE("not existed", existed == 0);
+        dictSetUIntVal(en, 123);
+
+        en = dictAddOrFind(t, "abc", &existed);
+        ASSERT_TRUE("existed", existed == 1);
+
+        ASSERT_TRUE("same val", dictGetUIntVal(dictFind(t, "abc")) == 123);
+        dictFree(t);
+        return NULL;
+}
+
+static char *
 test_expand()
 {
         dict_t *t = dictNew(&ty, NULL);
 
-        struct dict_entry_t *en = dictAddOrFind(t, "abc");
+        struct dict_entry_t *en = dictAddOrFind(t, "abc", NULL);
         dictSetUIntVal(en, 123);
         ASSERT_TRUE("val", dictGetUIntVal(dictFind(t, "abc")) == 123);
         size_t size = t->ht.size;
@@ -74,6 +92,7 @@ run_adt_dict_suite()
 {
         RUN_TEST(test_init);
         RUN_TEST(test_add_and_find);
+        RUN_TEST(test_add_and_find_existed);
         RUN_TEST(test_expand);
         return NULL;
 }
