@@ -41,7 +41,7 @@
 struct map_node_t;
 
 typedef struct {
-        struct map_node_t** buckets;
+        struct map_node_t **buckets;
         unsigned            nbuckets, nnodes;
 } map_base_t;
 
@@ -52,12 +52,12 @@ typedef struct {
 #define map_t(type)              \
         struct {                 \
                 map_base_t base; \
-                type*      ref;  \
+                type      *ref;  \
                 type       tmp;  \
-        }*
+        } *
 
 #define mapNew()   NULL
-#define mapFree(m) _mapFree((map_base_t*)(m))
+#define mapFree(m) _mapFree((map_base_t *)(m))
 
 #define mapSize(m)     ((m) != NULL ? (m)->base.nnodes : 0)
 #define mapNBuckets(m) ((m) != NULL ? (m)->base.nbuckets : 0)
@@ -74,20 +74,20 @@ typedef struct {
 
 typedef struct {
         unsigned           bucketidx;
-        struct map_node_t* node;
+        struct map_node_t *node;
 } map_iter_t;
 
-extern void    _mapFree(map_base_t*);
-extern error_t _mapSet(map_base_t* m, const char* key, void* value, int vsize);
-extern void*   _mapGet(map_base_t* m, const char* key);
-extern error_t _mapResize(map_base_t* m, int nbuckets);
-extern int     _mapNext(void*, map_iter_t*, const char**, void**);
+extern void    _mapFree(map_base_t *);
+extern error_t _mapSet(map_base_t *m, const char *key, void *value, int vsize);
+extern void   *_mapGet(map_base_t *m, const char *key);
+extern error_t _mapResize(map_base_t *m, int nbuckets);
+extern int     _mapNext(void *, map_iter_t *, const char **, void **);
 
 static inline error_t
-_mapInit(_mut_ void** m, int vsize)
+_mapInit(_mut_ void **m, int vsize)
 {
         if (*m == NULL) {
-                void* p = malloc(vsize);
+                void *p = malloc(vsize);
                 if (p == NULL) return errMalloc();
                 *m = p;
                 memset(p, 0, vsize);
@@ -109,16 +109,16 @@ power_ceiling(int x)
 
 #define _MAP_FOREACH_IMPL(m, k, v)         \
         for (map_iter_t iter = {-1, NULL}; \
-             _mapNext((m), &iter, (k), (void**)(v));)
+             _mapNext((m), &iter, (k), (void **)(v));)
 
-#define _MAP_RESERVE_IMPL(m, n)                   \
-        (_mapInit((void*)(&(m)), sizeof(*(m))) || \
-         ((n <= mapNBuckets((m))) ? OK            \
+#define _MAP_RESERVE_IMPL(m, n)                    \
+        (_mapInit((void *)(&(m)), sizeof(*(m))) || \
+         ((n <= mapNBuckets((m))) ? OK             \
                                   : _mapResize(&(m)->base, power_ceiling(n))))
 
-#define _MAP_SET_IMPL(m, k, v)                    \
-        (_mapInit((void*)(&(m)), sizeof(*(m))) || \
-         ((m)->tmp = (v),                         \
+#define _MAP_SET_IMPL(m, k, v)                     \
+        (_mapInit((void *)(&(m)), sizeof(*(m))) || \
+         ((m)->tmp = (v),                          \
           _mapSet(&(m)->base, (k), &(m)->tmp, sizeof((m)->tmp))))
 
 #define _MAP_GET_IMPL(m, k) \

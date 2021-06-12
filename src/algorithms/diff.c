@@ -6,18 +6,18 @@
 
 #include "adt/vec.h"
 
-typedef int (*eql_fn_t)(void* lhs, void* rhs, size_t i, size_t j);
+typedef int (*eql_fn_t)(void *lhs, void *rhs, size_t i, size_t j);
 
 // github.com/golang/tools/blob/master/internal/lsp/diff/myers/diff.go
 error_t
-diffItems(struct diff_item_t* info)
+diffItems(struct diff_item_t *info)
 {
         error_t   err    = OK;
         size_t    m      = info->lhs_size;
         size_t    n      = info->rhs_size;
         ptrdiff_t offset = m + n;
-        void*     lhs    = info->lhs;
-        void*     rhs    = info->rhs;
+        void     *lhs    = info->lhs;
+        void     *rhs    = info->rhs;
 
         // macro to alloc a v with enough zeros.
 #define prepareV(v)                                        \
@@ -89,7 +89,7 @@ exit:
 }
 
 void
-diffFree(struct diff_item_t* info)
+diffFree(struct diff_item_t *info)
 {
         if (info->trace == NULL) {
                 return;

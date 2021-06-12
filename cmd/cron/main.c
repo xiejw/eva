@@ -10,8 +10,8 @@
 // helper methods prototypes.
 // -----------------------------------------------------------------------------
 
-static error_t parseOptions(cron_expr_t* expr, int argc, char** argv);
-static error_t parsePosInt(char* str, int* v);
+static error_t parseOptions(cron_expr_t *expr, int argc, char **argv);
+static error_t parsePosInt(char *str, int *v);
 
 // -----------------------------------------------------------------------------
 // implementation.
@@ -19,7 +19,7 @@ static error_t parsePosInt(char* str, int* v);
 
 // print the number of seconds from `now` to the next time cron expression.
 int
-main(int argc, char** argv)
+main(int argc, char **argv)
 {
         cron_expr_t expr;
         cronExprInit(&expr);
@@ -47,7 +47,7 @@ static struct option longopts[] = {{"hour", required_argument, NULL, 'h'},
                                    {NULL, 0, NULL, 0}};
 
 error_t
-parseOptions(cron_expr_t* expr, int argc, char** argv)
+parseOptions(cron_expr_t *expr, int argc, char **argv)
 {
         int ch;
         int v;
@@ -75,10 +75,10 @@ parseOptions(cron_expr_t* expr, int argc, char** argv)
 }
 
 error_t
-parsePosInt(char* str, int* v)
+parsePosInt(char *str, int *v)
 {
         if (*str == '\0') return errNew("int argument cannot be empty string");
-        char* end_p;
+        char *end_p;
         *v = (int)strtol(str, &end_p, /*base=*/10);
         if (*end_p != '\0')
                 return errNew("int argument cannot be parsed: %s", str);

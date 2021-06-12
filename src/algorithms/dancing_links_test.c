@@ -7,10 +7,10 @@
 #define setHeads3(h, a, b, c) ((h)[0] = (a), (h)[1] = (b), (h)[2] = (c))
 #define setHeads2(h, a, b)    ((h)[0] = (a), (h)[1] = (b))
 
-static char*
+static char *
 test_matrix_cover()
 {
-        dl_table_t* t = dlNew(1 + 23);
+        dl_table_t *t = dlNew(1 + 23);
         // column exact cover problem
         //
         //        1 2 3 4 5 6 7
@@ -70,7 +70,7 @@ test_matrix_cover()
         return NULL;
 }
 
-char*
+char *
 run_algorithrms_dancing_links_suite()
 {
         RUN_TEST(test_matrix_cover);

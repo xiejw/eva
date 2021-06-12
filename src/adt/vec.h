@@ -46,12 +46,12 @@
 // Public macros.
 // -----------------------------------------------------------------------------
 
-#define vec_t(type)  type*
+#define vec_t(type)  type *
 #define vecNew()     NULL
 #define vecFree(vec) _VEC_FREE_IMPL(vec)
 
-#define vecSize(vec)    ((vec) ? ((size_t*)vec)[-2] : (size_t)0)
-#define vecCap(vec)     ((vec) ? ((size_t*)vec)[-1] : (size_t)0)
+#define vecSize(vec)    ((vec) ? ((size_t *)vec)[-2] : (size_t)0)
+#define vecCap(vec)     ((vec) ? ((size_t *)vec)[-1] : (size_t)0)
 #define vecIsEmpty(vec) (vecSize(v) == 0)
 
 #define vecSetSize(vec, new_s) _VEC_SET_SIZE_IMPL(vec, new_s)  // ret error_t
@@ -64,35 +64,35 @@
 // Private prototype.
 // -----------------------------------------------------------------------------
 
-#define _VEC_FREE_IMPL(vec)                         \
-        do {                                        \
-                if (vec) free(&((size_t*)vec)[-2]); \
+#define _VEC_FREE_IMPL(vec)                          \
+        do {                                         \
+                if (vec) free(&((size_t *)vec)[-2]); \
         } while (0)
 
 #define _VEC_SET_SIZE_IMPL(vec, new_s) \
-        ((vec) ? (((size_t*)vec)[-2] = (new_s), OK) : ENOTEXIST)
+        ((vec) ? (((size_t *)vec)[-2] = (new_s), OK) : ENOTEXIST)
 
 #define _VEC_RESERVE_IMPL(vec, count) \
-        _vecReserve((size_t**)(&vec), count, sizeof(*(vec)))
+        _vecReserve((size_t **)(&vec), count, sizeof(*(vec)))
 
-#define _VEC_EXTEND_IMPL(dst, src)                                     \
-        _vecExtend((size_t**)(&(dst)), vecSize((dst)), sizeof(*(dst)), \
-                   (size_t*)(src), vecSize((src)))
+#define _VEC_EXTEND_IMPL(dst, src)                                      \
+        _vecExtend((size_t **)(&(dst)), vecSize((dst)), sizeof(*(dst)), \
+                   (size_t *)(src), vecSize((src)))
 
-#define _VEC_PUSH_BACK_IMPL(vec, v)                      \
-        (_vecGrow((size_t**)(&(vec)), sizeof(*(vec))) || \
-         (((vec)[((size_t*)(vec))[-2]] = (v)), ((size_t*)(vec))[-2]++, OK))
+#define _VEC_PUSH_BACK_IMPL(vec, v)                       \
+        (_vecGrow((size_t **)(&(vec)), sizeof(*(vec))) || \
+         (((vec)[((size_t *)(vec))[-2]] = (v)), ((size_t *)(vec))[-2]++, OK))
 
 #define _VEC_POP_BACK_IMPL(vec) \
-        (assert((vec) != NULL), *((vec) + --(((size_t*)(vec))[-2])))
+        (assert((vec) != NULL), *((vec) + --(((size_t *)(vec))[-2])))
 
 #define VEC_INIT_BUF_SIZE 16
 
-extern error_t _vecReserve(_mut_ size_t** vec, size_t new_cap,
+extern error_t _vecReserve(_mut_ size_t **vec, size_t new_cap,
                            size_t unit_size);
 
 static inline error_t
-_vecGrow(_mut_ size_t** vec, size_t unit_size)
+_vecGrow(_mut_ size_t **vec, size_t unit_size)
 {
         if (!*vec) {
                 return _vecReserve(vec, VEC_INIT_BUF_SIZE, unit_size);
@@ -106,13 +106,13 @@ _vecGrow(_mut_ size_t** vec, size_t unit_size)
 }
 
 static inline error_t
-_vecExtend(_mut_ size_t** pdst, size_t dst_size, size_t unit_size, size_t* src,
+_vecExtend(_mut_ size_t **pdst, size_t dst_size, size_t unit_size, size_t *src,
            size_t src_size)
 {
         const size_t new_size = dst_size + src_size;
         error_t      err      = _vecReserve(pdst, new_size, unit_size);
         if (err) return err;
-        memcpy(((char*)(*pdst)) + unit_size * dst_size, src,
+        memcpy(((char *)(*pdst)) + unit_size * dst_size, src,
                unit_size * src_size);
         (*pdst)[-2] = new_size;
         return OK;

@@ -55,16 +55,16 @@ static const uint32_t sha256_k[64] = {
     0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-static void sha256Transform(struct sha256_t* s, const unsigned char* message,
+static void sha256Transform(struct sha256_t *s, const unsigned char *message,
                             unsigned int num_chunks);
-static void sha256Finalize(struct sha256_t* s, unsigned char* digest);
+static void sha256Finalize(struct sha256_t *s, unsigned char *digest);
 
 // -----------------------------------------------------------------------------
 // implementation
 // -----------------------------------------------------------------------------
 
 void
-sha256Reset(struct sha256_t* s)
+sha256Reset(struct sha256_t *s)
 {
         // First 32 bits of the fractional parts of the square roots of the
         // first 8 primes 2..19.
@@ -82,7 +82,7 @@ sha256Reset(struct sha256_t* s)
 }
 
 error_t
-sha256Update(struct sha256_t* s, const unsigned char* message, uint64_t len)
+sha256Update(struct sha256_t *s, const unsigned char *message, uint64_t len)
 {
         if (s->finalized)
                 return errNew(
@@ -107,7 +107,7 @@ sha256Update(struct sha256_t* s, const unsigned char* message, uint64_t len)
         // the final full 512-bit chunk.
         uint64_t remaining_len_in_msg = len - current_len;
         uint64_t num_chunks = remaining_len_in_msg / SHA224_256_BLOCK_SIZE;
-        const unsigned char* shifted_message = message + current_len;
+        const unsigned char *shifted_message = message + current_len;
         sha256Transform(s, shifted_message, num_chunks);
 
         // Now hanele the final, unfulfilled, chunk. Copy the content to
@@ -121,7 +121,7 @@ sha256Update(struct sha256_t* s, const unsigned char* message, uint64_t len)
 }
 
 sds_t
-sha256Digest(struct sha256_t* s)
+sha256Digest(struct sha256_t *s)
 {
         sds_t buf            = sdsEmptyWithCap(2 * DIGEST_SIZE);
         buf[2 * DIGEST_SIZE] = 0;
@@ -140,11 +140,11 @@ sha256Digest(struct sha256_t* s)
 }
 
 sds_t
-sha256DigestStr(const char* msg)
+sha256DigestStr(const char *msg)
 {
         struct sha256_t s;
         sha256Reset(&s);
-        sha256Update(&s, (unsigned char*)msg, strlen(msg));
+        sha256Update(&s, (unsigned char *)msg, strlen(msg));
         return sha256Digest(&s);
 }
 
@@ -190,13 +190,13 @@ sha256DigestStr(const char* msg)
 // -----------------------------------------------------------------------------
 
 void
-sha256Transform(struct sha256_t* s, const unsigned char* message,
+sha256Transform(struct sha256_t *s, const unsigned char *message,
                 unsigned int num_chunks)
 {
         uint32_t             w[64];
         uint32_t             wv[8];
         uint32_t             t1, t2;
-        const unsigned char* sub_block;
+        const unsigned char *sub_block;
         int                  i;
         int                  j;
         for (i = 0; i < (int)num_chunks; i++) {
@@ -231,7 +231,7 @@ sha256Transform(struct sha256_t* s, const unsigned char* message,
 }
 
 void
-sha256Finalize(struct sha256_t* s, unsigned char* digest)
+sha256Finalize(struct sha256_t *s, unsigned char *digest)
 {
         // Need 2 blocks for padding.
         unsigned char block[2 * SHA224_256_BLOCK_SIZE];

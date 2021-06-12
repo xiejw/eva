@@ -60,9 +60,9 @@ typedef struct {
         int k;
 } option_t;
 
-static void printProblem(int* problem);
-int         searchOptions(int* problem, vec_t(option_t) options);
-static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
+static void printProblem(int *problem);
+int         searchOptions(int *problem, vec_t(option_t) options);
+static void getItemId(int i, int j, int k, int *p, int *r, int *c, int *b);
 
 // -----------------------------------------------------------------------------
 // main.
@@ -71,7 +71,7 @@ int
 main()
 {
         // select and print problem
-        int* problem = PROLBEMS[PID];
+        int *problem = PROLBEMS[PID];
         printProblem(problem);
 
         // search options.
@@ -89,7 +89,7 @@ main()
         }
 
         // prepare dancing links table.
-        dl_table_t* t = dlNew(1 + 4 * options_count + 4 * 81);
+        dl_table_t *t = dlNew(1 + 4 * options_count + 4 * 81);
         dlAllocateItems(t, /*num_items=*/4 * 81);
 
         // hide all items which have been filled by the problem already.
@@ -111,7 +111,7 @@ main()
 
         // append options to the dancing links table;
         for (int i = 0; i < options_count; i++) {
-                option_t* o = &options[i];
+                option_t *o = &options[i];
                 getItemId(o->x, o->y, o->k, /*p=*/item_ids, /*r=*/item_ids + 1,
                           /*c=*/item_ids + 2,
                           /*b=*/item_ids + 3);
@@ -126,7 +126,7 @@ main()
                 printf("found solution:\n");
                 int n = vecSize(sols);
                 for (int i = 0; i < n; i++) {
-                        option_t* o                 = dlNodeData(t, sols[i]);
+                        option_t *o                 = dlNodeData(t, sols[i]);
                         problem[o->x * SIZE + o->y] = o->k;
                 }
                 printProblem(problem);
@@ -147,7 +147,7 @@ main()
 
 // prints the Sudoku Problem on screen.
 void
-printProblem(int* problem)
+printProblem(int *problem)
 {
         // header
         printf("+-----+-----+-----+\n");
@@ -175,7 +175,7 @@ printProblem(int* problem)
 
 // seach all options that on (x,y) the digit k is allowed to be put there.
 int
-searchOptions(int* problem, vec_t(option_t) options)
+searchOptions(int *problem, vec_t(option_t) options)
 {
         int total = 0;
 
@@ -238,7 +238,7 @@ searchOptions(int* problem, vec_t(option_t) options)
 // - b{x,k} // box with digit
 //   x = 3 * floor(i/3) + floor(j/3)
 void
-getItemId(int i, int j, int k, int* p, int* r, int* c, int* b)
+getItemId(int i, int j, int k, int *p, int *r, int *c, int *b)
 {
         int x      = 3 * (i / 3) + (j / 3);
         int offset = 0;

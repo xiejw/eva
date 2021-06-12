@@ -31,13 +31,13 @@ typedef int error_t;
 // APis for error handling.
 // -----------------------------------------------------------------------------
 
-extern error_t errNew(const char* fmt, ...);
-extern error_t errNewWithNote(error_t err, const char* fmt, ...);
-extern error_t errEmitNote(const char* fmt, ...);
+extern error_t errNew(const char *fmt, ...);
+extern error_t errNewWithNote(error_t err, const char *fmt, ...);
+extern error_t errEmitNote(const char *fmt, ...);
 extern void    errFree();
 
 extern error_t errNum();
-extern void    errDump(const char*, ...);
+extern void    errDump(const char *, ...);
 
 #define errFatalAndExit(fmt, ...) \
         errFatalAndExit_(__FILE__, __LINE__, fmt, __VA_ARGS__)
@@ -53,6 +53,6 @@ extern void    errDump(const char*, ...);
 // -----------------------------------------------------------------------------
 // Private prototype.
 // -----------------------------------------------------------------------------
-extern error_t errFatalAndExit_(char* file, int line_no, const char* fmt, ...);
+extern error_t errFatalAndExit_(char *file, int line_no, const char *fmt, ...);
 
 #endif

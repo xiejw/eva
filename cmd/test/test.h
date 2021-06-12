@@ -12,11 +12,11 @@
 extern int tests_run;
 
 typedef struct {
-        char* name;
-        char* (*fn)();
+        char *name;
+        char *(*fn)();
 } test_suite_t;
 
-static test_suite_t* test_suites      = NULL;
+static test_suite_t *test_suites      = NULL;
 static int           test_suite_cap   = 0;
 static int           test_suite_count = 0;
 
@@ -29,7 +29,7 @@ run_all_suites()
         for (int i = 0; i < test_suite_count; i++) {
                 printf("Running suite: %s\n", test_suites[i].name);
 
-                char* result = test_suites[i].fn();
+                char *result = test_suites[i].fn();
                 if (result != 0) {
                         suites_failed++;
                         printf("\033[1;31mERROR: %s\033[0m\n",
@@ -63,7 +63,7 @@ run_all_suites()
         ADD_SUITE_NAME_AND_FN(#suite_name, run_##suite_name##_suite)
 
 #define ADD_SUITE_NAME_AND_FN(suite_name, func)                                  \
-        char* func();                                                            \
+        char *func();                                                            \
         if (test_suite_cap <= test_suite_count) {                                \
                 test_suite_cap = test_suite_cap ? 2 * test_suite_cap             \
                                                 : TEST_SUITES_INIT_SIZE;         \

@@ -19,11 +19,11 @@ static const float two_pi_f_     = 2.0 * 3.141592653589793238;
  * normally distributed rn are generated.
  */
 void
-rng64StdNormalD(struct rng64_t* rng64, size_t size, double* buffer)
+rng64StdNormalD(struct rng64_t *rng64, size_t size, double *buffer)
 {
         size_t  i;
         size_t  num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
-        double* uniforms  = malloc(num_seeds * sizeof(double));
+        double *uniforms  = malloc(num_seeds * sizeof(double));
 
         assert(size > 0);
 
@@ -51,11 +51,11 @@ rng64StdNormalD(struct rng64_t* rng64, size_t size, double* buffer)
 }
 
 void
-rng64StdNormalF(struct rng64_t* rng64, size_t size, float* buffer)
+rng64StdNormalF(struct rng64_t *rng64, size_t size, float *buffer)
 {
         size_t i;
         size_t num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
-        float* uniforms  = malloc(num_seeds * sizeof(float));
+        float *uniforms  = malloc(num_seeds * sizeof(float));
 
         assert(size > 0);
 

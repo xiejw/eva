@@ -6,7 +6,7 @@
 
 #define ASSERT_NO_ERR(expr) ASSERT_TRUE("no error.", 0 == (expr))
 
-static char*
+static char *
 test_minute()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
@@ -21,7 +21,7 @@ test_minute()
         return NULL;
 }
 
-static char*
+static char *
 test_hour()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
@@ -36,7 +36,7 @@ test_hour()
         return NULL;
 }
 
-static char*
+static char *
 test_hour_in_next_day()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
@@ -51,7 +51,7 @@ test_hour_in_next_day()
         return NULL;
 }
 
-static char*
+static char *
 test_end_to_end()
 {
         // Wednesday, March 27, 2019 11:31:58 AM GMT-07:00 DST
@@ -67,10 +67,10 @@ test_end_to_end()
         return NULL;
 }
 
-char*
+char *
 run_cron_suite()
 {
-        char* tz_value = getenv("TZ");
+        char *tz_value = getenv("TZ");
         setenv("TZ", "America/Los_Angeles", /*overwrite = */ 1);
 
         RUN_TEST(test_minute);

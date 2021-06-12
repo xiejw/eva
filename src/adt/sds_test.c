@@ -4,7 +4,7 @@
 
 #include "string.h"
 
-static char*
+static char *
 test_new()
 {
         sds_t s = sdsNew("hello");
@@ -15,7 +15,7 @@ test_new()
         return NULL;
 }
 
-static char*
+static char *
 test_new_null()
 {
         sds_t s = sdsNew(NULL);
@@ -26,7 +26,7 @@ test_new_null()
         return NULL;
 }
 
-static char*
+static char *
 test_empty()
 {
         sds_t s = sdsEmpty();
@@ -37,7 +37,7 @@ test_empty()
         return NULL;
 }
 
-static char*
+static char *
 test_empty_with_cap()
 {
         sds_t s = sdsEmptyWithCap(10);
@@ -48,7 +48,7 @@ test_empty_with_cap()
         return NULL;
 }
 
-static char*
+static char *
 test_dup()
 {
         sds_t old_s = sdsNew("hello");
@@ -62,7 +62,7 @@ test_dup()
         return NULL;
 }
 
-static char*
+static char *
 test_dup_null()
 {
         sds_t s = sdsDup(NULL);
@@ -74,7 +74,7 @@ test_dup_null()
         return NULL;
 }
 
-static char*
+static char *
 test_cat_len()
 {
         sds_t s = sdsNew("hello");
@@ -86,7 +86,7 @@ test_cat_len()
         return NULL;
 }
 
-static char*
+static char *
 test_cat()
 {
         sds_t s = sdsNew("hello");
@@ -98,7 +98,7 @@ test_cat()
         return NULL;
 }
 
-static char*
+static char *
 test_cat_sds()
 {
         sds_t s = sdsNew("hello");
@@ -112,7 +112,7 @@ test_cat_sds()
         return NULL;
 }
 
-static char*
+static char *
 test_cat_printf()
 {
         sds_t s = sdsNew("hello");
@@ -127,7 +127,7 @@ test_cat_printf()
         return NULL;
 }
 
-static char*
+static char *
 test_cat_printf_long()
 {
         sds_t s = sdsNew("hello");
@@ -142,7 +142,7 @@ test_cat_printf_long()
         return NULL;
 }
 
-static char*
+static char *
 test_reserve()
 {
         sds_t s = sdsNew("hello");
@@ -167,7 +167,7 @@ test_reserve()
         return NULL;
 }
 
-static char*
+static char *
 test_cpy()
 {
         sds_t s = sdsNew("");
@@ -179,7 +179,7 @@ test_cpy()
         return NULL;
 }
 
-static char*
+static char *
 test_cpy_len()
 {
         sds_t s = sdsNew("");
@@ -191,7 +191,7 @@ test_cpy_len()
         return NULL;
 }
 
-static char*
+static char *
 test_cmp()
 {
         sds_t s1 = sdsNew("hello");
@@ -208,7 +208,7 @@ test_cmp()
         return NULL;
 }
 
-char*
+char *
 run_adt_sds_suite()
 {
         RUN_TEST(test_new);

@@ -45,26 +45,26 @@ const int SDS_DEFAULT_ALLOCATE_SPACE = 16;
 // implementation.
 // -----------------------------------------------------------------------------
 
-static inline sds_t _sdsRaw(const void* init, size_t len, size_t cap);
+static inline sds_t _sdsRaw(const void *init, size_t len, size_t cap);
 
 sds_t
 sdsEmptyWithCap(size_t cap)
 {
         sds_t   s    = _sdsRaw(NULL, 0, cap);
-        sdshdr* phdr = SDS_HDR(s);
+        sdshdr *phdr = SDS_HDR(s);
         phdr->len    = 0;
         s[0]         = '\0';
         return s;
 }
 
 sds_t
-sdsNew(const char* init)
+sdsNew(const char *init)
 {
         size_t initlen = (init == NULL) ? 0 : strlen(init);
         size_t cap     = initlen;
 
         sds_t   s    = _sdsRaw(init, initlen, cap);
-        sdshdr* phdr = SDS_HDR(s);
+        sdshdr *phdr = SDS_HDR(s);
         phdr->len    = initlen;
         s[initlen]   = '\0';
         return s;
@@ -82,7 +82,7 @@ sdsDup(const sds_t s)
         int   len   = sdsLen(s);
         sds_t new_s = _sdsRaw(s, len, sdsCap(s));
 
-        sdshdr* phdr = SDS_HDR(new_s);
+        sdshdr *phdr = SDS_HDR(new_s);
         phdr->len    = len;
         new_s[len]   = '\0';
         return new_s;
@@ -92,11 +92,11 @@ void
 sdsFree(sds_t s)
 {
         if (s == NULL) return;
-        free((void*)SDS_HDR(s));
+        free((void *)SDS_HDR(s));
 }
 
 void
-sdsReserve(sds_t* s, size_t new_len)
+sdsReserve(sds_t *s, size_t new_len)
 {
         size_t cap = sdsCap(*s);
         if (cap >= new_len) return;
@@ -104,7 +104,7 @@ sdsReserve(sds_t* s, size_t new_len)
         new_len *= 2;
 
         int   hdrlen = sizeof(sdshdr);
-        void* buf    = SDS_HDR(*s);
+        void *buf    = SDS_HDR(*s);
         buf          = realloc(buf, hdrlen + new_len + 1);
         if (buf == NULL) {
                 *s = NULL;
@@ -115,7 +115,7 @@ sdsReserve(sds_t* s, size_t new_len)
 }
 
 void
-sdsCatLen(sds_t* s, const void* t, size_t len)
+sdsCatLen(sds_t *s, const void *t, size_t len)
 {
         size_t curlen = sdsLen(*s);
         size_t newlen = curlen + len;
@@ -127,17 +127,17 @@ sdsCatLen(sds_t* s, const void* t, size_t len)
 }
 
 void
-sdsCat(sds_t* s, const char* t)
+sdsCat(sds_t *s, const char *t)
 {
         sdsCatLen(s, t, strlen(t));
 }
 void
-sdsCatSds(sds_t* s, const sds_t t)
+sdsCatSds(sds_t *s, const sds_t t)
 {
         sdsCatLen(s, t, sdsLen(t));
 }
 void
-sdsCatPrintf(sds_t* s, const char* fmt, ...)
+sdsCatPrintf(sds_t *s, const char *fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -146,7 +146,7 @@ sdsCatPrintf(sds_t* s, const char* fmt, ...)
 }
 
 void
-sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
+sdsCatVprintf(sds_t *s, const char *fmt, va_list ap)
 {
         va_list cpy;
         char    staticbuf[1024], *buf = staticbuf;
@@ -159,7 +159,7 @@ sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
                 if (buflen <= avail) {
                         size_t cur_len = sdsLen(*s);
 
-                        char* buf       = (*s) + cur_len;
+                        char *buf       = (*s) + cur_len;
                         buf[buflen - 2] = '\0';
                         va_copy(cpy, ap);
                         vsnprintf(buf, buflen, fmt, cpy);
@@ -212,7 +212,7 @@ sdsCatVprintf(sds_t* s, const char* fmt, va_list ap)
 }
 
 void
-sdsCpyLen(sds_t* s, const char* t, size_t len)
+sdsCpyLen(sds_t *s, const char *t, size_t len)
 {
         sdsReserve(s, len);
         if (*s == NULL) return;
@@ -222,7 +222,7 @@ sdsCpyLen(sds_t* s, const char* t, size_t len)
         return;
 }
 void
-sdsCpy(sds_t* s, const char* t)
+sdsCpy(sds_t *s, const char *t)
 {
         sdsCpyLen(s, t, strlen(t));
 }
@@ -259,16 +259,16 @@ sdsCmp(const sds_t s1, const sds_t s2)
 // - allocate `cap` size but only initialize `len` size.
 // - the final `\0` is not set.
 sds_t
-_sdsRaw(const void* init, size_t len, size_t cap)
+_sdsRaw(const void *init, size_t len, size_t cap)
 {
         cap =
             cap > SDS_DEFAULT_ALLOCATE_SPACE ? cap : SDS_DEFAULT_ALLOCATE_SPACE;
         int   hdrlen = sizeof(sdshdr);
-        void* buf    = malloc(hdrlen + cap + 1);
+        void *buf    = malloc(hdrlen + cap + 1);
         if (buf == NULL) return NULL;
 
-        sds_t s               = (sds_t)buf + hdrlen;
-        ((sdshdr*)buf)->alloc = cap;
+        sds_t s                = (sds_t)buf + hdrlen;
+        ((sdshdr *)buf)->alloc = cap;
 
         if (len) {
                 if (init == NULL)

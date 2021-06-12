@@ -2,7 +2,7 @@
 
 #include "vec.h"
 
-static char*
+static char *
 test_vec_init()
 {
         vec_t(int) v = vecNew();
@@ -12,7 +12,7 @@ test_vec_init()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_push_back()
 {
         vec_t(int) v = vecNew();
@@ -24,7 +24,7 @@ test_vec_push_back()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_pop_back()
 {
         vec_t(int) v = vecNew();
@@ -38,7 +38,7 @@ test_vec_pop_back()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_extend()
 {
         vec_t(int) v1 = vecNew();
@@ -60,7 +60,7 @@ test_vec_extend()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_extend_null()
 {
         vec_t(int) v1 = vecNew();
@@ -80,7 +80,7 @@ test_vec_extend_null()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_reserve()
 {
         vec_t(int) v = vecNew();
@@ -91,7 +91,7 @@ test_vec_reserve()
         return NULL;
 }
 
-static char*
+static char *
 test_vec_grow()
 {
         vec_t(int) v = vecNew();
@@ -118,7 +118,7 @@ test_vec_grow()
         return NULL;
 }
 
-char*
+char *
 run_adt_vec_suite()
 {
         RUN_TEST(test_vec_init);

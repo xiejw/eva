@@ -58,23 +58,23 @@ static const float    float_ulp_   = 1.0 / (((uint64_t)1L) << 53);
 
 static uint64_t rng64_update(uint64_t seed, uint64_t gamma);
 static uint64_t rng64_mix64(uint64_t z);
-static uint64_t rng64_advance_seed(struct rng64_t* rng);
+static uint64_t rng64_advance_seed(struct rng64_t *rng);
 static uint64_t rng64_mix56(uint64_t z);
 
 // -----------------------------------------------------------------------------
 // implementation.
 // -----------------------------------------------------------------------------
 
-struct srng64_t*
+struct srng64_t *
 srng64New(uint64_t seed)
 {
         return srng64NewWithGamma(seed, /*gamma_seed=*/0L);
 }
 
-struct srng64_t*
+struct srng64_t *
 srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed)
 {
-        struct srng64_t* rng;
+        struct srng64_t *rng;
 
         assert(gamma_seed < gamma_prime_);
         rng = malloc(sizeof(struct srng64_t));
@@ -87,46 +87,46 @@ srng64NewWithGamma(uint64_t seed, uint64_t gamma_seed)
         return rng;
 }
 
-struct srng64_t*
-srng64Split(struct srng64_t* rng)
+struct srng64_t *
+srng64Split(struct srng64_t *rng)
 {
-        uint64_t seed       = rng64_advance_seed((struct rng64_t*)rng);
+        uint64_t seed       = rng64_advance_seed((struct rng64_t *)rng);
         uint64_t gamma_seed = rng->next_gamma_seed_;
         return srng64NewWithGamma(seed, gamma_seed);
 }
 
 void
-srng64Free(struct srng64_t* rng)
+srng64Free(struct srng64_t *rng)
 {
         free(rng);
 }
 
 void
-rng64Free(struct rng64_t* rng)
+rng64Free(struct rng64_t *rng)
 {
         free(rng);
 }
 
 uint64_t
-rng64NextUint64(struct rng64_t* rng)
+rng64NextUint64(struct rng64_t *rng)
 {
         return rng64_mix64(rng64_advance_seed(rng));
 }
 
 uint32_t
-rng64NextUint32(struct rng64_t* rng)
+rng64NextUint32(struct rng64_t *rng)
 {
         return (uint32_t)(rng64NextUint64(rng));
 }
 
 double
-rng64NextDouble(struct rng64_t* rng)
+rng64NextDouble(struct rng64_t *rng)
 {
         return (rng64NextUint64(rng) >> 11) * double_ulp_;
 }
 
 float
-rng64NextFloat(struct rng64_t* rng)
+rng64NextFloat(struct rng64_t *rng)
 {
         return (rng64NextUint64(rng) >> 11) * float_ulp_;
 }
@@ -151,7 +151,7 @@ rng64_mix64(uint64_t z)
 }
 
 uint64_t
-rng64_advance_seed(struct rng64_t* rng)
+rng64_advance_seed(struct rng64_t *rng)
 {
         /* Advance one more coefficient at current level. */
         return (rng->seed_ = rng64_update(rng->seed_, rng->gamma_));

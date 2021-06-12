@@ -14,19 +14,19 @@ typedef struct err_msg_list_t {
                 sds_t   msg;  // used by nodes.
                 error_t err;  // used by header.
         };
-        struct err_msg_list_t* prev;
-        struct err_msg_list_t* next;
+        struct err_msg_list_t *prev;
+        struct err_msg_list_t *next;
 } err_msg_list_t;
 
 // -----------------------------------------------------------------------------
 // helper methods prototypes.
 // -----------------------------------------------------------------------------
 
-static err_msg_list_t* err_msg_header = NULL;
+static err_msg_list_t *err_msg_header = NULL;
 
 static void    errNewHeader(error_t err);
-static void    errMsgAppend(const char* fmt, va_list ap);
-static error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap);
+static void    errMsgAppend(const char *fmt, va_list ap);
+static error_t errWrapNoteVprintf(error_t err, const char *fmt, va_list ap);
 
 // -----------------------------------------------------------------------------
 // implementation.
@@ -34,7 +34,7 @@ static error_t errWrapNoteVprintf(error_t err, const char* fmt, va_list ap);
 
 // emit a new note and return the errro code stored.
 error_t
-errEmitNote(const char* fmt, ...)
+errEmitNote(const char *fmt, ...)
 {
         assert(err_msg_header != NULL);
         va_list ap;
@@ -45,7 +45,7 @@ errEmitNote(const char* fmt, ...)
 }
 
 error_t
-errNewWithNote(error_t err, const char* fmt, ...)
+errNewWithNote(error_t err, const char *fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -56,7 +56,7 @@ errNewWithNote(error_t err, const char* fmt, ...)
 
 // Same as errNewWithNote(ERROR, fmt, ...)
 error_t
-errNew(const char* fmt, ...)
+errNew(const char *fmt, ...)
 {
         va_list ap;
         va_start(ap, fmt);
@@ -79,7 +79,7 @@ errFree()
 {
         if (err_msg_header == NULL) return;
 
-        err_msg_list_t* p = err_msg_header->next;
+        err_msg_list_t *p = err_msg_header->next;
         while (p != err_msg_header) {
                 sdsFree(p->msg);
                 p = p->next;
@@ -92,7 +92,7 @@ errFree()
 // print to stderr for all messages with leading title `msg` (a new line will
 // be appended after the msg if absent).
 void
-errDump(const char* fmt, ...)
+errDump(const char *fmt, ...)
 {
         assert(err_msg_header != NULL);
         va_list args;
@@ -103,7 +103,7 @@ errDump(const char* fmt, ...)
         if (fmt[strlen(fmt) - 1] != '\n')
                 fprintf(stderr, "\n");  // force a new line if absent.
 
-        err_msg_list_t* p = err_msg_header->prev;
+        err_msg_list_t *p = err_msg_header->prev;
         while (p != err_msg_header) {
                 fprintf(stderr, "  > %s\n", p->msg);
                 p = p->prev;
@@ -113,7 +113,7 @@ errDump(const char* fmt, ...)
 // print an error message and quit immediately. If there is an error already,
 // also print erro stack by calling errDump.
 error_t
-errFatalAndExit_(char* file, int line_no, const char* fmt, ...)
+errFatalAndExit_(char *file, int line_no, const char *fmt, ...)
 {
         fprintf(stderr, "fatal error: at %s line %d:\n  -> ", file, line_no);
         va_list args;
@@ -139,7 +139,7 @@ void
 errNewHeader(error_t err)
 {
         assert(err_msg_header == NULL);
-        err_msg_list_t* p = malloc(sizeof(err_msg_list_t));
+        err_msg_list_t *p = malloc(sizeof(err_msg_list_t));
         p->err            = err;
         p->next           = p;
         p->prev           = p;
@@ -147,12 +147,12 @@ errNewHeader(error_t err)
 }
 
 void
-errMsgAppend(const char* fmt, va_list ap)
+errMsgAppend(const char *fmt, va_list ap)
 {
         sds_t s = sdsEmptyWithCap(ERR_MSG_DEFAULT_LEN);
         sdsCatVprintf(&s, fmt, ap);
 
-        err_msg_list_t* p          = malloc(sizeof(err_msg_list_t));
+        err_msg_list_t *p          = malloc(sizeof(err_msg_list_t));
         p->msg                     = s;  // s ownership moved.
         p->prev                    = err_msg_header->prev;
         p->next                    = err_msg_header;
@@ -161,7 +161,7 @@ errMsgAppend(const char* fmt, va_list ap)
 }
 
 error_t
-errWrapNoteVprintf(error_t err, const char* fmt, va_list ap)
+errWrapNoteVprintf(error_t err, const char *fmt, va_list ap)
 {
         assert(err_msg_header == NULL);
         assert(err != OK);

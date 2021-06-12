@@ -20,11 +20,11 @@ static int         search(vec_t(dl_node_t) h, int k, vec_t(int) sols);
 // implementation.
 // -----------------------------------------------------------------------------
 
-dl_table_t*
+dl_table_t *
 dlNew(int reserve_n)
 {
         assert(reserve_n >= 1);
-        dl_table_t* h = malloc(sizeof(dl_table_t));
+        dl_table_t *h = malloc(sizeof(dl_table_t));
         h->num_items  = 0;
         h->num_nodes  = 1;
         h->nodes      = NULL;
@@ -35,7 +35,7 @@ dlNew(int reserve_n)
 }
 
 void
-dlFree(dl_table_t* h)
+dlFree(dl_table_t *h)
 {
         if (h == NULL) return;
         vecFree(h->nodes);
@@ -43,7 +43,7 @@ dlFree(dl_table_t* h)
 }
 
 void
-dlAllocateItems(dl_table_t* ph, int n)
+dlAllocateItems(dl_table_t *ph, int n)
 {
         vec_t(dl_node_t) v = ph->nodes;
         assert(vecSize(v) == 1);
@@ -60,7 +60,7 @@ dlAllocateItems(dl_table_t* ph, int n)
 }
 
 void
-dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data)
+dlAppendOption(dl_table_t *ph, int n, int *col_ids, void *data)
 {
         vec_t(dl_node_t) v = ph->nodes;
         int n_id           = vecSize(v);
@@ -81,13 +81,13 @@ dlAppendOption(dl_table_t* ph, int n, int* col_ids, void* data)
 }
 
 void
-dlCoverCol(dl_table_t* t, int c)
+dlCoverCol(dl_table_t *t, int c)
 {
         cover_col(t->nodes, c);
 }
 
 int
-dlSearchSolution(dl_table_t* t, vec_t(int) sols)
+dlSearchSolution(dl_table_t *t, vec_t(int) sols)
 {
         vecSetSize(sols, 0);
         return search(t->nodes, 0, sols);
@@ -101,7 +101,7 @@ void
 newNode(vec_t(dl_node_t) h, int id)
 {
         assert(vecCap(h) >= id + 1);
-        dl_node_t* p = &h[id];
+        dl_node_t *p = &h[id];
         p->id        = id;
         p->L         = id;
         p->R         = id;
@@ -114,7 +114,7 @@ newNode(vec_t(dl_node_t) h, int id)
 void
 linkLR(vec_t(dl_node_t) h, int end, int id)
 {
-        dl_node_t* p = &h[id];
+        dl_node_t *p = &h[id];
         p->L         = end;
         p->R         = h[end].R;
         h[end].R     = id;
@@ -125,8 +125,8 @@ linkLR(vec_t(dl_node_t) h, int end, int id)
 void
 linkUD(vec_t(dl_node_t) h, int id_c, int id)
 {
-        dl_node_t* c = &h[id_c];
-        dl_node_t* p = &h[id];
+        dl_node_t *c = &h[id_c];
+        dl_node_t *p = &h[id];
         p->C         = id_c;
 
         c->S += 1;
@@ -142,7 +142,7 @@ void
 print(vec_t(dl_node_t) h, int n, int num_items)
 {
         for (int i = 0; i < n; i++) {
-                dl_node_t* p = &h[i];
+                dl_node_t *p = &h[i];
                 if (i <= num_items)
                         printf("%2d |  L: %2d R: %2d D: %2d U: %2d S: %2d\n", i,
                                p->L, p->R, p->D, p->U, p->S);

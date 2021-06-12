@@ -4,7 +4,7 @@
 
 #define ASSERT_NO_ERR(v) ASSERT_TRUE("no err", OK == (v))
 
-static char*
+static char *
 test_map_new()
 {
         map_t(int) m = mapNew();
@@ -14,7 +14,7 @@ test_map_new()
         return NULL;
 }
 
-static char*
+static char *
 test_map_get_set()
 {
         map_t(int) m = mapNew();
@@ -30,7 +30,7 @@ test_map_get_set()
         return NULL;
 }
 
-static char*
+static char *
 test_map_reserve()
 {
         map_t(int) m = mapNew();
@@ -48,7 +48,7 @@ test_map_reserve()
         return NULL;
 }
 
-static char*
+static char *
 test_map_foreach()
 {
         map_t(int) m = mapNew();
@@ -67,8 +67,8 @@ test_map_foreach()
         int         found_1 = 0;
         int         found_2 = 0;
         int         found_3 = 0;
-        const char* key;
-        int*        v;
+        const char *key;
+        int        *v;
         MAP_FOREACH(m, &key, &v)
         {
                 if (strcmp(key, "a") == 0) {
@@ -96,7 +96,7 @@ test_map_foreach()
         return NULL;
 }
 
-char*
+char *
 run_adt_map_suite()
 {
         RUN_TEST(test_map_new);

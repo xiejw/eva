@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-static char*
+static char *
 test_empty_str()
 {
         sds_t sds = sha256DigestStr("");
@@ -15,7 +15,7 @@ test_empty_str()
         return NULL;
 }
 
-static char*
+static char *
 test_str()
 {
         sds_t sds = sha256DigestStr("grape");
@@ -26,7 +26,7 @@ test_str()
         return NULL;
 }
 
-static char*
+static char *
 test_str_padding_one_more()
 {
         // prepare a message with size as 64-9 < size < 64. so we need to pad
@@ -46,7 +46,7 @@ test_str_padding_one_more()
         return NULL;
 }
 
-static char*
+static char *
 test_long_str()
 {
         sds_t sds = sha256DigestStr(
@@ -72,15 +72,15 @@ test_long_str()
         return NULL;
 }
 
-static char*
+static char *
 test_stream()
 {
-        const char* msg = "grape";
+        const char *msg = "grape";
 
         struct sha256_t s;
         sha256Reset(&s);
         for (int i = 0; i < 5; i++) {
-                sha256Update(&s, (unsigned char*)msg + i, 1);
+                sha256Update(&s, (unsigned char *)msg + i, 1);
         }
         sds_t sds = sha256Digest(&s);
 
@@ -91,7 +91,7 @@ test_stream()
         return NULL;
 }
 
-char*
+char *
 run_crypto_sha256_suite()
 {
         RUN_TEST(test_empty_str);
