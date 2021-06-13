@@ -6,7 +6,7 @@ A Horn clause is a clause (a disjunction of literals) with at most one positive
 literal.  A Horn formula is a propositional formula formed by conjunction of
 Horn clauses.
 
-### Definite Horn Formula
+### Definite Horn Formula and The Core
 
 The definite Horn formula must satisfy
 
@@ -19,7 +19,13 @@ whenever `f` is true.
 
 ### Algorithrm C
 
+The algorithm is as follows
 
+1. Put all positive literal in the single variable clause into core. They must
+   be true.
+2. Keep deducing the proposition of non-positive literal, once their values
+   are known to be true, i.e., in core. Once all non-positive literals in a
+   clause are deduced, its positive literal, if present, must be in core.
 
 ### Indefinite Horn Formula
 
