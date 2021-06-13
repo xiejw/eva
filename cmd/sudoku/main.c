@@ -72,12 +72,13 @@ main()
 {
         // Select and print problem
         const int *problem = PROLBEMS[PID];
+        printf("Problem:\n");
         printProblem(problem);
 
         // Search options.
         vec_t(option_t) options = vecNew();
         vecReserve(options, 9 * 9 * 9);  // at most 9^3 options.
-        int options_count = searchOptions(problem, options);
+        const int options_count = searchOptions(problem, options);
 
         if (DEBUG) {
                 printf("total options count %d\n", options_count);
@@ -88,17 +89,21 @@ main()
                 }
         }
 
-        // prepare dancing links table.
+        // Prepare dancing links table.
+        //
+        // For each column head (item) and option, we need 4 nodes to cover.
+        // See getItemId for detaisl. The extra one is the header.
         struct dl_table_t *t = dlNew(1 + 4 * options_count + 4 * 81);
         dlAllocateItems(t, /*num_items=*/4 * 81);
 
-        // hide all items which have been filled by the problem already.
+        // Hide all items which have been filled by the problem already.
         int item_ids[4];
         for (int x = 0; x < SIZE; x++) {
                 int offset = x * SIZE;
                 for (int y = 0; y < SIZE; y++) {
                         int num = problem[offset + y];
                         if (num == 0) continue;
+
                         getItemId(x, y, num, /*p=*/item_ids, /*r=*/item_ids + 1,
                                   /*c=*/item_ids + 2,
                                   /*b=*/item_ids + 3);
@@ -109,20 +114,21 @@ main()
                 }
         }
 
-        // append options to the dancing links table;
+        // Append options to the dancing links table;
         for (int i = 0; i < options_count; i++) {
                 option_t *o = &options[i];
                 getItemId(o->x, o->y, o->k, /*p=*/item_ids, /*r=*/item_ids + 1,
                           /*c=*/item_ids + 2,
                           /*b=*/item_ids + 3);
-                dlAppendOption(t, 4, item_ids, o);
+                dlAppendOption(t, /*num_ids=*/4, item_ids, o);
         }
 
-        // search solution.
+        // Search solution.
         vec_t(int) sols = vecNew();
         vecReserve(sols, SIZE * SIZE);
 
         if (dlSearchSolution(t, sols)) {
+                // Dup the problem as we are going to modify it.
                 int solution[SIZE * SIZE];
                 memcpy(solution, problem, sizeof(int) * SIZE * SIZE);
 
@@ -135,7 +141,7 @@ main()
                 printProblem(solution);
 
         } else {
-                printf("no solution.\n");
+                printf("No solution.\n");
         }
 
         vecFree(options);

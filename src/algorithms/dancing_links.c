@@ -20,8 +20,8 @@ static int         search(vec_t(dl_node_t) h, int k, vec_t(int) sols);
 // Implementation.
 // -----------------------------------------------------------------------------
 
-// Reserve reserve_n nodes. It must cover 1 header, all column heads and all
-// items.
+// Reserve reserve_n nodes. It must cover 1 header, all column heads (items)
+// and all options. After this method, call dlAllocateItems immediately.
 struct dl_table_t *
 dlNew(int reserve_n)
 {
@@ -62,12 +62,12 @@ dlAllocateItems(struct dl_table_t *ph, int n)
 }
 
 void
-dlAppendOption(struct dl_table_t *ph, int n, int *col_ids, void *data)
+dlAppendOption(struct dl_table_t *ph, int num_ids, int *col_ids, void *data)
 {
         vec_t(dl_node_t) v = ph->nodes;
         int n_id           = vecSize(v);
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < num_ids; i++) {
                 int id = n_id + i;
                 newNode(v, id);
                 linkUD(v, col_ids[i], id);
@@ -77,7 +77,7 @@ dlAppendOption(struct dl_table_t *ph, int n, int *col_ids, void *data)
                 }
         }
 
-        int size = n + n_id;
+        int size = num_ids + n_id;
         vecSetSize(v, size);
         ph->num_nodes = size;
 }
@@ -88,6 +88,7 @@ dlCoverCol(struct dl_table_t *t, int c)
         cover_col(t->nodes, c);
 }
 
+// sols must have enough capacity to hold result.
 int
 dlSearchSolution(struct dl_table_t *t, vec_t(int) sols)
 {
@@ -96,7 +97,7 @@ dlSearchSolution(struct dl_table_t *t, vec_t(int) sols)
 }
 
 // -----------------------------------------------------------------------------
-// helper methods implementation.
+// Helper Methods Implementation.
 // -----------------------------------------------------------------------------
 
 void

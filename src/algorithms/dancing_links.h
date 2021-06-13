@@ -26,7 +26,7 @@ extern struct dl_table_t *dlNew(int reserve_n);
 extern void               dlFree(struct dl_table_t *h);
 
 extern void dlAllocateItems(struct dl_table_t *h, int n);
-extern void dlAppendOption(struct dl_table_t *h, int n, int *col_ids,
+extern void dlAppendOption(struct dl_table_t *h, int num_ids, int *col_ids,
                            void *data);
 
 extern void dlCoverCol(struct dl_table_t *t, int c);
