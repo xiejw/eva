@@ -6,7 +6,7 @@
 typedef struct dl_node_t dl_node_t;
 
 // -----------------------------------------------------------------------------
-// helper methods prototypes.
+// Helper methods prototypes.
 // -----------------------------------------------------------------------------
 
 static void        newNode(vec_t(dl_node_t) h, int id);
@@ -17,17 +17,19 @@ static inline void uncover_col(vec_t(dl_node_t) h, int c);
 static int         search(vec_t(dl_node_t) h, int k, vec_t(int) sols);
 
 // -----------------------------------------------------------------------------
-// implementation.
+// Implementation.
 // -----------------------------------------------------------------------------
 
-dl_table_t *
+// Reserve reserve_n nodes. It must cover 1 header, all column heads and all
+// items.
+struct dl_table_t *
 dlNew(int reserve_n)
 {
         assert(reserve_n >= 1);
-        dl_table_t *h = malloc(sizeof(dl_table_t));
-        h->num_items  = 0;
-        h->num_nodes  = 1;
-        h->nodes      = NULL;
+        struct dl_table_t *h = malloc(sizeof(struct dl_table_t));
+        h->num_items         = 0;
+        h->num_nodes         = 1;
+        h->nodes             = NULL;
         vecReserve(h->nodes, reserve_n);
         vecSetSize(h->nodes, 1);
         newNode(h->nodes, 0);
@@ -35,7 +37,7 @@ dlNew(int reserve_n)
 }
 
 void
-dlFree(dl_table_t *h)
+dlFree(struct dl_table_t *h)
 {
         if (h == NULL) return;
         vecFree(h->nodes);
@@ -43,7 +45,7 @@ dlFree(dl_table_t *h)
 }
 
 void
-dlAllocateItems(dl_table_t *ph, int n)
+dlAllocateItems(struct dl_table_t *ph, int n)
 {
         vec_t(dl_node_t) v = ph->nodes;
         assert(vecSize(v) == 1);
@@ -60,7 +62,7 @@ dlAllocateItems(dl_table_t *ph, int n)
 }
 
 void
-dlAppendOption(dl_table_t *ph, int n, int *col_ids, void *data)
+dlAppendOption(struct dl_table_t *ph, int n, int *col_ids, void *data)
 {
         vec_t(dl_node_t) v = ph->nodes;
         int n_id           = vecSize(v);
@@ -81,13 +83,13 @@ dlAppendOption(dl_table_t *ph, int n, int *col_ids, void *data)
 }
 
 void
-dlCoverCol(dl_table_t *t, int c)
+dlCoverCol(struct dl_table_t *t, int c)
 {
         cover_col(t->nodes, c);
 }
 
 int
-dlSearchSolution(dl_table_t *t, vec_t(int) sols)
+dlSearchSolution(struct dl_table_t *t, vec_t(int) sols)
 {
         vecSetSize(sols, 0);
         return search(t->nodes, 0, sols);

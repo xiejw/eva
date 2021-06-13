@@ -15,7 +15,7 @@
 #define PID 1
 #endif
 
-static int PROLBEMS[][SIZE * SIZE] = {
+static const int PROLBEMS[][SIZE * SIZE] = {
     // From The Art of Computer Programming, Vol 4, Dancing Links.
     {
         // clang-format off
@@ -60,8 +60,8 @@ typedef struct {
         int k;
 } option_t;
 
-static void printProblem(int *problem);
-int         searchOptions(int *problem, vec_t(option_t) options);
+static void printProblem(const int *problem);
+int         searchOptions(const int *problem, vec_t(option_t) options);
 static void getItemId(int i, int j, int k, int *p, int *r, int *c, int *b);
 
 // -----------------------------------------------------------------------------
@@ -70,13 +70,13 @@ static void getItemId(int i, int j, int k, int *p, int *r, int *c, int *b);
 int
 main()
 {
-        // select and print problem
-        int *problem = PROLBEMS[PID];
+        // Select and print problem
+        const int *problem = PROLBEMS[PID];
         printProblem(problem);
 
-        // search options.
+        // Search options.
         vec_t(option_t) options = vecNew();
-        vecReserve(options, 9 * 9 * 9);
+        vecReserve(options, 9 * 9 * 9);  // at most 9^3 options.
         int options_count = searchOptions(problem, options);
 
         if (DEBUG) {
@@ -89,7 +89,7 @@ main()
         }
 
         // prepare dancing links table.
-        dl_table_t *t = dlNew(1 + 4 * options_count + 4 * 81);
+        struct dl_table_t *t = dlNew(1 + 4 * options_count + 4 * 81);
         dlAllocateItems(t, /*num_items=*/4 * 81);
 
         // hide all items which have been filled by the problem already.
@@ -120,16 +120,19 @@ main()
 
         // search solution.
         vec_t(int) sols = vecNew();
-        vecReserve(sols, 9 * 9);
+        vecReserve(sols, SIZE * SIZE);
 
         if (dlSearchSolution(t, sols)) {
-                printf("found solution:\n");
+                int solution[SIZE * SIZE];
+                memcpy(solution, problem, sizeof(int) * SIZE * SIZE);
+
+                printf("Found solution:\n");
                 int n = vecSize(sols);
                 for (int i = 0; i < n; i++) {
-                        option_t *o                 = dlNodeData(t, sols[i]);
-                        problem[o->x * SIZE + o->y] = o->k;
+                        option_t *o                  = dlNodeData(t, sols[i]);
+                        solution[o->x * SIZE + o->y] = o->k;
                 }
-                printProblem(problem);
+                printProblem(solution);
 
         } else {
                 printf("no solution.\n");
@@ -142,12 +145,12 @@ main()
 }
 
 // -----------------------------------------------------------------------------
-// helper methods.
+// Helper Methods.
 // -----------------------------------------------------------------------------
 
-// prints the Sudoku Problem on screen.
+// Prints the Sudoku Problem on screen.
 void
-printProblem(int *problem)
+printProblem(const int *problem)
 {
         // header
         printf("+-----+-----+-----+\n");
@@ -173,9 +176,11 @@ printProblem(int *problem)
 
 #define POS(x, y) ((x)*SIZE + (y))
 
-// seach all options that on (x,y) the digit k is allowed to be put there.
+// Seach all options that on (x,y) the digit k is allowed to be put there.
+//
+// The argument options must have enough capacity to hold all potential options.
 int
-searchOptions(int *problem, vec_t(option_t) options)
+searchOptions(const int *problem, vec_t(option_t) options)
 {
         int total = 0;
 
@@ -230,13 +235,13 @@ searchOptions(int *problem, vec_t(option_t) options)
         return total;
 }
 
-// for digit k (1-based) in cell (i,j), generats four item ids (1-based).
+// For a digit k (1-based) in cell (i,j), generats four ids (1-based) for the
+// following four items:
 //
 // - p{i,j} // pos
 // - r{i,k} // row with digit
 // - c{j,k} // col with digit
-// - b{x,k} // box with digit
-//   x = 3 * floor(i/3) + floor(j/3)
+// - b{x,k} // box with digit where x = 3 * floor(i/3) + floor(j/3).
 void
 getItemId(int i, int j, int k, int *p, int *r, int *c, int *b)
 {

@@ -10,7 +10,7 @@
 static char *
 test_matrix_cover()
 {
-        dl_table_t *t = dlNew(1 + 23);
+        struct dl_table_t *t = dlNew(1 + 23);
         // column exact cover problem
         //
         //        1 2 3 4 5 6 7
