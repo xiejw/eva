@@ -8,5 +8,6 @@
 # docker
 .docker
 
-#mdbook
-doc/*/book
+# tex
+*.pdf
+*.log

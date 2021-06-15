@@ -117,3 +117,16 @@ endif
 
 push_docker:
 	docker push xiejw/cron
+
+# ------------------------------------------------------------------------------
+# Docs.
+# ------------------------------------------------------------------------------
+
+TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
+DOC             = doc
+DOCS            = ${DOC}/taocp/vol_4.pdf
+
+doc: ${DOCS}
+
+${DOC}/taocp/%.pdf: ${DOC}/taocp/%.tex
+	${TEX} -output-directory `dirname "$@"` $<
