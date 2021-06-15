@@ -1,4 +1,5 @@
 \input doc/format
+\input eplain
 \notespagesize
 %
 Volume 4
@@ -9,34 +10,33 @@ A Horn clause is a clause (a disjunction of literals) with at most one positive
 literal.  A Horn formula is a propositional formula formed by conjunction of
 Horn clauses.
 
-\vskip\baselineskip
-\noindent{\bf Definite Horn Formula and The Core}: The definite Horn formula
+\subsection{Definite Horn Formula and The Core}
+The definite Horn formula
 must satisfy
 $$
 f(1, 1, ..., 1) = 1.
 $$
-
 The core of the definite Horn formula is set the variables which must be true
 whenever $f$ is true.
 
-\vskip\baselineskip
-\noindent{\bf Algorithrm C}
+\subsection{Algorithrm C}
 
-\noindent The algorithm is as follows
+The algorithm is as follows
+\numberedlist
+\li Put all positive literal in the single variable clause into core.  They must
+    be true.
+\li Keep deducing the proposition of non-positive literal, once their values
+    are known to be true, i.e., in core. Once all non-positive literals in a
+    clause are deduced, its positive literal, if present, must be in core.
+\endnumberedlist
 
-\noindent 1. Put all positive literal in the single variable clause into core.
-   They must be true.
-
-\noindent 2. Keep deducing the proposition of non-positive literal, once their values
-   are known to be true, i.e., in core. Once all non-positive literals in a
-   clause are deduced, its positive literal, if present, must be in core.
-
-\noindent{\bf Indefinite Horn Formula}
+\subsection{Indefinite Horn Formula}
 
 Exercise 48 provides the steps to test satisfiability of Horn formula in
 general. The idea is quite simple
 
-\noindent 1. Introduce a new variable $\lambda$, and convert all indefinite
+\numberedlist
+\li Introduce a new variable $\lambda$, and convert all indefinite
 causes to definite cause. For example, the following indefinite Horn clause
 $$
 \bar a \vee \bar b  % \wedge
@@ -45,8 +45,9 @@ will be converted as
 $$
 \bar a \vee \bar b \vee \lambda.
 $$
-\noindent 2. Apply Algorithrm C to the new definite Horn formula. The original
+\li Apply Algorithrm C to the new definite Horn formula. The original
 Horn formula is satisfiable if and only if `lambda` is not in the core of the
 new definite Horn formula.
+\endnumberedlist
 
 \bye

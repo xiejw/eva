@@ -1,9 +1,16 @@
 % Defines the section. Use a special font and avoid the indent for the following
 % paragraph.
-\font\secfont=cmss10
+\font\secfont=cmss12
 \def\section #1{
   \vskip\baselineskip
   \noindent{\secfont{}#1}
+  \hfill\vskip\baselineskip
+  \everypar={{\setbox0\lastbox}\everypar={}}}
+
+\font\subsecfont=cmss10
+\def\subsection #1{
+  \vskip\baselineskip
+  \noindent{\subsecfont{}#1}
   \hfill\vskip\baselineskip
   \everypar={{\setbox0\lastbox}\everypar={}}}
 
