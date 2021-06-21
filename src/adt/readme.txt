@@ -30,12 +30,8 @@ For example, if users put two heap-allocated objects in vec[0] and vec[1],
 followed by vecSetSzie(vec, 1), this is a potential memeory leak as the second
 item needs some care.
 
-map
-===
 
-(This is considered to be removed soon.)
+dict
+====
 
-Similarly, map is also a (very) simple strong-type container.
-
-It auto grows and supports iterations. rvalue is safe and the
-type follows C converstion rule. Ownership is on user's side.
+TODO

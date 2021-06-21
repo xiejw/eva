@@ -36,7 +36,6 @@ main()
         // customized case, use ADD_SUITE_NAME_AND_FN.
 
         ADD_SUITE(adt_vec);            // adt/vec_test.c
-        ADD_SUITE(adt_map);            // adt/map_test.c
         ADD_SUITE(adt_dict);           // adt/dict_test.c
         ADD_SUITE(adt_sds);            // adt/sds_test.c
         ADD_SUITE(cron);               // cron/cron_test.c
