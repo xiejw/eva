@@ -1,3 +1,12 @@
+sds
+===
+
+sds is the "simple dynamic string", simplified from github.com/antirez/sds.
+
+- Added EmtpyWithCap API to avoid double growing.
+- sdsCatPrintf will try to write to the remaining buffer if possible to avoid
+  the extra copy.
+
 vec
 ===
 
@@ -23,6 +32,8 @@ item needs some care.
 
 map
 ===
+
+(This is considered to be removed soon.)
 
 Similarly, map is also a (very) simple strong-type container.
 
