@@ -35,6 +35,7 @@ main()
         // Convenstion is for foo, a test suite fn run_foo_suite is called. For
         // customized case, use ADD_SUITE_NAME_AND_FN.
 
+        ADD_SUITE(adt_value);          // adt/value_test.c
         ADD_SUITE(adt_vec);            // adt/vec_test.c
         ADD_SUITE(adt_dict);           // adt/dict_test.c
         ADD_SUITE(adt_sds);            // adt/sds_test.c
