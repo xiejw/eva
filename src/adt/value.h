@@ -20,9 +20,23 @@ struct value_t {
         };
 };
 
-struc value_t *valueNewData(void *data);
-struc value_t *valueNewI64(int64_t i);
-struc value_t *valueNewF32(float f);
-void           valueFree(struct value_t *);
+struct value_t *valueNewData(void *data);
+struct value_t *valueNewI64(int64_t i);
+struct value_t *valueNewF32(float f);
+void            valueFree(struct value_t *);
+
+// Used for dict.
+int   valueCmpI64(void *privdata, const void *, const void *);
+int   valueCmpF32(void *privdata, const void *, const void *);
+void *valueDupI64(void *privdata, const void *);
+void *valueDupF32(void *privdata, const void *);
+void  valueFreeI64(void *privdata, void *);
+void  valueFreeF32(void *privdata, void *);
+
+#define valueGetKind(v) (((struct value_t *)(v))->kind)
+#define valueGetI64(v)  (((struct value_t *)(v))->i64)
+#define valueGetF32(v)  (((struct value_t *)(v))->f32)
+
+uint64_t valueHashFnI64(const void *key);
 
 #endif

@@ -45,10 +45,11 @@
 
 struct dict_entry_t {
         void *key;
+        // TODO use value
         union {
                 void    *val;
                 uint64_t u64;
-                int64_t  s64;
+                int64_t  i64;
                 double   d;
         } v;
         struct dict_entry_t *next;
@@ -91,13 +92,13 @@ struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
 
 #define dictGetKey(he)     ((he)->key)
 #define dictGetVal(he)     ((he)->v.val)
-#define dictGetSIntVal(he) ((he)->v.s64)
+#define dictGetSIntVal(he) ((he)->v.i64)
 #define dictGetUIntVal(he) ((he)->v.u64)
 #define dictGetDVal(he)    ((he)->v.d)
 
 #define dictSetSIntVal(entry, _val_)    \
         do {                            \
-                (entry)->v.s64 = _val_; \
+                (entry)->v.i64 = _val_; \
         } while (0)
 
 #define dictSetUIntVal(entry, _val_)    \

@@ -1,9 +1,14 @@
 #include "testing/testing.h"
 
+#include <string.h>
+
+// eva
 #include "dict.h"
+#include "value.h"
 
-#include "string.h"
-
+// -----------------------------------------------------------------------------
+// static str
+// -----------------------------------------------------------------------------
 uint64_t
 hashFn(const void *key)
 {
@@ -87,6 +92,44 @@ test_expand()
         return NULL;
 }
 
+// -----------------------------------------------------------------------------
+// int64
+// -----------------------------------------------------------------------------
+
+struct dict_ty_t ty_i64 = {
+    .hashFn  = valueHashFnI64,
+    .keyDup  = valueDupI64,
+    .valDup  = NULL,
+    .keyCmp  = valueCmpI64,
+    .keyFree = valueFreeI64,
+    .valFree = NULL,
+};
+
+static char *
+test_add_and_find_existed_i64()
+{
+        int     existed;
+        dict_t *t = dictNew(&ty_i64, NULL);
+
+        struct dict_entry_t *en;
+        {
+                struct value_t key = {.i64 = 123};
+                en                 = dictAddOrFind(t, &key, &existed);
+                ASSERT_TRUE("not existed", existed == 0);
+                dictSetUIntVal(en, 456);
+        }
+
+        {
+                struct value_t key = {.i64 = 123};
+                en                 = dictAddOrFind(t, &key, &existed);
+                ASSERT_TRUE("existed", existed == 1);
+                ASSERT_TRUE("same val",
+                            dictGetUIntVal(dictFind(t, &key)) == 456);
+        }
+        dictFree(t);
+        return NULL;
+}
+
 char *
 run_adt_dict_suite()
 {
@@ -94,5 +137,6 @@ run_adt_dict_suite()
         RUN_TEST(test_add_and_find);
         RUN_TEST(test_add_and_find_existed);
         RUN_TEST(test_expand);
+        RUN_TEST(test_add_and_find_existed_i64);
         return NULL;
 }
