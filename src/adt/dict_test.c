@@ -47,8 +47,8 @@ test_add_and_find()
         dict_t *t = dictNew(&ty, NULL);
 
         struct dict_entry_t *en = dictAddOrFind(t, "abc", NULL);
-        dictSetUIntVal(en, 123);
-        ASSERT_TRUE("val", dictGetUIntVal(dictFind(t, "abc")) == 123);
+        dictSetU64(en, 123);
+        ASSERT_TRUE("val", dictGetU64(dictFind(t, "abc")) == 123);
         ASSERT_TRUE("val null", NULL == dictFind(t, "bc"));
 
         dictFree(t);
@@ -63,12 +63,12 @@ test_add_and_find_existed()
 
         struct dict_entry_t *en = dictAddOrFind(t, "abc", &existed);
         ASSERT_TRUE("not existed", existed == 0);
-        dictSetUIntVal(en, 123);
+        dictSetU64(en, 123);
 
         en = dictAddOrFind(t, "abc", &existed);
         ASSERT_TRUE("existed", existed == 1);
 
-        ASSERT_TRUE("same val", dictGetUIntVal(dictFind(t, "abc")) == 123);
+        ASSERT_TRUE("same val", dictGetU64(dictFind(t, "abc")) == 123);
         dictFree(t);
         return NULL;
 }
@@ -79,14 +79,13 @@ test_expand()
         dict_t *t = dictNew(&ty, NULL);
 
         struct dict_entry_t *en = dictAddOrFind(t, "abc", NULL);
-        dictSetUIntVal(en, 123);
-        ASSERT_TRUE("val", dictGetUIntVal(dictFind(t, "abc")) == 123);
+        dictSetU64(en, 123);
+        ASSERT_TRUE("val", dictGetU64(dictFind(t, "abc")) == 123);
         size_t size = t->ht.size;
 
         dictExpand(t, 1024);
         ASSERT_TRUE("new size", t->ht.size > size);
-        ASSERT_TRUE("val after hash",
-                    dictGetUIntVal(dictFind(t, "abc")) == 123);
+        ASSERT_TRUE("val after hash", dictGetU64(dictFind(t, "abc")) == 123);
 
         dictFree(t);
         return NULL;
@@ -116,15 +115,14 @@ test_add_and_find_existed_i64()
                 struct value_t key = {.i64 = 123};
                 en                 = dictAddOrFind(t, &key, &existed);
                 ASSERT_TRUE("not existed", existed == 0);
-                dictSetUIntVal(en, 456);
+                dictSetU64(en, 456);
         }
 
         {
                 struct value_t key = {.i64 = 123};
                 en                 = dictAddOrFind(t, &key, &existed);
                 ASSERT_TRUE("existed", existed == 1);
-                ASSERT_TRUE("same val",
-                            dictGetUIntVal(dictFind(t, &key)) == 456);
+                ASSERT_TRUE("same val", dictGetU64(dictFind(t, &key)) == 456);
         }
         dictFree(t);
         return NULL;

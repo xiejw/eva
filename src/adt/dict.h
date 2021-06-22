@@ -39,19 +39,15 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+// eva
+#include "adt/value.h"
 #include "base/error.h"
 
 #define DICT_HT_INITIAL_SIZE 128
 
 struct dict_entry_t {
-        void *key;
-        // TODO use value
-        union {
-                void    *val;
-                uint64_t u64;
-                int64_t  i64;
-                double   d;
-        } v;
+        void                *key;
+        struct value_t       v;
         struct dict_entry_t *next;
 };
 
@@ -84,31 +80,33 @@ error_t dictExpand(dict_t *d, unsigned long size);
 
 struct dict_entry_t *dictFind(dict_t *d, const void *key);
 
+error_t              dictAdd(dict_t *d, void *key, void *val);
+struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
+int                  dictReplace(dict_t *d, void *key, void *val);
+
+// low-level.
 struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                                 struct dict_entry_t **existing);
-error_t              dictAdd(dict_t *d, void *key, void *val);
-int                  dictReplace(dict_t *d, void *key, void *val);
-struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
 
-#define dictGetKey(he)     ((he)->key)
-#define dictGetVal(he)     ((he)->v.val)
-#define dictGetSIntVal(he) ((he)->v.i64)
-#define dictGetUIntVal(he) ((he)->v.u64)
-#define dictGetDVal(he)    ((he)->v.d)
+#define dictGetKey(he)  ((he)->key)
+#define dictGetData(he) ((he)->v.data)
+#define dictGetI64(he)  ((he)->v.i64)
+#define dictGetU64(he)  ((he)->v.u64)
+#define dictGetF64(he)  ((he)->v.f64)
 
-#define dictSetSIntVal(entry, _val_)    \
+#define dictSetI64(entry, _val_)        \
         do {                            \
                 (entry)->v.i64 = _val_; \
         } while (0)
 
-#define dictSetUIntVal(entry, _val_)    \
+#define dictSetU64(entry, _val_)        \
         do {                            \
                 (entry)->v.u64 = _val_; \
         } while (0)
 
-#define dictSetDVal(entry, _val_)     \
-        do {                          \
-                (entry)->v.d = _val_; \
+#define dictSetF64(entry, _val_)        \
+        do {                            \
+                (entry)->v.f64 = _val_; \
         } while (0)
 
 #define dictSetKey(d, entry, _key_)                                  \
@@ -120,13 +118,13 @@ struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
                         (entry)->key = (_key_);                      \
         } while (0)
 
-#define dictSetVal(d, entry, _val_)                                  \
+#define dictSetData(d, entry, _val_)                                 \
         do {                                                         \
                 if ((d)->type->valDup)                               \
-                        (entry)->v.val =                             \
+                        (entry)->v.data =                            \
                             (d)->type->valDup((d)->privdata, _val_); \
                 else                                                 \
-                        (entry)->v.val = (_val_);                    \
+                        (entry)->v.data = (_val_);                   \
         } while (0)
 
 #define dictFreeKey(d, entry) \
@@ -134,7 +132,7 @@ struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
 
 #define dictFreeVal(d, entry)   \
         if ((d)->type->valFree) \
-        (d)->type->valFree((d)->privdata, (entry)->v.val)
+        (d)->type->valFree((d)->privdata, (entry)->v.data)
 
 #define dictCompareKeys(d, key1, key2)                                      \
         (((d)->type->keyCmp) ? (d)->type->keyCmp((d)->privdata, key1, key2) \
