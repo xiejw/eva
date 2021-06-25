@@ -112,8 +112,9 @@ test_add_and_find_existed_i64()
 
         struct dict_entry_t *en;
         {
-                struct value_t key = {.i64 = 123};
-                en                 = dictAddOrFind(t, &key, &existed);
+                struct value_t key;
+                valueSetI64(&key, 123);
+                en = dictAddOrFind(t, &key, &existed);
                 ASSERT_TRUE("not existed", existed == 0);
                 dictSetU64(en, 456);
         }

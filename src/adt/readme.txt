@@ -34,4 +34,14 @@ item needs some care.
 dict
 ====
 
-TODO
+This is a general dictionary data strucutre. The code is forked from redis and
+simplified to remove the incremental rehashing. It is a nice feature but I dont
+need.
+
+One more change is the value type. The dict in redis has a very similar design
+for entry value (not key), which is a union of values. This implementation
+  replaces it with the `struct value_t`.
+
+`value_t` is also useful for boxing the int or float for keys. Some allocations
+or deallocations cost will be paid. Slab allocation can be provided in future if
+needed.
