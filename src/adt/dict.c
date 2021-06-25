@@ -121,7 +121,7 @@ dictReplace(dict_t *d, void *key, void *val)
          * reverse. */
         auxentry = *existing;
         dictSetData(d, existing, val);
-        dictFreeVal(d, &auxentry);
+        dictFreeData(d, &auxentry);
         return 0;
 }
 
@@ -306,7 +306,7 @@ _dictClearTable(dict_t *d, struct dict_table_t *ht)
                 while (he) {
                         nextHe = he->next;
                         dictFreeKey(d, he);
-                        dictFreeVal(d, he);
+                        dictFreeData(d, he);
                         free(he);
                         ht->used--;
                         he = nextHe;

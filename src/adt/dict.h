@@ -79,7 +79,6 @@ void    dictFree(dict_t *d);
 error_t dictExpand(dict_t *d, unsigned long size);
 
 struct dict_entry_t *dictFind(dict_t *d, const void *key);
-
 error_t              dictAdd(dict_t *d, void *key, void *val);
 struct dict_entry_t *dictAddOrFind(dict_t *d, void *key, int *existed);
 int                  dictReplace(dict_t *d, void *key, void *val);
@@ -88,28 +87,43 @@ int                  dictReplace(dict_t *d, void *key, void *val);
 struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                                 struct dict_entry_t **existing);
 
+// macros
 #define dictGetKey(he)  ((he)->key)
 #define dictGetData(he) ((he)->v.data)
 #define dictGetI64(he)  ((he)->v.i64)
 #define dictGetU64(he)  ((he)->v.u64)
 #define dictGetF64(he)  ((he)->v.f64)
 
-#define dictSetI64(entry, _val_)        \
+#define dictSetKey(d, entry, _key_)  _DICT_SET_KEY(d, entry, _key_)
+#define dictSetData(d, entry, _val_) _DICT_SET_DATA(d, entry, _val_)
+#define dictSetI64(entry, _val_)     _DICT_SET_I64(entry, _val_)
+#define dictSetU64(entry, _val_)     _DICT_SET_U64(entry, _val_)
+#define dictSetF64(entry, _val_)     _DICT_SET_F64(entry, _val_)
+
+#define dictFreeKey(d, entry)  _DICT_FREE_KEY(d, entry)
+#define dictFreeData(d, entry) _DICT_FREE_DATA(d, entry)
+
+#define dictCompareKeys(d, key1, key2) _DICT_CMP_KEYS(d, key1, key2)
+
+#define dictHashKey(d, key) (d)->type->hashFn(key)
+
+// macro impl
+#define _DICT_SET_I64(entry, _val_)     \
         do {                            \
                 (entry)->v.i64 = _val_; \
         } while (0)
 
-#define dictSetU64(entry, _val_)        \
+#define _DICT_SET_U64(entry, _val_)     \
         do {                            \
                 (entry)->v.u64 = _val_; \
         } while (0)
 
-#define dictSetF64(entry, _val_)        \
+#define _DICT_SET_F64(entry, _val_)     \
         do {                            \
                 (entry)->v.f64 = _val_; \
         } while (0)
 
-#define dictSetKey(d, entry, _key_)                                  \
+#define _DICT_SET_KEY(d, entry, _key_)                               \
         do {                                                         \
                 if ((d)->type->keyDup)                               \
                         (entry)->key =                               \
@@ -118,7 +132,7 @@ struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                         (entry)->key = (_key_);                      \
         } while (0)
 
-#define dictSetData(d, entry, _val_)                                 \
+#define _DICT_SET_DATA(d, entry, _val_)                              \
         do {                                                         \
                 if ((d)->type->valDup)                               \
                         (entry)->v.data =                            \
@@ -127,17 +141,14 @@ struct dict_entry_t *dictAddRaw(dict_t *d, void *key,
                         (entry)->v.data = (_val_);                   \
         } while (0)
 
-#define dictFreeKey(d, entry) \
+#define _DICT_FREE_KEY(d, entry) \
         if ((d)->type->keyFree) (d)->type->keyFree((d)->privdata, (entry)->key)
 
-#define dictFreeVal(d, entry)   \
-        if ((d)->type->valFree) \
+#define _DICT_FREE_DATA(d, entry) \
+        if ((d)->type->valFree)   \
         (d)->type->valFree((d)->privdata, (entry)->v.data)
 
-#define dictCompareKeys(d, key1, key2)                                      \
+#define _DICT_CMP_KEYS(d, key1, key2)                                       \
         (((d)->type->keyCmp) ? (d)->type->keyCmp((d)->privdata, key1, key2) \
                              : (key1) == (key2))
-
-#define dictHashKey(d, key) (d)->type->hashFn(key)
-
 #endif
