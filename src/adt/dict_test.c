@@ -12,10 +12,10 @@
 // -----------------------------------------------------------------------------
 struct dict_ty_t ty = {
     .hashFn  = hashFnStr,
-    .keyDup  = NULL,
+    .keyDup  = dupFnStr,
     .valDup  = NULL,
     .keyCmp  = keyCmpStr,
-    .keyFree = NULL,
+    .keyFree = freeFnStr,
     .valFree = NULL,
 };
 

@@ -1,5 +1,6 @@
 #include "hashing.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 uint64_t
@@ -15,4 +16,18 @@ int
 keyCmpStr(void *privdata, const void *key1, const void *key2)
 {
         return 0 == strcmp((char *)key1, (char *)key2);
+}
+
+void *
+dupFnStr(void *privdata, const void *old_str)
+{
+        char *new_str = malloc(sizeof(char) * (strlen((char *)old_str) + 1));
+        strcpy(new_str, (char *)old_str);
+        return new_str;
+}
+
+void
+freeFnStr(void *privdata, void *p)
+{
+        free(p);
 }
