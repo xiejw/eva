@@ -4,31 +4,17 @@
 
 // eva
 #include "dict.h"
+#include "hashing.h"
 #include "value.h"
 
 // -----------------------------------------------------------------------------
 // static str
 // -----------------------------------------------------------------------------
-uint64_t
-hashFn(const void *key)
-{
-        const char *str  = (const char *)key;
-        uint64_t    hash = 5381;
-        while (*str) hash = ((hash << 5) + hash) ^ *str++;
-        return hash;
-}
-
-int
-keyCmp(void *privdata, const void *key1, const void *key2)
-{
-        return 0 == strcmp((char *)key1, (char *)key2);
-}
-
 struct dict_ty_t ty = {
-    .hashFn  = hashFn,
+    .hashFn  = hashFnStr,
     .keyDup  = NULL,
     .valDup  = NULL,
-    .keyCmp  = keyCmp,
+    .keyCmp  = keyCmpStr,
     .keyFree = NULL,
     .valFree = NULL,
 };
