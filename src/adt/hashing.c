@@ -13,7 +13,7 @@ hashFnStr(const void *key)
 }
 
 int
-keyCmpStr(void *privdata, const void *key1, const void *key2)
+keyCmpFnStr(void *privdata, const void *key1, const void *key2)
 {
         return 0 == strcmp((char *)key1, (char *)key2);
 }
@@ -30,4 +30,16 @@ void
 freeFnStr(void *privdata, void *p)
 {
         free(p);
+}
+
+uint64_t
+hashFnPtr(const void *key)
+{
+        return (intptr_t)key;
+}
+
+int
+keyCmpFnPtr(void *privdata, const void *key1, const void *key2)
+{
+        return key1 == key2;
 }

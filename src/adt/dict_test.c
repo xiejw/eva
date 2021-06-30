@@ -14,7 +14,7 @@ struct dict_ty_t ty = {
     .hashFn  = hashFnStr,
     .keyDup  = dupFnStr,
     .valDup  = NULL,
-    .keyCmp  = keyCmpStr,
+    .keyCmp  = keyCmpFnStr,
     .keyFree = freeFnStr,
     .valFree = NULL,
 };
