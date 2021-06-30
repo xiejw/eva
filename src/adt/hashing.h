@@ -1,7 +1,7 @@
 #ifndef HASHING_H_
 #define HASHING_H_
 
-#include <stdint.h>  // uint64_j
+#include <stdint.h>  // uint64_t
 
 // All function conforming the hashing, comparing, duplicating, and freeing fns
 // signature required by dict.h. See struct dict_ty_t.
